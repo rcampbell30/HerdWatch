@@ -5,3 +5,9 @@ dist
 .env.local
 .netlify
 .vite
+
+# Official source downloads are large and reproducible via npm run data:download
+data/raw/source/
+data/raw/ref/
+data/processed/*.json
+!data/processed/.gitkeep
