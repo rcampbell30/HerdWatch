@@ -23,7 +23,8 @@ fs.mkdirSync(generatedDir, { recursive: true });
 fs.mkdirSync(publicDataDir, { recursive: true });
 fs.mkdirSync(path.dirname(reportPath), { recursive: true });
 
-const areas = parseCsv(fs.readFileSync(areaCsvPath, 'utf8')).map(normaliseAreaRow);
+const rawAreas = parseCsv(fs.readFileSync(areaCsvPath, 'utf8')).map(normaliseAreaRow);
+const { areas, duplicatePostcodeDistricts } = aggregateDuplicateAreas(rawAreas);
 const trends = parseCsv(fs.readFileSync(trendCsvPath, 'utf8')).map(normaliseTrendRow);
 
 validateAreas(areas);
@@ -36,7 +37,9 @@ const metadata = {
     areas: path.relative(root, areaCsvPath),
     trends: path.relative(root, trendCsvPath)
   },
+  rawAreaRowCount: rawAreas.length,
   areaCount: areas.length,
+  duplicatePostcodeDistrictCount: duplicatePostcodeDistricts.length,
   trendPointCount: trends.length,
   statusCounts: countBy(areas, 'status'),
   coverageBands: {
@@ -54,6 +57,7 @@ writeJson(path.join(publicDataDir, 'metadata.json'), metadata);
 
 const report = {
   ...metadata,
+  duplicatePostcodeDistricts: duplicatePostcodeDistricts.slice(0, 50),
   lowestCoverage: [...areas].sort((a, b) => a.coverage - b.coverage).slice(0, 10).map((area) => ({
     postcodeDistrict: area.postcodeDistrict,
     coverage: area.coverage,
@@ -63,12 +67,16 @@ const report = {
     'Use data/raw/areas.csv and data/raw/trends.csv for real NHS COVER imports.',
     'Example CSVs are used automatically only when real raw files are absent.',
     'The app and static map route can read public/data/areas.json after build.',
+    'Duplicate postcode districts are aggregated by summing eligible/vaccinated/practice counts and recalculating coverage.',
     'Coverage bands: below 90 = AT_RISK; 90 to below 95 = VULNERABLE; 95+ = PROTECTED.'
   ]
 };
 
 writeJson(reportPath, report);
 console.log(`Built ${areas.length} areas and ${trends.length} trend points.`);
+if (duplicatePostcodeDistricts.length) {
+  console.warn(`Aggregated ${duplicatePostcodeDistricts.length} duplicate postcode districts.`);
+}
 console.log(`Public data written to ${path.relative(root, publicDataDir)}.`);
 console.log(`Wrote ${path.relative(root, reportPath)}.`);
 if (usingExampleData) {
@@ -165,6 +173,56 @@ function normaliseAreaRow(row) {
   };
 }
 
+function aggregateDuplicateAreas(rows) {
+  const byPostcode = new Map();
+
+  for (const row of rows) {
+    const current = byPostcode.get(row.postcodeDistrict);
+    if (!current) {
+      byPostcode.set(row.postcodeDistrict, {
+        postcodeDistrict: row.postcodeDistrict,
+        regions: new Set([row.region]),
+        practiceCount: row.practiceCount,
+        totalEligible: row.totalEligible,
+        totalVaccinated: row.totalVaccinated,
+        rowCount: 1
+      });
+      continue;
+    }
+
+    current.regions.add(row.region);
+    current.practiceCount += row.practiceCount;
+    current.totalEligible += row.totalEligible;
+    current.totalVaccinated += row.totalVaccinated;
+    current.rowCount += 1;
+  }
+
+  const duplicatePostcodeDistricts = [];
+  const areas = [...byPostcode.values()].map((item) => {
+    const regions = [...item.regions].sort();
+    if (item.rowCount > 1) {
+      duplicatePostcodeDistricts.push({
+        postcodeDistrict: item.postcodeDistrict,
+        rows: item.rowCount,
+        regions
+      });
+    }
+
+    const coverage = round((item.totalVaccinated / item.totalEligible) * 100, 1);
+    return {
+      postcodeDistrict: item.postcodeDistrict,
+      region: regions.length === 1 ? regions[0] : 'Multiple regions',
+      practiceCount: item.practiceCount,
+      coverage,
+      totalEligible: item.totalEligible,
+      totalVaccinated: item.totalVaccinated,
+      status: statusFromCoverage(coverage)
+    };
+  }).sort((a, b) => a.coverage - b.coverage || a.postcodeDistrict.localeCompare(b.postcodeDistrict));
+
+  return { areas, duplicatePostcodeDistricts };
+}
+
 function normaliseTrendRow(row) {
   return {
     year: required(row.year ?? row.period, 'year'),
@@ -178,7 +236,7 @@ function validateAreas(areas) {
   const seen = new Set();
   for (const area of areas) {
     if (seen.has(area.postcodeDistrict)) {
-      throw new Error(`Duplicate postcode district: ${area.postcodeDistrict}`);
+      throw new Error(`Duplicate postcode district after aggregation: ${area.postcodeDistrict}`);
     }
     seen.add(area.postcodeDistrict);
     if (area.totalVaccinated > area.totalEligible) {
