@@ -8,6 +8,9 @@
     "build": "npm run data:build && vite build",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
+    "data:download": "node scripts/download-cover-sources.mjs",
+    "data:cover:areas": "python scripts/build-cover-areas.py",
+    "data:cover:all": "npm run data:download && npm run data:cover:areas && npm run data:build",
     "data:build": "node scripts/build-data.mjs",
     "data:validate": "node scripts/build-data.mjs"
   },

@@ -4,6 +4,7 @@ import path from 'node:path';
 const root = process.cwd();
 const rawDir = path.join(root, 'data', 'raw');
 const generatedDir = path.join(root, 'src', 'data', 'generated');
+const publicDataDir = path.join(root, 'public', 'data');
 const reportPath = path.join(root, 'data', 'processed', 'data-report.json');
 
 const areaCsvPath = firstExisting([
@@ -16,7 +17,10 @@ const trendCsvPath = firstExisting([
   path.join(rawDir, 'trends.example.csv')
 ]);
 
+const usingExampleData = areaCsvPath.endsWith('.example.csv') || trendCsvPath.endsWith('.example.csv');
+
 fs.mkdirSync(generatedDir, { recursive: true });
+fs.mkdirSync(publicDataDir, { recursive: true });
 fs.mkdirSync(path.dirname(reportPath), { recursive: true });
 
 const areas = parseCsv(fs.readFileSync(areaCsvPath, 'utf8')).map(normaliseAreaRow);
@@ -25,11 +29,9 @@ const trends = parseCsv(fs.readFileSync(trendCsvPath, 'utf8')).map(normaliseTren
 validateAreas(areas);
 validateTrends(trends);
 
-fs.writeFileSync(path.join(generatedDir, 'areas.json'), JSON.stringify(areas, null, 2) + '\n');
-fs.writeFileSync(path.join(generatedDir, 'trends.json'), JSON.stringify(trends, null, 2) + '\n');
-
-const report = {
+const metadata = {
   generatedAt: new Date().toISOString(),
+  usingExampleData,
   sourceFiles: {
     areas: path.relative(root, areaCsvPath),
     trends: path.relative(root, trendCsvPath)
@@ -37,6 +39,21 @@ const report = {
   areaCount: areas.length,
   trendPointCount: trends.length,
   statusCounts: countBy(areas, 'status'),
+  coverageBands: {
+    atRisk: 'coverage < 90',
+    vulnerable: '90 <= coverage < 95',
+    protected: 'coverage >= 95'
+  }
+};
+
+writeJson(path.join(generatedDir, 'areas.json'), areas);
+writeJson(path.join(generatedDir, 'trends.json'), trends);
+writeJson(path.join(publicDataDir, 'areas.json'), areas);
+writeJson(path.join(publicDataDir, 'trends.json'), trends);
+writeJson(path.join(publicDataDir, 'metadata.json'), metadata);
+
+const report = {
+  ...metadata,
   lowestCoverage: [...areas].sort((a, b) => a.coverage - b.coverage).slice(0, 10).map((area) => ({
     postcodeDistrict: area.postcodeDistrict,
     coverage: area.coverage,
@@ -45,13 +62,22 @@ const report = {
   notes: [
     'Use data/raw/areas.csv and data/raw/trends.csv for real NHS COVER imports.',
     'Example CSVs are used automatically only when real raw files are absent.',
+    'The app and static map route can read public/data/areas.json after build.',
     'Coverage bands: below 90 = AT_RISK; 90 to below 95 = VULNERABLE; 95+ = PROTECTED.'
   ]
 };
 
-fs.writeFileSync(reportPath, JSON.stringify(report, null, 2) + '\n');
+writeJson(reportPath, report);
 console.log(`Built ${areas.length} areas and ${trends.length} trend points.`);
+console.log(`Public data written to ${path.relative(root, publicDataDir)}.`);
 console.log(`Wrote ${path.relative(root, reportPath)}.`);
+if (usingExampleData) {
+  console.warn('Warning: using example data. Add real NHS COVER files as data/raw/areas.csv and data/raw/trends.csv.');
+}
+
+function writeJson(filePath, value) {
+  fs.writeFileSync(filePath, JSON.stringify(value, null, 2) + '\n');
+}
 
 function firstExisting(paths) {
   const found = paths.find((candidate) => fs.existsSync(candidate));
