@@ -4,7 +4,7 @@ HerdWatch is an MMR vaccination coverage tracker for England. It highlights loca
 
 ## Current status
 
-This repository originally contained a deployed/exported Next.js build from Netlify, not the original editable source code. The `rebuild-source-v1` branch reconstructs HerdWatch as a clean editable React + TypeScript + Vite project while preserving the current look and headline content from the deployed site.
+This repository originally contained a deployed/exported Next.js build from Netlify, not the original editable source code. It has now been rebuilt as a clean editable React + TypeScript + Vite project while preserving the current look and headline content from the deployed site.
 
 Preserved headline figures from the deployed export:
 
@@ -56,6 +56,59 @@ Netlify settings are included in `netlify.toml`:
   publish = "dist"
 ```
 
+## Data pipeline
+
+The app now reads generated JSON files from:
+
+```text
+src/data/generated/areas.json
+src/data/generated/trends.json
+```
+
+These files are built from CSV inputs under:
+
+```text
+data/raw/areas.csv
+data/raw/trends.csv
+```
+
+Example files are included so the pipeline works before the real NHS COVER extracts are restored:
+
+```text
+data/raw/areas.example.csv
+data/raw/trends.example.csv
+```
+
+Run the data pipeline with:
+
+```bash
+npm run data:build
+```
+
+The script will:
+
+- parse the raw CSV files;
+- calculate risk status from coverage;
+- validate duplicate postcode districts;
+- validate coverage ranges;
+- reject records where vaccinated children exceed eligible children;
+- write generated JSON for the React app;
+- write a report to `data/processed/data-report.json`.
+
+Expected area CSV columns:
+
+```csv
+postcode_district,region,practice_count,total_eligible,total_vaccinated,coverage
+```
+
+Expected trend CSV columns:
+
+```csv
+year,england_mmr1,england_mmr2,target
+```
+
+If `coverage` is blank in the area CSV, it will be calculated from `total_vaccinated / total_eligible * 100`.
+
 ## Project structure
 
 ```text
@@ -67,6 +120,17 @@ src/
   data/
     areas.ts
     trends.ts
+    generated/
+      areas.json
+      trends.json
+data/
+  raw/
+    areas.example.csv
+    trends.example.csv
+  processed/
+    .gitkeep
+scripts/
+  build-data.mjs
 public/
   _redirects
 index.html
@@ -77,8 +141,8 @@ tsconfig.json
 
 ## Next proper upgrade
 
-1. Restore the full NHS COVER dataset into `src/data` or `public/data`.
-2. Add real historic MMR1/MMR2 coverage by year or quarter.
-3. Replace scaffolded town records with all 1,132 postcode districts.
+1. Restore the full NHS COVER dataset into `data/raw/areas.csv`.
+2. Add real historic MMR1/MMR2 coverage into `data/raw/trends.csv`.
+3. Run `npm run data:build` to replace the scaffold data.
 4. Upgrade the map page with Leaflet or a lightweight SVG/GeoJSON view.
-5. Add automated data-validation scripts before deployment.
+5. Add CI so every pull request runs `npm run data:build` and `npm run build`.
