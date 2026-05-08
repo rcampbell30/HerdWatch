@@ -1,16 +1,18 @@
 {
-  "generatedAt": "2026-05-08T19:10:00.000Z",
+  "generatedAt": "2026-05-08T21:54:17.808Z",
   "usingExampleData": true,
   "sourceFiles": {
-    "areas": "data/raw/areas.example.csv",
-    "trends": "data/raw/trends.example.csv"
+    "areas": "data\\raw\\areas.csv",
+    "trends": "data\\raw\\trends.example.csv"
   },
-  "areaCount": 28,
+  "rawAreaRowCount": 2879,
+  "areaCount": 2783,
+  "duplicatePostcodeDistrictCount": 95,
   "trendPointCount": 7,
   "statusCounts": {
-    "AT_RISK": 20,
-    "VULNERABLE": 5,
-    "PROTECTED": 3
+    "AT_RISK": 1027,
+    "VULNERABLE": 1097,
+    "PROTECTED": 659
   },
   "coverageBands": {
     "atRisk": "coverage < 90",
