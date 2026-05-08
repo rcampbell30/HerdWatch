@@ -90,17 +90,18 @@ def main() -> None:
             "Could not confidently detect GP-level MMR1 columns. "
             "See data/processed/cover-column-report.json and adjust column aliases in scripts/build-cover-areas.py."
         )
+    if not best.denominator or not best.coverage:
+        raise SystemExit(
+            "Could not detect both denominator and coverage columns. "
+            "See data/processed/cover-column-report.json."
+        )
 
     df = normalise_frame(workbook[best.sheet])
     ref = load_reference(args.reference)
 
-    required_cols = [best.practice_code]
-    if best.denominator:
-        required_cols.append(best.denominator)
+    required_cols = [best.practice_code, best.denominator, best.coverage]
     if best.numerator:
         required_cols.append(best.numerator)
-    if best.coverage:
-        required_cols.append(best.coverage)
     if best.region:
         required_cols.append(best.region)
 
@@ -108,15 +109,15 @@ def main() -> None:
     data = data.rename(
         columns={
             best.practice_code: "practice_code",
-            best.denominator or "": "total_eligible",
+            best.denominator: "total_eligible",
             best.numerator or "": "total_vaccinated",
-            best.coverage or "": "coverage",
+            best.coverage: "coverage",
             best.region or "": "region",
         }
     )
 
     data["practice_code"] = data["practice_code"].astype(str).str.strip().str.upper()
-    data = data[data["practice_code"].str.match(r"^[A-Z0-9]{3,}$", na=False)]
+    data = data[data["practice_code"].str.match(PRACTICE_CODE_RE, na=False)]
     data = data.merge(ref, on="practice_code", how="left")
 
     missing_postcode = data["postcode"].isna().sum()
@@ -130,17 +131,23 @@ def main() -> None:
         data["region"] = data.get("reference_region", "Other")
     data["region"] = data["region"].fillna(data.get("reference_region", "Other")).fillna("Other")
 
-    if "total_eligible" in data.columns:
-        data["total_eligible"] = pd.to_numeric(data["total_eligible"], errors="coerce")
+    data["total_eligible"] = pd.to_numeric(data["total_eligible"], errors="coerce")
+    data["coverage"] = pd.to_numeric(data["coverage"].astype(str).str.replace("%", "", regex=False), errors="coerce")
+
     if "total_vaccinated" in data.columns:
         data["total_vaccinated"] = pd.to_numeric(data["total_vaccinated"], errors="coerce")
-    if "coverage" in data.columns:
-        data["coverage"] = pd.to_numeric(data["coverage"].astype(str).str.replace("%", "", regex=False), errors="coerce")
+    else:
+        data["total_vaccinated"] = pd.NA
 
-    if "total_eligible" not in data.columns or "total_vaccinated" not in data.columns:
-        raise SystemExit("Numerator/denominator columns were not detected. See cover-column-report.json.")
+    missing_numerator = data["total_vaccinated"].isna()
+    if missing_numerator.any():
+        # The 2024 to 2025 GP supplementary file provides the denominator and coverage percentage,
+        # not a separate numerator column. Reconstruct the vaccinated count from those two values.
+        data.loc[missing_numerator, "total_vaccinated"] = (
+            data.loc[missing_numerator, "total_eligible"] * data.loc[missing_numerator, "coverage"] / 100
+        ).round()
 
-    data = data.dropna(subset=["total_eligible", "total_vaccinated"])
+    data = data.dropna(subset=["total_eligible", "total_vaccinated", "coverage"])
     data = data[data["total_eligible"] > 0]
 
     grouped = (
@@ -152,6 +159,8 @@ def main() -> None:
         )
         .reset_index()
     )
+    grouped["total_eligible"] = grouped["total_eligible"].round().astype(int)
+    grouped["total_vaccinated"] = grouped["total_vaccinated"].round().astype(int)
     grouped["coverage"] = (grouped["total_vaccinated"] / grouped["total_eligible"] * 100).round(1)
 
     grouped = grouped.sort_values(["coverage", "postcode_district"])
@@ -159,6 +168,9 @@ def main() -> None:
     grouped.to_csv(args.out, index=False, quoting=csv.QUOTE_MINIMAL)
 
     print(f"Read {source.relative_to(ROOT)} sheet={best.sheet!r}.")
+    print(f"Using practice_code={best.practice_code!r}, denominator={best.denominator!r}, coverage={best.coverage!r}.")
+    if not best.numerator:
+        print("No numerator column found; reconstructed vaccinated counts from denominator × coverage.")
     print(f"Wrote {len(grouped):,} postcode districts to {args.out.relative_to(ROOT)}.")
     print("Next: npm run data:build")
 
@@ -204,7 +216,7 @@ def normalise_frame(df: pd.DataFrame) -> pd.DataFrame:
     for idx in range(min(12, len(df))):
         values = [normalise_col(value) for value in df.iloc[idx].tolist()]
         joined = " ".join(values)
-        score = sum(keyword in joined for keyword in ["practice", "mmr", "denominator", "numerator", "coverage"])
+        score = sum(keyword in joined for keyword in ["practice", "gpcode", "mmr", "denominator", "numerator", "coverage", "reached 24 months"])
         if score > best_score:
             best_header_idx = idx
             best_score = score
@@ -234,20 +246,55 @@ def dedupe(columns: Iterable[str]) -> list[str]:
 
 def guess_columns(sheet: str, df: pd.DataFrame) -> ColumnGuess:
     columns = list(df.columns)
-    practice_code = find_col(columns, [r"\bpractice\b.*\bcode\b", r"\bgp\b.*\bcode\b", r"\bods\b.*\bcode\b", r"organisation.*code"])
-    region = find_col(columns, [r"region", r"nhs england region", r"ukhsa region"])
-    denominator = find_col(columns, [r"mmr.*24.*denom", r"mmr.*24.*eligible", r"mmr1.*24.*denom", r"mmr1.*eligible", r"denominator.*mmr"])
-    numerator = find_col(columns, [r"mmr.*24.*num", r"mmr.*24.*vacc", r"mmr1.*24.*num", r"mmr1.*vacc", r"numerator.*mmr"])
-    coverage = find_col(columns, [r"mmr.*24.*cover", r"mmr1.*24.*cover", r"mmr.*24.*%", r"coverage.*mmr"])
+    practice_code = find_col(columns, [
+        r"^gpcode$",
+        r"^gp code$",
+        r"\bgpcode\b",
+        r"\bpractice\b.*\bcode\b",
+        r"\bgp\b.*\bcode\b",
+        r"\bods\b.*\bcode\b",
+        r"organisation.*code",
+    ])
+    region = find_col(columns, [r"region", r"nhs england region", r"ukhsa region", r"icb name"])
+    denominator = find_col(columns, [
+        r"^number of children who reached 24 months$",
+        r"children.*reached.*24 months",
+        r"reached.*24 months",
+        r"24 months.*denom",
+        r"mmr.*24.*denom",
+        r"mmr.*24.*eligible",
+        r"mmr1.*24.*denom",
+        r"mmr1.*eligible",
+        r"denominator.*mmr",
+    ])
+    numerator = find_col(columns, [
+        r"mmr.*24.*num",
+        r"mmr.*24.*vacc",
+        r"mmr1.*24.*num",
+        r"mmr1.*vacc",
+        r"numerator.*mmr",
+    ])
+    coverage = find_col(columns, [
+        r"^coverage at 24 months mmr1 \(%\)$",
+        r"coverage.*24 months.*mmr1",
+        r"mmr.*24.*cover",
+        r"mmr1.*24.*cover",
+        r"mmr.*24.*%",
+        r"coverage.*mmr",
+    ])
 
     score = sum(bool(value) for value in [practice_code, region, denominator, numerator, coverage])
     joined = " ".join(columns)
+    if "gpcode" in joined:
+        score += 3
     if "mmr" in joined:
         score += 1
     if "24" in joined or "2 year" in joined or "2-year" in joined:
         score += 1
     if "practice" in joined or "gp" in joined:
         score += 1
+    if denominator and coverage:
+        score += 3
 
     return ColumnGuess(sheet, practice_code, region, denominator, numerator, coverage, score, columns[:80])
 
