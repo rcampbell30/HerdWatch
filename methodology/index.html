@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<title>Methodology — HerdWatch: Human Vaccination Coverage Tracker</title>
+<meta name="description" content="How HerdWatch — a human vaccination coverage tracker — collects, processes, and presents NHS MMR vaccination coverage data for children in England."/>
+<meta name="keywords" content="MMR vaccine, vaccination coverage, measles outbreak, herd immunity, NHS data, human vaccination tracker"/>
+<meta property="og:title" content="HerdWatch — Human Vaccination Coverage Tracker"/>
+<meta property="og:description" content="Track MMR vaccination coverage for children across England — a public health data tool"/>
+<meta property="og:type" content="website"/>
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="HerdWatch — MMR Vaccination Coverage Tracker"/>
+<meta name="twitter:description" content="Track MMR vaccination coverage across England"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { overflow-x: hidden; }
+  body { overflow-x: hidden; background: #f8f7f4; color: #1a1a1a; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+  ::selection { background: #dc2626; color: white; }
+  img, svg, canvas { max-width: 100%; height: auto; }
+
+  /* Navigation */
+  .nav { background: #1a1a1a; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 60px; position: sticky; top: 0; z-index: 100; }
+  .nav-brand { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 800; font-size: 1.3rem; color: white; text-decoration: none; letter-spacing: -0.02em; flex-shrink: 0; }
+  .nav-brand span { color: #dc2626; }
+  .nav-links { display: flex; gap: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; flex: 1 1 auto; min-width: 0; justify-content: flex-end; align-items: center; }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-link { color: #999; text-decoration: none; font-size: 0.82rem; padding: 6px 14px; border-radius: 20px; transition: all 0.2s; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; white-space: nowrap; flex: 0 0 auto; }
+  .nav-link:hover { color: white; background: #333; }
+  .nav-link.active { color: white; font-weight: 600; }
+
+  /* Hero */
+  .hero { background: #1a1a1a; color: white; padding: 60px 40px; }
+  .hero-inner { max-width: 780px; margin: 0 auto; }
+  .hero-tag { display: inline-block; background: #dc2626; color: white; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.7rem; padding: 4px 12px; border-radius: 2px; margin-bottom: 20px; letter-spacing: 0.1em; text-transform: uppercase; }
+  .hero-title { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 3rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 14px; }
+  .hero-sub { color: #888; font-size: 1rem; line-height: 1.65; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+
+  /* Content */
+  .content { max-width: 780px; margin: 0 auto; padding: 60px 40px; overflow-x: hidden; overflow-wrap: break-word; word-wrap: break-word; }
+
+  /* Stats Row */
+  .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 60px; }
+  .stat { background: white; border-radius: 10px; padding: 20px; text-align: center; }
+  .stat-val { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 1.8rem; font-weight: 600; color: #dc2626; }
+  .stat-label { font-size: 0.75rem; color: #888; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 6px; }
+
+  /* Sections */
+  .section { margin-bottom: 50px; }
+  .section-title { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid #e5e5e5; }
+
+  /* Prose */
+  .prose { overflow-wrap: break-word; word-wrap: break-word; }
+  .prose p { color: #444; line-height: 1.75; font-size: 0.95rem; margin-bottom: 14px; }
+  .prose p:last-child { margin-bottom: 0; }
+  .prose strong { color: #1a1a1a; }
+  .prose a { color: #dc2626; text-decoration: none; border-bottom: 1px solid #fca5a5; }
+  .prose a:hover { border-color: #dc2626; }
+
+  /* Code Block */
+  .code-block { background: #1a1a1a; color: #e5e5e5; border-radius: 8px; padding: 20px; font-family: 'Courier New', Courier, monospace; font-size: 0.82rem; line-height: 1.7; margin: 16px 0; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .code-block .comment { color: #666; }
+  .code-block .key { color: #7dd3fc; }
+  .code-block .val { color: #86efac; }
+
+  /* Steps */
+  .steps { counter-reset: steps; }
+  .step { display: flex; gap: 20px; margin-bottom: 24px; align-items: flex-start; }
+  .step-num { flex-shrink: 0; width: 32px; height: 32px; background: #dc2626; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 600; font-size: 0.85rem; }
+  .step-content { min-width: 0; flex: 1; }
+  .step-content h4 { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 6px; }
+  .step-content p { color: #555; font-size: 0.88rem; line-height: 1.6; }
+
+  /* Callouts */
+  .callout { background: #fef2f2; border: 2px solid #fecaca; border-radius: 10px; padding: 20px; margin: 20px 0; overflow-wrap: break-word; }
+  .callout-title { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 700; font-size: 1rem; color: #dc2626; margin-bottom: 8px; }
+  .callout p { color: #555; font-size: 0.88rem; line-height: 1.6; margin: 0; }
+  .info-callout { background: #eff6ff; border: 2px solid #bfdbfe; border-radius: 10px; padding: 20px; margin: 20px 0; overflow-wrap: break-word; }
+  .info-callout-title { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 700; font-size: 1rem; color: #1e40af; margin-bottom: 8px; }
+  .info-callout p { color: #3b82f6; font-size: 0.88rem; line-height: 1.6; margin: 0; }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 16px 0; }
+  .table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+  .table th { text-align: left; padding: 10px 14px; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 2px solid #e5e5e5; background: white; }
+  .table td { padding: 12px 14px; border-bottom: 1px solid #f0f0f0; color: #444; background: white; }
+  .table tr:last-child td { border-bottom: none; }
+
+  /* Hero subtitle */
+  .hero-subtitle { display: inline-block; margin-top: 6px; color: #dc2626; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 600; font-size: 0.95rem; letter-spacing: -0.01em; }
+
+  /* Table of Contents */
+  .toc { background: white; border: 2px solid #e5e5e5; border-radius: 10px; padding: 20px 24px; margin-bottom: 48px; }
+  .toc-title { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: #888; margin-bottom: 12px; font-weight: 700; }
+  .toc-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px 20px; list-style: none; padding: 0; margin: 0; }
+  .toc-list a { color: #1a1a1a; text-decoration: none; font-size: 0.88rem; padding: 4px 0; display: inline-flex; align-items: center; gap: 8px; transition: color 0.15s; }
+  .toc-list a::before { content: '→'; color: #dc2626; font-weight: 700; flex-shrink: 0; }
+  .toc-list a:hover { color: #dc2626; }
+
+  /* Pipeline flow diagram */
+  .flow-diagram { background: white; border-radius: 10px; padding: 22px; margin: 20px 0 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .flow-inner { display: flex; align-items: stretch; gap: 8px; min-width: min-content; }
+  .flow-node { flex: 1 1 0; min-width: 110px; background: #f8f7f4; border: 2px solid #e5e5e5; border-radius: 8px; padding: 12px 10px; text-align: center; display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+  .flow-node-num { width: 24px; height: 24px; background: #dc2626; color: white; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.75rem; margin: 0 auto; }
+  .flow-node-label { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 600; font-size: 0.78rem; color: #1a1a1a; line-height: 1.3; }
+  .flow-arrow { flex: 0 0 auto; display: flex; align-items: center; color: #dc2626; font-weight: 700; font-size: 1.1rem; }
+  .flow-caption { font-size: 0.8rem; color: #888; text-align: center; margin-top: 12px; font-style: italic; }
+
+  /* Source list */
+  .source-list { list-style: none; padding: 0; margin: 0; }
+  .source-list li { padding: 10px 0; border-bottom: 1px solid #f0f0f0; }
+  .source-list li:last-child { border-bottom: none; }
+  .source-list strong { display: block; color: #1a1a1a; font-size: 0.92rem; margin-bottom: 2px; }
+  .source-list a { color: #dc2626; text-decoration: none; font-size: 0.85rem; border-bottom: 1px solid #fca5a5; }
+  .source-list a:hover { border-color: #dc2626; }
+
+  /* Footer */
+  .footer { background: #1a1a1a; color: #666; padding: 36px 40px; }
+  .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+  .footer-brand { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 700; color: white; font-size: 1.1rem; }
+  .footer-brand span { color: #dc2626; }
+  .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+  .footer-link { color: #666; text-decoration: none; font-size: 0.82rem; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; transition: color 0.2s; }
+  .footer-link:hover { color: white; }
+  .footer-copy { font-size: 0.78rem; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #666; }
+
+  /* Responsive - ordered from largest to smallest */
+  @media (max-width: 768px) {
+    .hero { padding: 50px 20px 40px; }
+    .hero-title { font-size: clamp(1.8rem, 6vw, 2.5rem); line-height: 1.1; }
+    .hero-sub { font-size: 0.95rem; max-width: 100%; }
+    .nav { padding: 0 16px; height: 56px; }
+    .nav-link { font-size: 0.75rem; padding: 5px 10px; }
+    .nav-brand { font-size: 1.1rem; }
+    .content { padding: 36px 20px 50px; }
+    .stats-row { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .stat { padding: 16px; }
+    .stat-val { font-size: 1.4rem; }
+    .section-title { font-size: 1.25rem; }
+    .footer { padding: 30px 20px; }
+    .footer-inner { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .footer-links { flex-wrap: wrap; gap: 14px; }
+  }
+
+  @media (max-width: 640px) {
+    .hero-title { font-size: 2rem; }
+    .hero-sub { font-size: 0.88rem; }
+    .content { padding: 24px 16px 50px; }
+    .nav { padding: 0 12px; }
+    .nav-brand { font-size: 1.05rem; }
+    .nav-link { font-size: 0.72rem; padding: 5px 8px; }
+    .stats-row { grid-template-columns: 1fr; gap: 10px; }
+    .stat { padding: 14px; }
+    .stat-val { font-size: 1.3rem; }
+    .section-title { font-size: 1.15rem; }
+    .step { gap: 12px; }
+    .step-num { width: 28px; height: 28px; font-size: 0.78rem; }
+    .step-content h4 { font-size: 0.92rem; }
+    .step-content p { font-size: 0.82rem; }
+    .code-block { font-size: 0.75rem; padding: 14px; }
+    .callout, .info-callout { padding: 14px; }
+    .prose p { font-size: 0.88rem; }
+    .toc-list { grid-template-columns: 1fr; }
+    .toc { padding: 16px 18px; }
+    .hero-subtitle { font-size: 0.85rem; }
+    .footer { padding: 24px 16px; }
+    .footer-inner { flex-direction: column; align-items: flex-start; gap: 14px; }
+    .footer-links { flex-wrap: wrap; gap: 12px; }
+  }
+
+  @media (max-width: 480px) {
+    .hero { padding: 36px 16px 28px; }
+    .hero-title { font-size: 1.6rem; }
+    .hero-sub { font-size: 0.85rem; }
+    .hero-tag { font-size: 0.65rem; padding: 3px 10px; margin-bottom: 14px; }
+    .content { padding: 20px 14px 40px; }
+    .nav-link { font-size: 0.68rem; padding: 4px 6px; }
+    .stats-row { gap: 8px; }
+    .stat { padding: 12px; }
+    .stat-val { font-size: 1.2rem; }
+    .stat-label { font-size: 0.65rem; }
+    .section-title { font-size: 1.1rem; }
+    .table-wrap { margin: 12px -14px; padding: 0 14px; }
+    .table { font-size: 0.78rem; }
+    .table th, .table td { padding: 8px 10px; }
+  }
+
+img, svg, canvas { max-width: 100%; height: auto; }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a class="nav-brand" href="/">Herd<span>Watch</span></a>
+  <div class="nav-links">
+    <a class="nav-link" href="/">Home</a>
+    <a class="nav-link" href="/myths/">The Myth</a>
+    <a class="nav-link" href="/map/">Map</a>
+    <a class="nav-link" href="/towns/">All Areas</a>
+    <a class="nav-link active" href="/methodology/">Methodology</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Transparency</div>
+    <h1 class="hero-title">Methodology</h1>
+    <p class="hero-sub">How we source, process, and present NHS MMR vaccination coverage data — including our decisions around data quality and suppression.</p>
+    <div class="hero-subtitle">HerdWatch: a human vaccination coverage tracker for children in England.</div>
+  </div>
+</div>
+
+<div class="content">
+
+  <div class="stats-row">
+    <div class="stat">
+      <div class="stat-val">4,986</div>
+      <div class="stat-label">GP Practices</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">1,132</div>
+      <div class="stat-label">Postcode Districts</div>
+    </div>
+    <div class="stat">
+      <div class="stat-val">127,262</div>
+      <div class="stat-label">Children Tracked</div>
+    </div>
+  </div>
+
+  <nav class="toc" aria-label="On this page">
+    <div class="toc-title">On this page</div>
+    <ul class="toc-list">
+      <li><a href="#data-source">Data Source</a></li>
+      <li><a href="#pipeline">Processing Pipeline</a></li>
+      <li><a href="#dictionary">Data Dictionary</a></li>
+      <li><a href="#thresholds">Coverage Thresholds</a></li>
+      <li><a href="#suppression">Data Suppression</a></li>
+      <li><a href="#outbreak-risk">Outbreak Risk Estimate</a></li>
+      <li><a href="#data-quality">Data Quality</a></li>
+      <li><a href="#limitations">Limitations &amp; Caveats</a></li>
+      <li><a href="#sources">Primary Sources</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
+      <li><a href="#press">Press &amp; Media</a></li>
+    </ul>
+  </nav>
+
+  <div class="section" id="data-source">
+    <h2 class="section-title">Data Source</h2>
+    <div class="prose">
+      <p>HerdWatch uses data from the <strong>NHS Cover of Vaccination Evaluated Rapidly (COVER)</strong> programme, published quarterly by NHS England. Specifically, we use the <strong>MMR1 at 24 months</strong> indicator — the proportion of children who have received their first MMR dose by their second birthday.</p>
+      <p>The dataset used for this version is <strong>Q3 2024–25 (October–December 2024)</strong>, published by NHS England. The data is publicly available and contains practice-level vaccination returns from all GP practices in England.</p>
+      <p>Source: <a href="https://digital.nhs.uk/data-and-information/publications/statistical/cover-of-vaccination-evaluated-rapidly" target="_blank" rel="noopener noreferrer">NHS Digital — COVER of vaccination evaluated rapidly</a></p>
+    </div>
+  </div>
+
+  <div class="section" id="pipeline">
+    <h2 class="section-title">Processing Pipeline</h2>
+    <div class="flow-diagram" aria-label="Six-step data processing pipeline diagram">
+      <div class="flow-inner">
+        <div class="flow-node"><span class="flow-node-num">1</span><span class="flow-node-label">Parse NHS COVER</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node"><span class="flow-node-num">2</span><span class="flow-node-label">Join ODS data</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node"><span class="flow-node-num">3</span><span class="flow-node-label">Postcode lookup</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node"><span class="flow-node-num">4</span><span class="flow-node-label">Aggregate to district</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node"><span class="flow-node-num">5</span><span class="flow-node-label">Cohort filter (≥50)</span></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-node"><span class="flow-node-num">6</span><span class="flow-node-label">Assign risk status</span></div>
+      </div>
+      <div class="flow-caption">Six-step pipeline from raw NHS returns to district-level coverage classifications.</div>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Parse NHS COVER ODS file</h4>
+          <p>We extract the MMR1 24-month indicator from the raw NHS COVER spreadsheet for all active GP practices in England. This gives us practice-level numerator (vaccinated), denominator (eligible), and suppression flags.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Join with ODS practice data</h4>
+          <p>Each practice is matched to its postcode, ICB (Integrated Care Board), and UTLA (Upper Tier Local Authority) using the NHS Organisation Data Service (ODS) API.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Postcode district lookup</h4>
+          <p>Practice postcodes are truncated to their district (e.g. &quot;SW13 9HA&quot; → &quot;SW13&quot;). This lets us group practices geographically without relying on administrative boundaries that don't match lived experience.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Aggregate to district level</h4>
+          <p>For each postcode district, we sum the numerators and denominators of all practices with unsuppressed data to compute a district-level coverage rate.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h4>Apply minimum cohort filter</h4>
+          <p>Districts with fewer than 50 eligible children are excluded from the published data. This prevents statistically meaningless coverage rates from appearing — a district with 5 children can swing from 0% to 100% with a single vaccination.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-content">
+          <h4>Assign status</h4>
+          <p>Each district is classified as AT RISK (below 90%), VULNERABLE (90–95%), or PROTECTED (95%+) based on the WHO's herd immunity threshold for measles.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="dictionary">
+    <h2 class="section-title">Data Dictionary</h2>
+    <div class="prose">
+      <p>A short glossary of the technical terms used throughout this methodology and across the dashboard.</p>
+    </div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Term</th>
+            <th>Meaning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>MMR</strong></td>
+            <td>Measles, Mumps and Rubella — a combined vaccine given to children in two doses.</td>
+          </tr>
+          <tr>
+            <td><strong>MMR1</strong></td>
+            <td>The first dose of the MMR vaccine, routinely offered at around 12 months of age. HerdWatch reports coverage of MMR1 by a child's second birthday (24 months).</td>
+          </tr>
+          <tr>
+            <td><strong>COVER</strong></td>
+            <td>Cover of Vaccination Evaluated Rapidly — the NHS England statistical programme that collects quarterly vaccination returns from every GP practice in England.</td>
+          </tr>
+          <tr>
+            <td><strong>ODS</strong></td>
+            <td>Organisation Data Service — the NHS register of active GP practices, including their postcodes and parent organisations. Used here to join each practice to a geography.</td>
+          </tr>
+          <tr>
+            <td><strong>ICB</strong></td>
+            <td>Integrated Care Board — a regional NHS body responsible for planning and funding local health services.</td>
+          </tr>
+          <tr>
+            <td><strong>UTLA</strong></td>
+            <td>Upper Tier Local Authority — the top-level unit of English local government (typically a county, unitary authority, or London borough) that holds public-health responsibilities.</td>
+          </tr>
+          <tr>
+            <td><strong>R₀</strong></td>
+            <td>The basic reproduction number — the average number of new infections produced by one infected person in a fully susceptible population. For measles, R₀ is estimated at 12–18.</td>
+          </tr>
+          <tr>
+            <td><strong>Rₜ</strong></td>
+            <td>The effective reproduction number — R₀ adjusted for the proportion of the population that is already immune. An Rₜ above 1 means an outbreak can grow.</td>
+          </tr>
+          <tr>
+            <td><strong>Herd immunity</strong></td>
+            <td>The indirect protection enjoyed by unvaccinated people when enough of their community is immune that transmission chains cannot be sustained.</td>
+          </tr>
+          <tr>
+            <td><strong>Suppression</strong></td>
+            <td>The NHS practice of withholding small counts (fewer than 5 eligible children per practice) to protect patient identifiability.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section" id="thresholds">
+    <h2 class="section-title">Coverage Thresholds</h2>
+    <div class="prose">
+      <p><strong>Why 95%?</strong> Measles is one of the most contagious diseases known — with a basic reproduction number (R₀) of roughly 12–18 in an unvaccinated population, a single case can, on average, infect more than a dozen others. To stop transmission, a very high share of the community has to be immune. The algebra of herd immunity (1 − 1/R₀) puts the threshold for measles between about 92% and 95%, which is why the World Health Organization, UNICEF and NHS England all use <strong>95% coverage of both MMR doses</strong> as the target.</p>
+      <p>When coverage slips below 95%, outbreaks become progressively more likely. Sustained outbreaks cause preventable hospital admissions, long-term complications such as encephalitis, and — rarely — deaths. They also disproportionately affect infants too young to be vaccinated and people with weakened immune systems who depend on the wider population for protection.</p>
+    </div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Coverage Range</th>
+            <th>Rationale</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>AT RISK</strong></td>
+            <td style="font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:0.85rem">Below 90%</td>
+            <td>Well below herd immunity. Sustained measles transmission is likely if a case is introduced. NHS England uses 90% as a key performance indicator.</td>
+          </tr>
+          <tr>
+            <td><strong>VULNERABLE</strong></td>
+            <td style="font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:0.85rem">90% – 94.9%</td>
+            <td>Approaching herd immunity but below the WHO target. Vulnerable to outbreaks, particularly in pockets of low coverage.</td>
+          </tr>
+          <tr>
+            <td><strong>PROTECTED</strong></td>
+            <td style="font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:0.85rem">95% and above</td>
+            <td>Meets the WHO and UNICEF recommendation for measles control. Herd immunity is considered achieved at this level.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section" id="suppression">
+    <h2 class="section-title">Data Suppression</h2>
+    <div class="prose">
+      <p>NHS COVER data follows standard NHS suppression rules. Practices with <strong>fewer than 5 eligible children</strong> in a quarter have their data suppressed to prevent identification of individual patients. These practices appear in our GP practice tables marked as &quot;Suppressed&quot; and are excluded from district-level totals.</p>
+    </div>
+    <div class="callout">
+      <div class="callout-title">⚠ Minimum Cohort Size</div>
+      <p>We apply an additional filter: postcode districts with fewer than <strong>50 eligible children in total</strong> (after suppression) are excluded from HerdWatch entirely. This is our own policy, not an NHS requirement. It ensures every coverage rate shown is statistically meaningful — a district with 10 children can show 0% or 100% based on whether a single child received their vaccine, which would be misleading.</p>
+    </div>
+  </div>
+
+  <div class="section" id="outbreak-risk">
+    <h2 class="section-title">Outbreak Risk Estimate (Rₜ)</h2>
+    <div class="prose">
+      <p>Each area page shows an estimated effective reproduction number (Rₜ). This is calculated using a standard epidemiological formula:</p>
+    </div>
+    <div class="code-block"><span class="comment">// R₀ for measles is approximately 12–18; we use 15 (mid-range)</span>
+<span class="key">R₀</span> = <span class="val">15</span>
+<span class="key">Rₜ</span> = R₀ × (1 - coverage / 100)
+
+<span class="comment">// Example: 88% coverage → Rₜ = 15 × 0.12 = 1.8</span></div>
+    <div class="prose">
+      <p>An Rₜ above 1 means a single measles case could sustain an outbreak. An Rₜ below 1 means the outbreak will die out. This is a simplified model — it doesn't account for geographic clustering, age distribution, or waning immunity — but it provides a useful indicative measure.</p>
+    </div>
+    <div class="info-callout">
+      <div class="info-callout-title">ℹ Academic Context</div>
+      <p>Measles has one of the highest known R₀ values of any infectious disease, estimated at 12–18 in unvaccinated populations. This is why 95% coverage is required — lower than this for most diseases — to achieve herd immunity.</p>
+    </div>
+  </div>
+
+  <div class="section" id="data-quality">
+    <h2 class="section-title">Data Quality</h2>
+    <div class="prose">
+      <p>The figures shown on HerdWatch are only as good as the practice-level returns submitted to NHS England. Coverage quality can vary between practices for a number of reasons, including differences in list maintenance (how well a practice removes children who have moved away), timing of vaccine records being entered into clinical systems, and how consistently vaccinations given abroad or outside the child's registered practice are captured.</p>
+      <p>Every effort is made to present the data faithfully, but readers should treat HerdWatch as a reflection of what has been <em>reported</em> to the NHS — not an absolute count of vaccinated versus unvaccinated children. Where possible, practice-level suppression counts and cohort sizes are shown on each district page so readers can judge how much weight to place on an individual figure.</p>
+    </div>
+    <div class="info-callout">
+      <div class="info-callout-title">ℹ About these figures</div>
+      <p>HerdWatch reports the data as published by NHS England. Small discrepancies between the dashboard and locally held practice records are possible and do not indicate error — they usually reflect differences in when records were pulled or how list cleansing was applied.</p>
+    </div>
+  </div>
+
+  <div class="section" id="limitations">
+    <h2 class="section-title">Limitations &amp; Caveats</h2>
+    <div class="prose">
+      <p><strong>Postcode districts are not communities.</strong> GP practice catchments don't align neatly with postcode districts. A family in SW13 might be registered with a practice in SW15. District-level rates are a useful proxy but not a precise measurement of community immunity.</p>
+      <p><strong>The data is a quarterly snapshot.</strong> Coverage can change significantly between quarters. HerdWatch reflects the Q3 2024–25 position and does not yet update automatically.</p>
+      <p><strong>This is not medical advice.</strong> HerdWatch is an information tool. Vaccination decisions should be made in consultation with a GP or healthcare professional.</p>
+      <p><strong>Suppressed practices introduce uncertainty.</strong> In areas with many suppressed practices, the district-level rate may underrepresent the true position. We flag the number of suppressed practices on each district page.</p>
+    </div>
+  </div>
+
+  <div class="section" id="sources">
+    <h2 class="section-title">Primary Sources</h2>
+    <div class="prose">
+      <p>Where HerdWatch relies on external data or guidelines, the original source is listed below. Readers are encouraged to consult these directly for the full technical definitions and context.</p>
+    </div>
+    <ul class="source-list">
+      <li>
+        <strong>NHS COVER programme (quarterly vaccination coverage returns)</strong>
+        <a href="https://digital.nhs.uk/data-and-information/publications/statistical/cover-of-vaccination-evaluated-rapidly" target="_blank" rel="noopener noreferrer">digital.nhs.uk — Cover of vaccination evaluated rapidly (COVER) ↗</a>
+      </li>
+      <li>
+        <strong>NHS Organisation Data Service (practice-level metadata and geographies)</strong>
+        <a href="https://digital.nhs.uk/services/organisation-data-service" target="_blank" rel="noopener noreferrer">digital.nhs.uk — Organisation Data Service ↗</a>
+      </li>
+      <li>
+        <strong>UKHSA — Measles: guidance, data and analysis</strong>
+        <a href="https://www.gov.uk/government/collections/measles-guidance-data-and-analysis" target="_blank" rel="noopener noreferrer">gov.uk — Measles guidance, data and analysis ↗</a>
+      </li>
+      <li>
+        <strong>WHO — Measles vaccines: WHO position paper (herd immunity threshold and 95% two-dose recommendation)</strong>
+        <a href="https://www.who.int/publications/i/item/who-wer-9417-205-227" target="_blank" rel="noopener noreferrer">who.int — Measles vaccines position paper ↗</a>
+      </li>
+      <li>
+        <strong>WHO &amp; UNICEF — Immunization coverage estimates and targets</strong>
+        <a href="https://www.who.int/news-room/fact-sheets/detail/immunization-coverage" target="_blank" rel="noopener noreferrer">who.int — Immunization coverage fact sheet ↗</a>
+      </li>
+    </ul>
+  </div>
+
+  <div class="section" id="roadmap">
+    <h2 class="section-title">Roadmap</h2>
+    <div class="prose">
+      <p>HerdWatch is an evolving project. The following improvements are planned for future releases, based on public health best practice and user feedback.</p>
+      <p><strong>Temporal trends.</strong> The dashboard currently reflects a single quarter of data. A future release will incorporate the last four or more quarters so readers can see whether a district's coverage is rising, falling or stable — a far more actionable signal than a single snapshot.</p>
+      <p><strong>Two-dose (MMR2) coverage.</strong> A second dose at five years old is required for full protection. Adding MMR2 coverage alongside MMR1 will give a fuller picture of community immunity.</p>
+      <p><strong>Automated quarterly refresh.</strong> Moving from a manual pipeline to a scheduled ingest of the latest NHS COVER release, so figures update within days of publication.</p>
+      <p><strong>Continued accessibility work.</strong> Ongoing improvements to keyboard navigation, screen-reader labels and mobile layout, so the site is usable on any device and for any reader.</p>
+    </div>
+  </div>
+
+  <div class="section" id="press">
+    <h2 class="section-title">Press &amp; Media</h2>
+    <div class="prose">
+      <p>Journalists and researchers are welcome to use HerdWatch data. The underlying NHS COVER data is publicly available and Crown Copyright. Please cite both HerdWatch and the original NHS COVER source when referencing specific figures.</p>
+      <p>Suggested citation: <em>&quot;Source: HerdWatch analysis of NHS COVER Q3 2024–25 data. herdwatch.co.uk&quot;</em></p>
+      <p>For data exports, use the CSV download on the <a href="/towns/">All Areas page</a>.</p>
+    </div>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">Herd<span>Watch</span></div>
+      <div class="footer-copy" style="margin-top:6px">Data: NHS COVER Q3 2024–25 · Updated March 2026</div>
+    </div>
+    <div class="footer-links">
+      <a class="footer-link" href="/">Home</a>
+      <a class="footer-link" href="/myths/">The Myth</a>
+      <a class="footer-link" href="/map/">Map</a>
+      <a class="footer-link" href="/towns/">All Areas</a>
+      <a class="footer-link" href="/methodology/">Methodology</a>
+      <a href="https://digital.nhs.uk/data-and-information/publications/statistical/cover-of-vaccination-evaluated-rapidly" target="_blank" rel="noopener noreferrer" class="footer-link">NHS Source ↗</a>
+    </div>
+    <div class="footer-copy">Not medical advice. Consult your GP for vaccination guidance.</div>
+  </div>
+</footer>
+
+</body>
+</html>

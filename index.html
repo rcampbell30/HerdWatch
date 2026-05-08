@@ -1,0 +1,155 @@
+<!DOCTYPE html><html lang="en" class="__variable_b2948e __variable_0eeb07"><head><meta charSet="utf-8"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/13971731025ec697-s.p.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/36966cca54120369-s.p.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/css/3eeb922fc3a2b02f.css" crossorigin="" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/webpack-e4c60c31f12e16c4.js" crossorigin=""/><script src="/_next/static/chunks/fd9d1056-9e625e8be9cf6216.js" async="" crossorigin=""></script><script src="/_next/static/chunks/69-c9d8c4e0b76e0546.js" async="" crossorigin=""></script><script src="/_next/static/chunks/main-app-c18a6f612fc47fbd.js" async="" crossorigin=""></script><script src="/_next/static/chunks/250-c8b7bc655d5a0bd9.js" async=""></script><script src="/_next/static/chunks/184-407a1c4e3c126ff8.js" async=""></script><script src="/_next/static/chunks/app/page-2260ec4b580d5d86.js" async=""></script><title>HerdWatch — MMR Vaccination Coverage Tracker</title><meta name="description" content="Track MMR vaccination coverage across England. Find your local area&#x27;s vaccination rates and outbreak risk."/><meta name="keywords" content="MMR vaccine, vaccination coverage, measles outbreak, herd immunity, NHS data"/><meta property="og:title" content="HerdWatch — MMR Vaccination Coverage Tracker"/><meta property="og:description" content="Track MMR vaccination coverage across England"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="HerdWatch — MMR Vaccination Coverage Tracker"/><meta name="twitter:description" content="Track MMR vaccination coverage across England"/><meta name="next-size-adjust"/><script src="/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js" crossorigin="" noModule=""></script></head><body style="margin:0;padding:0;overflow-x:hidden"><style>*, *::before, *::after { box-sizing: border-box; }
+body { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
+        html { overflow-x: hidden; }
+        body { overflow-x: hidden; }
+        body { background: #f8f7f4; color: #1a1a1a; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        ::selection { background: #dc2626; color: white; }
+        .nav { background: #1a1a1a; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 60px; position: sticky; top: 0; z-index: 100; }
+        .nav-brand { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 800; font-size: 1.3rem; color: white; text-decoration: none; letter-spacing: -0.02em; flex-shrink: 0; }
+        .nav-brand span { color: #dc2626; }
+        .nav-links { display: flex; gap: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;  flex: 1 1 auto; min-width: 0; justify-content: flex-end; align-items: center; }
+        .nav-links::-webkit-scrollbar { display: none; }
+        .nav-link { color: #999; text-decoration: none; font-size: 0.82rem; padding: 6px 14px; border-radius: 20px; transition: all 0.2s; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; white-space: nowrap; flex: 0 0 auto; }
+        .nav-link:hover { color: white; background: #333; }
+        .nav-link.active { color: white; font-weight: 600; }
+        .hero { background: #1a1a1a; color: white; padding: 80px 40px 60px; position: relative; overflow: hidden; }
+        .hero::before { content: &#x27;&#x27;; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(255,255,255,0.025) 79px, rgba(255,255,255,0.025) 80px); pointer-events: none; }
+        .hero-inner { max-width: 1100px; margin: 0 auto; position: relative; }
+        .hero-tag { display: inline-block; background: #dc2626; color: white; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.7rem; padding: 4px 12px; border-radius: 2px; margin-bottom: 24px; letter-spacing: 0.1em; text-transform: uppercase; }
+        .hero-title { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 20px; }
+        .hero-title em { font-style: normal; color: #dc2626; }
+        .hero-sub { font-size: 1.05rem; color: #999; max-width: 520px; line-height: 1.65; margin-bottom: 40px; }
+        .search-wrap { position: relative; max-width: 500px; width: 100%; }
+        .search-input { width: 100%; background: white; border: 2px solid transparent; border-radius: 8px; padding: 15px 20px; font-size: 0.95rem; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1a1a1a; outline: none; transition: border-color 0.2s; }
+        .search-input:focus { border-color: #dc2626; }
+        .search-input::placeholder { color: #aaa; }
+        .search-dropdown { position: absolute; top: calc(100% + 8px); left: 0; right: 0; background: white; border-radius: 8px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; z-index: 50; }
+        .search-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 20px; text-decoration: none; color: #1a1a1a; transition: background 0.1s; border-bottom: 1px solid #f0f0f0; }
+        .search-item:last-child { border-bottom: none; }
+        .search-item:hover { background: #f8f7f4; }
+        .counter-bar { background: #dc2626; padding: 18px 40px; }
+        .counter-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 16px; }
+        .counter-num { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 1.9rem; font-weight: 600; color: white; }
+        .counter-label { color: rgba(255,255,255,0.85); font-size: 0.9rem; line-height: 1.4; }
+        .main-content { max-width: 1100px; margin: 0 auto; padding: 50px 40px; }
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 50px; }
+        .stat-card { background: white; border-radius: 12px; padding: 26px; position: relative; overflow: hidden; }
+        .stat-card::after { content: &#x27;&#x27;; position: absolute; bottom: 0; left: 0; right: 0; height: 4px; }
+        .stat-card.risk::after { background: #dc2626; }
+        .stat-card.vuln::after { background: #d97706; }
+        .stat-card.prot::after { background: #16a34a; }
+        .stat-card.total::after { background: #1a1a1a; }
+        .stat-num { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 2.8rem; font-weight: 800; line-height: 1; }
+        .stat-num.risk { color: #dc2626; }
+        .stat-num.vuln { color: #d97706; }
+        .stat-num.prot { color: #16a34a; }
+        .stat-label { font-size: 0.72rem; color: #666; margin-top: 8px; text-transform: uppercase; letter-spacing: 0.1em; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .stat-desc { font-size: 0.82rem; color: #999; margin-top: 4px; line-height: 1.4; }
+        .section-header { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+        .section-title { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; white-space: nowrap; }
+        .section-line { flex: 1; height: 2px; background: #e5e5e5; }
+        .context-card { background: white; border-radius: 12px; padding: 30px; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 30px; margin-bottom: 50px; }
+        .context-item { text-align: center; padding: 10px; }
+        .context-val { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 2.2rem; font-weight: 600; }
+        .context-item-label { font-size: 0.72rem; color: #888; margin-top: 8px; text-transform: uppercase; letter-spacing: 0.08em; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .context-item-sub { font-size: 0.85rem; color: #555; margin-top: 10px; line-height: 1.55; }
+        .worst-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: 10px; margin-bottom: 40px; }
+        .town-card { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; background: white; border-radius: 10px; text-decoration: none; color: #1a1a1a; border: 2px solid transparent; transition: all 0.15s; }
+        .town-card:hover { border-color: #dc2626; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+        .town-district { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 700; font-size: 1.05rem; }
+        .town-meta { font-size: 0.75rem; color: #999; margin-top: 2px; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .town-cov { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 1.4rem; font-weight: 600; }
+        .town-badge { font-size: 0.62rem; padding: 2px 8px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; display: inline-block; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 600; }
+        .cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+        .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 26px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.92rem; transition: all 0.2s; }
+        .btn-dark { background: #1a1a1a; color: white; }
+        .btn-dark:hover { background: #333; transform: translateY(-1px); }
+        .btn-red { background: #dc2626; color: white; }
+        .btn-red:hover { background: #b91c1c; transform: translateY(-1px); }
+        .btn-outline { background: white; color: #1a1a1a; border: 2px solid #e5e5e5; }
+        .btn-outline:hover { border-color: #1a1a1a; transform: translateY(-1px); }
+        .footer { background: #1a1a1a; color: #666; padding: 36px 40px; margin-top: 60px; }
+        .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+        .footer-brand { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 700; color: white; font-size: 1.1rem; }
+        .footer-brand span { color: #dc2626; }
+        .footer-links { display: flex; gap: 20px; }
+        .footer-link { color: #666; text-decoration: none; font-size: 0.82rem; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; transition: color 0.2s; }
+        .footer-link:hover { color: white; }
+        .footer-copy { font-size: 0.78rem; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        
+        .main-content { overflow-x: hidden; }
+        .content { overflow-x: hidden; }
+    
+        @media (max-width: 900px) {
+          .stats-grid { grid-template-columns: 1fr 1fr; }
+          .context-card { grid-template-columns: 1fr; }
+        }
+        
+        @media (max-width: 640px) {
+          .hero-title { font-size: 2rem; }
+          .nav { padding: 0 16px; }
+          .main-content { padding: 30px 16px; }
+          .counter-bar { padding: 14px 16px; }
+          .counter-inner { flex-wrap: wrap; }
+          .counter-num { font-size: 1.5rem; }
+          .counter-label { font-size: 0.82rem; }
+          .nav-link { font-size: 0.72rem; padding: 5px 8px; }
+          .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+          .stat-num { font-size: 2.2rem; }
+          .stat-card { padding: 18px; }
+          .worst-grid { grid-template-columns: 1fr; }
+          .town-card { padding: 12px 14px; }
+          .section-title { font-size: 1.2rem; }
+          .context-val { font-size: 1.6rem; }
+          .context-card { padding: 20px; gap: 20px; }
+          .context-item { text-align: left; padding: 0; }
+          .cta-row { flex-direction: column; }
+          .btn { justify-content: center; text-align: center; }
+          .footer { padding: 24px 16px; }
+          .footer-inner { flex-direction: column; align-items: flex-start; gap: 14px; }
+          .footer-links { flex-wrap: wrap; gap: 12px; }
+        }
+      
+        @media (max-width: 768px) {
+          .hero { padding: 50px 20px 40px; }
+          .hero-title { font-size: clamp(1.8rem, 6vw, 2.5rem); line-height: 1.1; }
+          .hero-sub { font-size: 1rem; max-width: 100%; }
+          .nav { padding: 0 16px; height: 56px; }
+          .nav-link { font-size: 0.75rem; padding: 5px 10px; }
+          .nav-brand { font-size: 1.1rem; }
+          .main-content { padding: 30px 16px; }
+          .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+          .stat-num { font-size: 1.8rem; }
+          .stat-label { font-size: 0.65rem; }
+          .stat-desc { font-size: 0.75rem; }
+          .stat-card { padding: 16px; }
+          .context-card { grid-template-columns: 1fr; gap: 24px; padding: 24px 20px; }
+          .context-val { font-size: 1.6rem; }
+          .context-item { text-align: left; border: none !important; padding: 0; }
+          .context-item-sub { font-size: 0.85rem; line-height: 1.5; }
+          .section-title { font-size: 1.3rem; }
+          .worst-grid { grid-template-columns: 1fr; }
+          .town-card { padding: 14px 16px; }
+          .town-district { font-size: 1rem; }
+          .town-cov { font-size: 1.2rem; }
+          .counter-bar { padding: 16px 20px; }
+          .counter-inner { flex-direction: column; text-align: center; gap: 8px; }
+          .counter-num { font-size: 2rem; }
+          .counter-label { font-size: 0.85rem; }
+          .search-input { padding: 14px 16px; font-size: 1rem; }
+          .btn { width: 100%; justify-content: center; padding: 14px 24px; }
+          .cta-row { flex-direction: column; }
+          .footer { padding: 30px 20px; }
+          .footer-inner { flex-direction: column; align-items: flex-start; gap: 20px; }
+          .footer-links { flex-wrap: wrap; gap: 16px; }
+        }
+        @media (max-width: 480px) {
+          .hero-title { font-size: 1.6rem; }
+          .hero-sub { font-size: 0.9rem; }
+          .stats-grid { grid-template-columns: 1fr; }
+          .stat-num { font-size: 2.2rem; }
+          .nav-link { font-size: 0.7rem; padding: 4px 8px; }
+        }
+    
+img, svg, canvas { max-width: 100%; height: auto; }
+</style><nav class="nav"><a class="nav-brand" href="/">Herd<span>Watch</span></a><div class="nav-links"><a class="nav-link active" href="/">Home</a><a class="nav-link" href="/myths/">The Myth</a><a class="nav-link" href="/map/">Map</a><a class="nav-link" href="/towns/">All Areas</a><a class="nav-link" href="/methodology/">Methodology</a></div></nav><section class="hero"><div class="hero-inner"><div class="hero-tag">NHS COVER Q3 2024–25 · England</div><h1 class="hero-title">MMR vaccination<br/>coverage <em>tracker</em></h1><p class="hero-sub">Find MMR coverage rates for every postcode district in England. Data sourced directly from NHS COVER returns.</p><div class="search-wrap"><input class="search-input" placeholder="Search postcode district — SW1, M15, LS12..." value=""/></div></div></section><div class="counter-bar"><div class="counter-inner"><div class="counter-num">14,295</div><div class="counter-label">children in England unvaccinated against measles<br/>based on the latest NHS data</div></div></div><div class="main-content"><div class="stats-grid"><div class="stat-card risk"><div class="stat-num risk">461</div><div class="stat-label">AT RISK</div><div class="stat-desc">Areas below 90% — outbreak risk</div></div><div class="stat-card vuln"><div class="stat-num vuln">441</div><div class="stat-label">VULNERABLE</div><div class="stat-desc">Areas 90–95% — below herd immunity</div></div><div class="stat-card prot"><div class="stat-num prot">230</div><div class="stat-label">PROTECTED</div><div class="stat-desc">Areas at or above WHO&#x27;s 95% target</div></div><div class="stat-card total"><div class="stat-num">1132</div><div class="stat-label">TOTAL AREAS</div><div class="stat-desc">Postcode districts tracked</div></div></div><div class="section-header"><h2 class="section-title">National Picture</h2><div class="section-line"></div></div><div class="context-card"><div class="context-item"><div class="context-val" style="color:#dc2626">88.9%</div><div class="context-item-label">England Average</div><div class="context-item-sub">The national MMR1 coverage at 24 months — well below the WHO target and declining year on year.</div></div><div class="context-item" style="border-left:1px solid #f0f0f0;border-right:1px solid #f0f0f0"><div class="context-val" style="color:#16a34a">95%</div><div class="context-item-label">WHO Herd Immunity Target</div><div class="context-item-sub">The minimum coverage needed to prevent sustained measles transmission in a community.</div></div><div class="context-item"><div class="context-val" style="color:#d97706">14,295</div><div class="context-item-label">Unvaccinated Children</div><div class="context-item-sub">Across <!-- -->1132<!-- --> areas tracked, these children have not received MMR1 by 24 months.</div></div></div><div class="section-header"><h2 class="section-title">Highest Risk Areas</h2><div class="section-line"></div></div><p style="color:#888;font-size:0.88rem;margin-bottom:20px;font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif">Areas with MMR coverage below 90% — sorted by lowest coverage first</p><div class="worst-grid"><a class="town-card" href="/town/m15/"><div><div class="town-district">M15</div><div class="town-meta">2<!-- --> practices · <!-- -->North West</div></div><div style="text-align:right"><div class="town-cov" style="color:#dc2626">48.4<!-- -->%</div><div class="town-badge" style="background:#fef2f2;color:#dc2626">AT RISK</div></div></a><a class="town-card" href="/town/e5/"><div><div class="town-district">E5</div><div class="town-meta">6<!-- --> practices · <!-- -->London</div></div><div style="text-align:right"><div class="town-cov" style="color:#dc2626">57.3<!-- -->%</div><div class="town-badge" style="background:#fef2f2;color:#dc2626">AT RISK</div></div></a><a class="town-card" href="/town/ls12/"><div><div class="town-district">LS12</div><div class="town-meta">5<!-- --> practices · <!-- -->North East &amp; Yorkshire</div></div><div style="text-align:right"><div class="town-cov" style="color:#dc2626">59.5<!-- -->%</div><div class="town-badge" style="background:#fef2f2;color:#dc2626">AT RISK</div></div></a><a class="town-card" href="/town/n16/"><div><div class="town-district">N16</div><div class="town-meta">11<!-- --> practices · <!-- -->London</div></div><div style="text-align:right"><div class="town-cov" style="color:#dc2626">59.6<!-- -->%</div><div class="town-badge" style="background:#fef2f2;color:#dc2626">AT RISK</div></div></a><a class="town-card" href="/town/b17/"><div><div class="town-district">B17</div><div class="town-meta">4<!-- --> practices · <!-- -->Midlands</div></div><div style="text-align:right"><div class="town-cov" style="color:#dc2626">60<!-- -->%</div><div class="town-badge" style="background:#fef2f2;color:#dc2626">AT RISK</div></div></a><a class="town-card" href="/town/bd1/"><div><div class="town-district">BD1</div><div class="town-meta">2<!-- --> practices · <!-- -->North East &amp; Yorkshire</div></div><div style="text-align:right"><div class="town-cov" style="color:#dc2626">60.7<!-- -->%</div><div class="town-badge" style="background:#fef2f2;color:#dc2626">AT RISK</div></div></a><a class="town-card" href="/town/w12/"><div><div class="town-district">W12</div><div class="town-meta">11<!-- --> practices · <!-- -->London</div></div><div style="text-align:right"><div class="town-cov" style="color:#dc2626">62.4<!-- -->%</div><div class="town-badge" style="background:#fef2f2;color:#dc2626">AT RISK</div></div></a><a class="town-card" href="/town/b19/"><div><div class="town-district">B19</div><div class="town-meta">5<!-- --> practices · <!-- -->Midlands</div></div><div style="text-align:right"><div class="town-cov" style="color:#dc2626">63.7<!-- -->%</div><div class="town-badge" style="background:#fef2f2;color:#dc2626">AT RISK</div></div></a><a class="town-card" href="/town/bd9/"><div><div class="town-district">BD9</div><div class="town-meta">2<!-- --> practices · <!-- -->North East &amp; Yorkshire</div></div><div style="text-align:right"><div class="town-cov" style="color:#dc2626">64.2<!-- -->%</div><div class="town-badge" style="background:#fef2f2;color:#dc2626">AT RISK</div></div></a><a class="town-card" href="/town/l7/"><div><div class="town-district">L7</div><div class="town-meta">6<!-- --> practices · <!-- -->North West</div></div><div style="text-align:right"><div class="town-cov" style="color:#dc2626">64.3<!-- -->%</div><div class="town-badge" style="background:#fef2f2;color:#dc2626">AT RISK</div></div></a><a class="town-card" href="/town/m40/"><div><div class="town-district">M40</div><div class="town-meta">7<!-- --> practices · <!-- -->North West</div></div><div style="text-align:right"><div class="town-cov" style="color:#dc2626">64.5<!-- -->%</div><div class="town-badge" style="background:#fef2f2;color:#dc2626">AT RISK</div></div></a><a class="town-card" href="/town/m7/"><div><div class="town-district">M7</div><div class="town-meta">5<!-- --> practices · <!-- -->North West</div></div><div style="text-align:right"><div class="town-cov" style="color:#dc2626">65.5<!-- -->%</div><div class="town-badge" style="background:#fef2f2;color:#dc2626">AT RISK</div></div></a><a class="town-card" href="/town/w11/"><div><div class="town-district">W11</div><div class="town-meta">6<!-- --> practices · <!-- -->London</div></div><div style="text-align:right"><div class="town-cov" style="color:#dc2626">66<!-- -->%</div><div class="town-badge" style="background:#fef2f2;color:#dc2626">AT RISK</div></div></a><a class="town-card" href="/town/ls8/"><div><div class="town-district">LS8</div><div class="town-meta">6<!-- --> practices · <!-- -->North East &amp; Yorkshire</div></div><div style="text-align:right"><div class="town-cov" style="color:#dc2626">66.9<!-- -->%</div><div class="town-badge" style="background:#fef2f2;color:#dc2626">AT RISK</div></div></a><a class="town-card" href="/town/gu12/"><div><div class="town-district">GU12</div><div class="town-meta">1<!-- --> practices · <!-- -->Other</div></div><div style="text-align:right"><div class="town-cov" style="color:#dc2626">67.9<!-- -->%</div><div class="town-badge" style="background:#fef2f2;color:#dc2626">AT RISK</div></div></a><a class="town-card" href="/town/n19/"><div><div class="town-district">N19</div><div class="town-meta">6<!-- --> practices · <!-- -->London</div></div><div style="text-align:right"><div class="town-cov" style="color:#dc2626">68.1<!-- -->%</div><div class="town-badge" style="background:#fef2f2;color:#dc2626">AT RISK</div></div></a><a class="town-card" href="/town/m13/"><div><div class="town-district">M13</div><div class="town-meta">6<!-- --> practices · <!-- -->North West</div></div><div style="text-align:right"><div class="town-cov" style="color:#dc2626">68.2<!-- -->%</div><div class="town-badge" style="background:#fef2f2;color:#dc2626">AT RISK</div></div></a><a class="town-card" href="/town/n9/"><div><div class="town-district">N9</div><div class="town-meta">9<!-- --> practices · <!-- -->London</div></div><div style="text-align:right"><div class="town-cov" style="color:#dc2626">69.5<!-- -->%</div><div class="town-badge" style="background:#fef2f2;color:#dc2626">AT RISK</div></div></a></div><div class="cta-row"><a class="btn btn-red" href="/map/">View Map →</a><a class="btn btn-dark" href="/towns/">All <!-- -->1132<!-- --> Areas →</a><a class="btn btn-outline" href="/methodology/">Methodology</a></div></div><footer class="footer"><div class="footer-inner"><div><div class="footer-brand">Herd<span>Watch</span></div><div class="footer-copy" style="margin-top:6px">Data: NHS COVER Q3 2024–25 · Updated March 2026</div></div><div class="footer-links"><a class="footer-link" href="/">Home</a><a class="footer-link" href="/myths/">The Myth</a><a class="footer-link" href="/map/">Map</a><a class="footer-link" href="/towns/">All Areas</a><a class="footer-link" href="/methodology/">Methodology</a><a href="https://digital.nhs.uk/data-and-information/publications/statistical/cover-of-vaccination-evaluated-rapidly" target="_blank" rel="noopener noreferrer" class="footer-link">NHS Source ↗</a></div><div class="footer-copy">Not medical advice. Consult your GP for vaccination guidance.</div></div></footer><script src="/_next/static/chunks/webpack-e4c60c31f12e16c4.js" crossorigin="" async=""></script><script>(self.__next_f=self.__next_f||[]).push([0]);self.__next_f.push([2,null])</script><script>self.__next_f.push([1,"1:HL[\"/_next/static/media/13971731025ec697-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n2:HL[\"/_next/static/media/36966cca54120369-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n3:HL[\"/_next/static/css/3eeb922fc3a2b02f.css\",\"style\",{\"crossOrigin\":\"\"}]\n0:\"$L4\"\n"])</script><script>self.__next_f.push([1,"5:I[7690,[],\"\"]\n7:I[7831,[],\"\"]\n8:I[2241,[\"250\",\"static/chunks/250-c8b7bc655d5a0bd9.js\",\"184\",\"static/chunks/184-407a1c4e3c126ff8.js\",\"931\",\"static/chunks/app/page-2260ec4b580d5d86.js\"],\"\"]\n9:I[5613,[],\"\"]\na:I[1778,[],\"\"]\nc:I[8955,[],\"\"]\nd:[]\n"])</script><script>self.__next_f.push([1,"4:[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/css/3eeb922fc3a2b02f.css\",\"precedence\":\"next\",\"crossOrigin\":\"\"}]],[\"$\",\"$L5\",null,{\"buildId\":\"g8Kb06efH3IfjjUl9KJIJ\",\"assetPrefix\":\"\",\"initialCanonicalUrl\":\"/\",\"initialTree\":[\"\",{\"children\":[\"__PAGE__\",{}]},\"$undefined\",\"$undefined\",true],\"initialSeedData\":[\"\",{\"children\":[\"__PAGE__\",{},[\"$L6\",[\"$\",\"$L7\",null,{\"propsForComponent\":{\"params\":{}},\"Component\":\"$8\",\"isStaticGeneration\":true}],null]]},[null,[\"$\",\"html\",null,{\"lang\":\"en\",\"className\":\"__variable_b2948e __variable_0eeb07\",\"children\":[\"$\",\"body\",null,{\"style\":{\"margin\":0,\"padding\":0,\"overflowX\":\"hidden\",\"fontFamily\":\"var(--font-body), system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif\"},\"children\":[\"$\",\"$L9\",null,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\"],\"loading\":\"$undefined\",\"loadingStyles\":\"$undefined\",\"loadingScripts\":\"$undefined\",\"hasLoading\":false,\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$La\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"},\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"},\"children\":\"404\"}],[\"$\",\"div\",null,{\"style\":{\"display\":\"inline-block\"},\"children\":[\"$\",\"h2\",null,{\"style\":{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0},\"children\":\"This page could not be found.\"}]}]]}]}]],\"notFoundStyles\":[],\"styles\":null}]}]}],null]],\"initialHead\":[false,\"$Lb\"],\"globalErrorComponent\":\"$c\",\"missingSlots\":\"$Wd\"}]]\n"])</script><script>self.__next_f.push([1,"b:[[\"$\",\"meta\",\"0\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}],[\"$\",\"meta\",\"1\",{\"charSet\":\"utf-8\"}],[\"$\",\"title\",\"2\",{\"children\":\"HerdWatch — MMR Vaccination Coverage Tracker\"}],[\"$\",\"meta\",\"3\",{\"name\":\"description\",\"content\":\"Track MMR vaccination coverage across England. Find your local area's vaccination rates and outbreak risk.\"}],[\"$\",\"meta\",\"4\",{\"name\":\"keywords\",\"content\":\"MMR vaccine, vaccination coverage, measles outbreak, herd immunity, NHS data\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"HerdWatch — MMR Vaccination Coverage Tracker\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Track MMR vaccination coverage across England\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:type\",\"content\":\"website\"}],[\"$\",\"meta\",\"8\",{\"name\":\"twitter:card\",\"content\":\"summary\"}],[\"$\",\"meta\",\"9\",{\"name\":\"twitter:title\",\"content\":\"HerdWatch — MMR Vaccination Coverage Tracker\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:description\",\"content\":\"Track MMR vaccination coverage across England\"}],[\"$\",\"meta\",\"11\",{\"name\":\"next-size-adjust\"}]]\n"])</script><script>self.__next_f.push([1,"6:null\n"])</script><script>self.__next_f.push([1,""])</script></body></html>

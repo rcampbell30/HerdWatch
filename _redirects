@@ -1,0 +1,12 @@
+/methodologies  /methodology/   301
+/methodologies/ /methodology/   301
+/map            /map/           301
+/towns          /towns/         301
+/methodology    /methodology/   301
+/mythology      /methodology/   301
+/myths          /myths/         301
+/map/           /map/index.html           200
+/towns/         /towns/index.html         200
+/methodology/   /methodology/index.html   200
+/myths/         /myths/index.html         200
+/town/*         /town/:splat/index.html   200

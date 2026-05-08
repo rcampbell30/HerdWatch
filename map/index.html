@@ -1,0 +1,109 @@
+<!DOCTYPE html><html lang="en" class="__variable_b2948e __variable_0eeb07"><head><meta charSet="utf-8"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="preload" href="/_next/static/media/13971731025ec697-s.p.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="preload" href="/_next/static/media/36966cca54120369-s.p.woff2" as="font" crossorigin="" type="font/woff2"/><link rel="stylesheet" href="/_next/static/css/3eeb922fc3a2b02f.css" crossorigin="" data-precedence="next"/><link rel="preload" as="script" fetchPriority="low" href="/_next/static/chunks/webpack-e4c60c31f12e16c4.js" crossorigin=""/><script src="/_next/static/chunks/fd9d1056-9e625e8be9cf6216.js" async="" crossorigin=""></script><script src="/_next/static/chunks/69-c9d8c4e0b76e0546.js" async="" crossorigin=""></script><script src="/_next/static/chunks/main-app-c18a6f612fc47fbd.js" async="" crossorigin=""></script><script src="/_next/static/chunks/250-c8b7bc655d5a0bd9.js" async=""></script><script src="/_next/static/chunks/184-407a1c4e3c126ff8.js" async=""></script><script src="/_next/static/chunks/app/map/page-80a5bbb8ad5bd160.js" async=""></script><title>Map — HerdWatch</title><meta name="description" content="Track MMR vaccination coverage across England. Find your local area&#x27;s vaccination rates and outbreak risk."/><meta name="keywords" content="MMR vaccine, vaccination coverage, measles outbreak, herd immunity, NHS data"/><meta property="og:title" content="HerdWatch — MMR Vaccination Coverage Tracker"/><meta property="og:description" content="Track MMR vaccination coverage across England"/><meta property="og:type" content="website"/><meta name="twitter:card" content="summary"/><meta name="twitter:title" content="HerdWatch — MMR Vaccination Coverage Tracker"/><meta name="twitter:description" content="Track MMR vaccination coverage across England"/><meta name="next-size-adjust"/><script src="/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js" crossorigin="" noModule=""></script></head><body style="margin:0;padding:0;overflow-x:hidden"><style>*, *::before, *::after { box-sizing: border-box; }
+body { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 0; }
+        html { overflow-x: hidden; }
+        body { overflow-x: hidden; }
+        html, body { height: 100%; }
+        body { background: #1a1a1a; color: #1a1a1a; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .nav { background: #111; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 60px; position: fixed; top: 0; left: 0; right: 0; z-index: 1000; border-bottom: 1px solid #222; }
+        .nav-brand { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 800; font-size: 1.3rem; color: white; text-decoration: none; letter-spacing: -0.02em; flex-shrink: 0; }
+        .nav-brand span { color: #dc2626; }
+        .nav-links { display: flex; gap: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none;  flex: 1 1 auto; min-width: 0; justify-content: flex-end; align-items: center; }
+        .nav-links::-webkit-scrollbar { display: none; }
+        .nav-link { color: #999; text-decoration: none; font-size: 0.82rem; padding: 6px 14px; border-radius: 20px; transition: all 0.2s; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; white-space: nowrap; flex: 0 0 auto; }
+        .nav-link:hover { color: white; background: #333; }
+        .nav-link.active { color: white; font-weight: 600; }
+        .map-container { position: fixed; top: 60px; left: 0; right: 0; bottom: 0; }
+        #map { width: 100%; height: 100%; }
+        .map-overlay { position: absolute; top: 20px; left: 20px; z-index: 999; display: flex; flex-direction: column; gap: 12px; }
+        .overlay-card { background: rgba(17,17,17,0.95); backdrop-filter: blur(12px); border-radius: 10px; padding: 16px; border: 1px solid #333; color: white; min-width: 200px; }
+        .overlay-title { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 12px; color: #eee; }
+        .filter-btn { width: 100%; padding: 7px 12px; border-radius: 6px; border: 1px solid #333; background: transparent; color: #999; cursor: pointer; font-size: 0.8rem; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; transition: all 0.2s; text-align: left; display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .filter-btn:last-child { margin-bottom: 0; }
+        .filter-btn:hover { border-color: #555; color: white; }
+        .filter-btn.active { color: white; border-color: transparent; }
+        .filter-btn.active.risk { background: #dc2626; }
+        .filter-btn.active.vuln { background: #d97706; }
+        .filter-btn.active.prot { background: #16a34a; }
+        .filter-btn.active.all { background: #444; }
+        .filter-count { font-size: 0.72rem; opacity: 0.8; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 8px; }
+        .legend-row { display: flex; align-items: center; font-size: 0.78rem; color: #aaa; margin-bottom: 8px; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+        .legend-row:last-child { margin-bottom: 0; }
+        .overlay-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .overlay-header .overlay-title { margin-bottom: 0; }
+        .overlay-close { background: #333; border: none; color: #999; width: 24px; height: 24px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all 0.2s; }
+        .overlay-close:hover { color: white; background: #444; }
+        .filter-toggle { position: absolute; top: 20px; left: 20px; z-index: 999; background: rgba(17,17,17,0.95); backdrop-filter: blur(12px); border: 1px solid #333; color: #ccc; width: 40px; height: 40px; border-radius: 10px; cursor: pointer; font-size: 1.1rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .filter-toggle:hover { color: white; background: rgba(30,30,30,0.95); border-color: #555; }
+        .selected-panel { position: absolute; bottom: 20px; left: 20px; right: 20px; max-width: 420px; z-index: 999; background: rgba(17,17,17,0.97); backdrop-filter: blur(12px); border-radius: 12px; padding: 20px; border: 1px solid #333; color: white; }
+        .sel-close { position: absolute; top: 12px; right: 12px; background: #333; border: none; color: #999; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center; }
+        .sel-close:hover { color: white; }
+        .sel-district { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 800; font-size: 1.8rem; letter-spacing: -0.02em; line-height: 1; }
+        .sel-region { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.78rem; color: #888; margin-top: 4px; }
+        .sel-coverage { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 2.8rem; font-weight: 600; line-height: 1; margin-top: 8px; }
+        .sel-badge { display: inline-block; padding: 3px 10px; border-radius: 4px; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 6px; }
+        .sel-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+        .sel-stat { background: #222; border-radius: 8px; padding: 12px; }
+        .sel-stat-val { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 1.2rem; font-weight: 600; }
+        .sel-stat-label { font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.68rem; color: #666; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px; }
+        .sel-cta { display: block; margin-top: 14px; background: #dc2626; color: white; padding: 11px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.9rem; text-align: center; transition: background 0.2s; }
+        .sel-cta:hover { background: #b91c1c; }
+        
+          .nav-link { font-size: 0.72rem; padding: 5px 8px; }
+          .map-overlay { top: 10px; left: 10px; right: 10px; }
+          .overlay-card { min-width: auto; padding: 10px; }
+          .overlay-title { font-size: 0.82rem; margin-bottom: 8px; }
+          .filter-btn { font-size: 0.75rem; padding: 6px 10px; }
+          .legend-row { font-size: 0.72rem; margin-bottom: 6px; }
+          .filter-toggle { top: 10px; left: 10px; }
+          .selected-panel { left: 10px; right: 10px; bottom: 10px; max-width: none; padding: 16px; border-radius: 10px; }
+          .sel-district { font-size: 1.4rem; }
+          .sel-coverage { font-size: 2.2rem; }
+          .sel-stats { grid-template-columns: 1fr 1fr; gap: 8px; }
+          .sel-stat { padding: 10px; }
+          .sel-stat-val { font-size: 1rem; }
+        }
+      
+        @media (max-width: 768px) {
+          .hero { padding: 50px 20px 40px; }
+          .hero-title { font-size: clamp(1.8rem, 6vw, 2.5rem); line-height: 1.1; }
+          .hero-sub { font-size: 1rem; max-width: 100%; }
+          .nav { padding: 0 16px; height: 56px; }
+          .nav-link { font-size: 0.75rem; padding: 5px 10px; }
+          .nav-brand { font-size: 1.1rem; }
+          .main-content { padding: 30px 16px; }
+          .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+          .stat-num { font-size: 1.8rem; }
+          .stat-label { font-size: 0.65rem; }
+          .stat-desc { font-size: 0.75rem; }
+          .stat-card { padding: 16px; }
+          .context-card { grid-template-columns: 1fr; gap: 24px; padding: 24px 20px; }
+          .context-val { font-size: 1.6rem; }
+          .context-item { text-align: left; border: none !important; padding: 0; }
+          .context-item-sub { font-size: 0.85rem; line-height: 1.5; }
+          .section-title { font-size: 1.3rem; }
+          .worst-grid { grid-template-columns: 1fr; }
+          .town-card { padding: 14px 16px; }
+          .town-district { font-size: 1rem; }
+          .town-cov { font-size: 1.2rem; }
+          .counter-bar { padding: 16px 20px; }
+          .counter-inner { flex-direction: column; text-align: center; gap: 8px; }
+          .counter-num { font-size: 2rem; }
+          .counter-label { font-size: 0.85rem; }
+          .search-input { padding: 14px 16px; font-size: 1rem; }
+          .btn { width: 100%; justify-content: center; padding: 14px 24px; }
+          .cta-row { flex-direction: column; }
+          .footer { padding: 30px 20px; }
+          .footer-inner { flex-direction: column; align-items: flex-start; gap: 20px; }
+          .footer-links { flex-wrap: wrap; gap: 16px; }
+        }
+        @media (max-width: 480px) {
+          .hero-title { font-size: 1.6rem; }
+          .hero-sub { font-size: 0.9rem; }
+          .stats-grid { grid-template-columns: 1fr; }
+          .stat-num { font-size: 2.2rem; }
+          .nav-link { font-size: 0.7rem; padding: 4px 8px; }
+        }
+    
+img, svg, canvas { max-width: 100%; height: auto; }
+</style><nav class="nav"><a class="nav-brand" href="/">Herd<span>Watch</span></a><div class="nav-links"><a class="nav-link" href="/">Home</a><a class="nav-link" href="/myths/">The Myth</a><a class="nav-link active" href="/map/">Map</a><a class="nav-link" href="/towns/">All Areas</a><a class="nav-link" href="/methodology/">Methodology</a></div></nav><div class="map-container"><div id="map"></div><div class="map-overlay"><div class="overlay-card"><div class="overlay-header"><div class="overlay-title">Filter by Status</div><button class="overlay-close" title="Close filters">✕</button></div><button class="filter-btn all active"><span>All Areas</span><span class="filter-count">1132</span></button><button class="filter-btn risk "><span>At Risk</span><span class="filter-count">461</span></button><button class="filter-btn vuln "><span>Vulnerable</span><span class="filter-count">441</span></button><button class="filter-btn prot "><span>Protected</span><span class="filter-count">230</span></button></div><div class="overlay-card"><div class="overlay-title">Legend</div><div class="legend-row"><span class="legend-dot" style="background:#dc2626"></span>AT RISK — below 90%</div><div class="legend-row"><span class="legend-dot" style="background:#d97706"></span>VULNERABLE — 90–95%</div><div class="legend-row"><span class="legend-dot" style="background:#16a34a"></span>PROTECTED — 95%+</div><div style="border-top:1px solid #333;margin-top:10px;padding-top:10px;font-size:0.72rem;color:#666;font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;line-height:1.5">Dot size indicates number of eligible children. Click any dot for details.</div></div><div class="overlay-card" style="text-align:center"><div style="color:#888;font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;font-size:0.82rem">Loading map...</div></div></div></div><script src="/_next/static/chunks/webpack-e4c60c31f12e16c4.js" crossorigin="" async=""></script><script>(self.__next_f=self.__next_f||[]).push([0]);self.__next_f.push([2,null])</script><script>self.__next_f.push([1,"1:HL[\"/_next/static/media/13971731025ec697-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n2:HL[\"/_next/static/media/36966cca54120369-s.p.woff2\",\"font\",{\"crossOrigin\":\"\",\"type\":\"font/woff2\"}]\n3:HL[\"/_next/static/css/3eeb922fc3a2b02f.css\",\"style\",{\"crossOrigin\":\"\"}]\n0:\"$L4\"\n"])</script><script>self.__next_f.push([1,"5:I[7690,[],\"\"]\n7:I[7831,[],\"\"]\n8:I[6929,[\"250\",\"static/chunks/250-c8b7bc655d5a0bd9.js\",\"184\",\"static/chunks/184-407a1c4e3c126ff8.js\",\"883\",\"static/chunks/app/map/page-80a5bbb8ad5bd160.js\"],\"\"]\n9:I[5613,[],\"\"]\na:I[1778,[],\"\"]\nc:I[8955,[],\"\"]\nd:[]\n"])</script><script>self.__next_f.push([1,"4:[[[\"$\",\"link\",\"0\",{\"rel\":\"stylesheet\",\"href\":\"/_next/static/css/3eeb922fc3a2b02f.css\",\"precedence\":\"next\",\"crossOrigin\":\"\"}]],[\"$\",\"$L5\",null,{\"buildId\":\"g8Kb06efH3IfjjUl9KJIJ\",\"assetPrefix\":\"\",\"initialCanonicalUrl\":\"/map/\",\"initialTree\":[\"\",{\"children\":[\"map\",{\"children\":[\"__PAGE__\",{}]}]},\"$undefined\",\"$undefined\",true],\"initialSeedData\":[\"\",{\"children\":[\"map\",{\"children\":[\"__PAGE__\",{},[\"$L6\",[\"$\",\"$L7\",null,{\"propsForComponent\":{\"params\":{}},\"Component\":\"$8\",\"isStaticGeneration\":true}],null]]},[\"$\",\"$L9\",null,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\",\"map\",\"children\"],\"loading\":\"$undefined\",\"loadingStyles\":\"$undefined\",\"loadingScripts\":\"$undefined\",\"hasLoading\":false,\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$La\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":\"$undefined\",\"notFoundStyles\":\"$undefined\",\"styles\":null}]]},[null,[\"$\",\"html\",null,{\"lang\":\"en\",\"className\":\"__variable_b2948e __variable_0eeb07\",\"children\":[\"$\",\"body\",null,{\"style\":{\"margin\":0,\"padding\":0,\"overflowX\":\"hidden\",\"fontFamily\":\"var(--font-body), system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif\"},\"children\":[\"$\",\"$L9\",null,{\"parallelRouterKey\":\"children\",\"segmentPath\":[\"children\"],\"loading\":\"$undefined\",\"loadingStyles\":\"$undefined\",\"loadingScripts\":\"$undefined\",\"hasLoading\":false,\"error\":\"$undefined\",\"errorStyles\":\"$undefined\",\"errorScripts\":\"$undefined\",\"template\":[\"$\",\"$La\",null,{}],\"templateStyles\":\"$undefined\",\"templateScripts\":\"$undefined\",\"notFound\":[[\"$\",\"title\",null,{\"children\":\"404: This page could not be found.\"}],[\"$\",\"div\",null,{\"style\":{\"fontFamily\":\"system-ui,\\\"Segoe UI\\\",Roboto,Helvetica,Arial,sans-serif,\\\"Apple Color Emoji\\\",\\\"Segoe UI Emoji\\\"\",\"height\":\"100vh\",\"textAlign\":\"center\",\"display\":\"flex\",\"flexDirection\":\"column\",\"alignItems\":\"center\",\"justifyContent\":\"center\"},\"children\":[\"$\",\"div\",null,{\"children\":[[\"$\",\"style\",null,{\"dangerouslySetInnerHTML\":{\"__html\":\"body{color:#000;background:#fff;margin:0}.next-error-h1{border-right:1px solid rgba(0,0,0,.3)}@media (prefers-color-scheme:dark){body{color:#fff;background:#000}.next-error-h1{border-right:1px solid rgba(255,255,255,.3)}}\"}}],[\"$\",\"h1\",null,{\"className\":\"next-error-h1\",\"style\":{\"display\":\"inline-block\",\"margin\":\"0 20px 0 0\",\"padding\":\"0 23px 0 0\",\"fontSize\":24,\"fontWeight\":500,\"verticalAlign\":\"top\",\"lineHeight\":\"49px\"},\"children\":\"404\"}],[\"$\",\"div\",null,{\"style\":{\"display\":\"inline-block\"},\"children\":[\"$\",\"h2\",null,{\"style\":{\"fontSize\":14,\"fontWeight\":400,\"lineHeight\":\"49px\",\"margin\":0},\"children\":\"This page could not be found.\"}]}]]}]}]],\"notFoundStyles\":[],\"styles\":null}]}]}],null]],\"initialHead\":[false,\"$Lb\"],\"globalErrorComponent\":\"$c\",\"missingSlots\":\"$Wd\"}]]\n"])</script><script>self.__next_f.push([1,"b:[[\"$\",\"meta\",\"0\",{\"name\":\"viewport\",\"content\":\"width=device-width, initial-scale=1\"}],[\"$\",\"meta\",\"1\",{\"charSet\":\"utf-8\"}],[\"$\",\"title\",\"2\",{\"children\":\"HerdWatch — MMR Vaccination Coverage Tracker\"}],[\"$\",\"meta\",\"3\",{\"name\":\"description\",\"content\":\"Track MMR vaccination coverage across England. Find your local area's vaccination rates and outbreak risk.\"}],[\"$\",\"meta\",\"4\",{\"name\":\"keywords\",\"content\":\"MMR vaccine, vaccination coverage, measles outbreak, herd immunity, NHS data\"}],[\"$\",\"meta\",\"5\",{\"property\":\"og:title\",\"content\":\"HerdWatch — MMR Vaccination Coverage Tracker\"}],[\"$\",\"meta\",\"6\",{\"property\":\"og:description\",\"content\":\"Track MMR vaccination coverage across England\"}],[\"$\",\"meta\",\"7\",{\"property\":\"og:type\",\"content\":\"website\"}],[\"$\",\"meta\",\"8\",{\"name\":\"twitter:card\",\"content\":\"summary\"}],[\"$\",\"meta\",\"9\",{\"name\":\"twitter:title\",\"content\":\"HerdWatch — MMR Vaccination Coverage Tracker\"}],[\"$\",\"meta\",\"10\",{\"name\":\"twitter:description\",\"content\":\"Track MMR vaccination coverage across England\"}],[\"$\",\"meta\",\"11\",{\"name\":\"next-size-adjust\"}]]\n"])</script><script>self.__next_f.push([1,"6:null\n"])</script><script>self.__next_f.push([1,""])</script></body></html>
