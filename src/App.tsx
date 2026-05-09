@@ -14,6 +14,18 @@ import { buildAreaTrend, nationalTrend } from './data/trends';
 import type { HerdArea, RiskStatus, TrendPoint } from './types';
 
 const target = deployedNationalStats.herdImmunityTarget;
+const latestTrendPoint = nationalTrend[nationalTrend.length - 1];
+
+const liveAreaStats = {
+  totalAreasTracked: areas.length,
+  atRiskAreas: areas.filter((area) => area.status === 'AT_RISK').length,
+  vulnerableAreas: areas.filter((area) => area.status === 'VULNERABLE').length,
+  protectedAreas: areas.filter((area) => area.status === 'PROTECTED').length,
+  unvaccinatedChildren: areas.reduce((sum, area) => sum + Math.max(0, area.totalEligible - area.totalVaccinated), 0),
+  englandAverage: latestTrendPoint?.englandMmr1 ?? deployedNationalStats.englandAverage,
+  englandMmr2: latestTrendPoint?.englandMmr2,
+  latestTrendYear: latestTrendPoint?.year ?? '2024-25'
+};
 
 const riskCopy: Record<RiskStatus, { label: string; description: string; className: string }> = {
   AT_RISK: {
@@ -88,7 +100,7 @@ function Footer() {
       <div className="footer-inner">
         <div>
           <div className="footer-brand">Herd<span>Watch</span></div>
-          <div className="footer-copy">Data: {deployedNationalStats.sourceLabel} · Rebuilt editable source</div>
+          <div className="footer-copy">Data: {deployedNationalStats.sourceLabel} · postcode-district aggregation</div>
         </div>
         <div className="footer-links">
           <a href="/" className="footer-link">Home</a>
@@ -106,29 +118,45 @@ function Footer() {
 function DataNotice() {
   return (
     <div className="notice-card">
-      <strong>Rebuild note:</strong> this source project has been reconstructed from the deployed HerdWatch export. Current headline stats are preserved from the live site. The local area dataset and historic trend series are a starter scaffold until the full NHS COVER import is restored.
+      <strong>Data note:</strong> HerdWatch now uses generated NHS COVER area data aggregated from GP-level coverage records into postcode districts. Counts are best read as local coverage indicators, not as household-level or individual-level records.
     </div>
   );
 }
 
 function TrendChart({ data, selectedAreaName }: { data: TrendPoint[]; selectedAreaName?: string }) {
+  if (!data.length) {
+    return (
+      <section className="card trend-card">
+        <div className="card-heading-row">
+          <div>
+            <p className="eyebrow">Coverage data</p>
+            <h2 className="card-title">Vaccination coverage chart</h2>
+          </div>
+          <span className="data-badge">Data unavailable</span>
+        </div>
+        <div className="trend-insight"><strong>Insight:</strong> no trend rows are currently available.</div>
+      </section>
+    );
+  }
+
   const first = data[0];
   const latest = data[data.length - 1];
   const latestMmr1 = latest.englandMmr1;
-  const change = Number((latestMmr1 - first.englandMmr1).toFixed(1));
   const gap = Number((target - latestMmr1).toFixed(1));
+  const hasSeries = data.length > 1;
+  const change = hasSeries ? Number((latestMmr1 - first.englandMmr1).toFixed(1)) : 0;
   const direction = change < 0 ? 'fallen' : change > 0 ? 'risen' : 'held flat';
 
   return (
     <section className="card trend-card">
       <div className="card-heading-row">
         <div>
-          <p className="eyebrow">Recent years</p>
-          <h2 className="card-title">Vaccination coverage trend</h2>
+          <p className="eyebrow">{hasSeries ? 'Annual COVER series' : 'Latest annual COVER point'}</p>
+          <h2 className="card-title">Vaccination coverage {hasSeries ? 'trend' : 'snapshot'}</h2>
         </div>
-        <span className="data-badge">Placeholder trend scaffold</span>
+        <span className="data-badge">Generated COVER data</span>
       </div>
-      <div className="chart-wrap" aria-label="MMR vaccination coverage trend chart">
+      <div className="chart-wrap" aria-label="MMR vaccination coverage chart">
         <ResponsiveContainer width="100%" height={320}>
           <LineChart data={data} margin={{ top: 10, right: 18, left: 0, bottom: 10 }}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -139,13 +167,17 @@ function TrendChart({ data, selectedAreaName }: { data: TrendPoint[]; selectedAr
             <Line type="monotone" dataKey="englandMmr1" name="England MMR1" strokeWidth={3} dot />
             <Line type="monotone" dataKey="englandMmr2" name="England MMR2" strokeWidth={2} dot />
             {selectedAreaName ? (
-              <Line type="monotone" dataKey="selectedArea" name={`${selectedAreaName} estimate`} strokeWidth={3} dot />
+              <Line type="monotone" dataKey="selectedArea" name={`${selectedAreaName} postcode district`} strokeWidth={3} dot />
             ) : null}
           </LineChart>
         </ResponsiveContainer>
       </div>
       <div className="trend-insight">
-        <strong>Insight:</strong> England MMR1 coverage has {direction} by {Math.abs(change).toFixed(1)} percentage points across this scaffolded series and is currently {gap.toFixed(1)} points below the 95% herd-immunity target.
+        {hasSeries ? (
+          <><strong>Insight:</strong> England MMR1 coverage has {direction} by {Math.abs(change).toFixed(1)} percentage points across the generated annual series and is currently {gap.toFixed(1)} points below the 95% target.</>
+        ) : (
+          <><strong>Insight:</strong> the current generated trend file contains one annual COVER point. It shows England MMR1 at {formatPercent(latest.englandMmr1)} and England MMR2 at {formatPercent(latest.englandMmr2)} for {latest.year}. Add more historic annual rows to compare movement over time.</>
+        )}
       </div>
     </section>
   );
@@ -198,10 +230,10 @@ function Hero({ onSearch }: { onSearch: (value: string) => void }) {
 function StatGrid() {
   return (
     <div className="stats-grid">
-      <div className="stat-card risk"><div className="stat-num risk">{deployedNationalStats.atRiskAreas}</div><div className="stat-label">AT RISK</div><div className="stat-desc">Areas below 90% — outbreak risk</div></div>
-      <div className="stat-card vulnerable"><div className="stat-num vulnerable">{deployedNationalStats.vulnerableAreas}</div><div className="stat-label">VULNERABLE</div><div className="stat-desc">Areas 90–95% — below herd immunity</div></div>
-      <div className="stat-card protected"><div className="stat-num protected">{deployedNationalStats.protectedAreas}</div><div className="stat-label">PROTECTED</div><div className="stat-desc">Areas at or above the 95% target</div></div>
-      <div className="stat-card total"><div className="stat-num">{deployedNationalStats.totalAreasTracked}</div><div className="stat-label">TOTAL AREAS</div><div className="stat-desc">Postcode districts tracked in the deployed site</div></div>
+      <div className="stat-card risk"><div className="stat-num risk">{liveAreaStats.atRiskAreas.toLocaleString()}</div><div className="stat-label">AT RISK</div><div className="stat-desc">Postcode districts below 90%</div></div>
+      <div className="stat-card vulnerable"><div className="stat-num vulnerable">{liveAreaStats.vulnerableAreas.toLocaleString()}</div><div className="stat-label">VULNERABLE</div><div className="stat-desc">Postcode districts 90–95%</div></div>
+      <div className="stat-card protected"><div className="stat-num protected">{liveAreaStats.protectedAreas.toLocaleString()}</div><div className="stat-label">PROTECTED</div><div className="stat-desc">Postcode districts at or above 95%</div></div>
+      <div className="stat-card total"><div className="stat-num">{liveAreaStats.totalAreasTracked.toLocaleString()}</div><div className="stat-label">TOTAL AREAS</div><div className="stat-desc">Imported postcode districts</div></div>
     </div>
   );
 }
@@ -212,19 +244,19 @@ function NationalPicture() {
       <SectionHeader title="National Picture" />
       <div className="context-card">
         <div className="context-item">
-          <div className="context-val risk-text">{formatPercent(deployedNationalStats.englandAverage)}</div>
-          <div className="context-item-label">England Average</div>
-          <div className="context-item-sub">National MMR1 coverage at 24 months — below target and vulnerable to further decline.</div>
+          <div className="context-val risk-text">{formatPercent(liveAreaStats.englandAverage)}</div>
+          <div className="context-item-label">England MMR1</div>
+          <div className="context-item-sub">Generated annual COVER point for {liveAreaStats.latestTrendYear}, below the 95% target.</div>
         </div>
         <div className="context-item bordered">
-          <div className="context-val protected-text">{deployedNationalStats.herdImmunityTarget}%</div>
-          <div className="context-item-label">Herd Immunity Target</div>
-          <div className="context-item-sub">The working coverage target used to reduce sustained measles transmission in a community.</div>
+          <div className="context-val protected-text">{target}%</div>
+          <div className="context-item-label">Coverage Target</div>
+          <div className="context-item-sub">The working threshold HerdWatch uses to flag local vulnerability.</div>
         </div>
         <div className="context-item">
-          <div className="context-val vulnerable-text">{deployedNationalStats.unvaccinatedChildren.toLocaleString()}</div>
-          <div className="context-item-label">Unvaccinated Children</div>
-          <div className="context-item-sub">Headline figure preserved from the deployed HerdWatch site.</div>
+          <div className="context-val vulnerable-text">{liveAreaStats.unvaccinatedChildren.toLocaleString()}</div>
+          <div className="context-item-label">Unvaccinated Estimate</div>
+          <div className="context-item-sub">Approximate count across imported GP-level area records after postcode-district aggregation.</div>
         </div>
       </div>
     </>
@@ -263,8 +295,8 @@ function HomePage() {
       <Hero onSearch={() => undefined} />
       <div className="counter-bar">
         <div className="counter-inner">
-          <div className="counter-num">{deployedNationalStats.unvaccinatedChildren.toLocaleString()}</div>
-          <div className="counter-label">children in England unvaccinated against measles<br />based on the latest deployed HerdWatch figure</div>
+          <div className="counter-num">{liveAreaStats.unvaccinatedChildren.toLocaleString()}</div>
+          <div className="counter-label">children in imported GP coverage rows not counted as vaccinated<br />after postcode-district aggregation</div>
         </div>
       </div>
       <main className="main-content">
@@ -273,7 +305,7 @@ function HomePage() {
         <NationalPicture />
         <TrendChart data={nationalTrend} />
         <SectionHeader title="Highest Risk Areas" />
-        <p className="section-note">Areas with MMR coverage below 90% — sorted by lowest coverage first.</p>
+        <p className="section-note">Postcode districts with MMR coverage below 90% — sorted by lowest coverage first.</p>
         <div className="worst-grid">
           {highestRisk.map((area) => <AreaCard key={area.postcodeDistrict} area={area} />)}
         </div>
@@ -298,7 +330,7 @@ function TownsPage() {
 
   return (
     <main className="main-content page-shell">
-      <PageTitle eyebrow="All areas" title="Vaccination coverage by postcode district" description="Search the rebuilt starter dataset. Restore the full NHS COVER extract to bring this back to all 1,132 areas." />
+      <PageTitle eyebrow="All areas" title="Vaccination coverage by postcode district" description={`Search ${liveAreaStats.totalAreasTracked.toLocaleString()} postcode districts generated from NHS COVER GP-level area data.`} />
       <DataNotice />
       <input className="search-input light" placeholder="Search area or region" value={query} onChange={(event) => setQuery(event.target.value)} />
       <div className="table-card">
@@ -329,7 +361,7 @@ function TownPage({ area }: { area?: HerdArea }) {
     return (
       <main className="main-content page-shell centered">
         <h1>Area not found</h1>
-        <p>This postcode district is not in the rebuilt starter dataset yet.</p>
+        <p>This postcode district is not currently present in the generated COVER area dataset.</p>
         <a className="btn btn-red" href="/towns/">Browse areas</a>
       </main>
     );
@@ -375,14 +407,14 @@ function TownPage({ area }: { area?: HerdArea }) {
 
           <section className="card">
             <h2 className="card-title">How to read this</h2>
-            <p className="body-copy">Coverage below 95% means measles can spread more easily if it enters the community. Coverage below 90% is treated here as a clearer local warning signal, not a diagnosis of an outbreak.</p>
+            <p className="body-copy">Coverage below 95% means measles can spread more easily if it enters the community. Coverage below 90% is treated here as a clearer local warning signal, not a diagnosis of an outbreak. Postcode-district figures are generated from GP-level source records, so they are a local signal rather than a household-level measurement.</p>
           </section>
         </section>
         <aside className="side-col">
           <div className="side-card">
             <h2 className="side-title">Area summary</h2>
             <div className="fact-item"><span>📍</span><p>{area.postcodeDistrict} is in {area.region}.</p></div>
-            <div className="fact-item"><span>🏥</span><p>{area.practiceCount} practices are represented in this starter record.</p></div>
+            <div className="fact-item"><span>🏥</span><p>{area.practiceCount} practices are represented in the imported GP-level COVER records for this postcode district.</p></div>
             <div className="fact-item"><span>🎯</span><p>Gap to target: {Math.max(0, target - area.coverage).toFixed(1)} percentage points.</p></div>
           </div>
           <div className="side-card">
@@ -412,7 +444,8 @@ function Metric({ label, value }: { label: string; value: string }) {
 function MapPage() {
   return (
     <main className="main-content page-shell">
-      <PageTitle eyebrow="Map" title="Coverage map placeholder" description="The deployed export had a map route. This rebuilt source keeps the route and gives you a clean place to add Leaflet, Mapbox or a simple SVG map later." />
+      <PageTitle eyebrow="Map" title="Coverage map" description="Explore the generated NHS COVER postcode-district area data by risk band." />
+      <p className="section-note">The live /map/ route is served as an interactive static dashboard that reads from /data/areas.json.</p>
       <div className="map-placeholder">
         {areas.slice(0, 18).map((area) => (
           <a key={area.postcodeDistrict} className={`map-cell ${riskCopy[area.status].className}`} href={`/town/${area.postcodeDistrict.toLowerCase()}/`}>
@@ -441,18 +474,20 @@ function MythsPage() {
 function MethodologyPage() {
   return (
     <main className="main-content page-shell readable">
-      <PageTitle eyebrow="Methodology" title="How HerdWatch should be rebuilt properly" description="The source project is now editable again. The next job is restoring the full data pipeline." />
+      <PageTitle eyebrow="Methodology" title="How HerdWatch handles the data" description="A plain-English summary of the current NHS COVER import and postcode-district aggregation." />
       <section className="card prose-card">
-        <h2>Current rebuild status</h2>
-        <p>The app has been reconstructed from the deployed static export. Headline deployed stats have been preserved, while area-level and historic trend data are scaffolded so the UI can be developed cleanly.</p>
-        <h2>Proper data pipeline</h2>
+        <h2>Current data status</h2>
+        <p>HerdWatch now uses generated area data from NHS COVER GP-level records, aggregated into postcode districts and risk bands. The public map reads the generated JSON file at <code>/data/areas.json</code>.</p>
+        <h2>Area aggregation</h2>
         <ol>
-          <li>Download current and historic NHS COVER files.</li>
-          <li>Normalise area names, postcode districts, regions and time periods.</li>
-          <li>Calculate MMR1 / MMR2 coverage, gap to 95%, unvaccinated estimate and risk band.</li>
-          <li>Export a versioned JSON dataset into <code>src/data</code> or <code>public/data</code>.</li>
-          <li>Keep raw source files out of the frontend bundle if they are too large.</li>
+          <li>Download official NHS COVER supplementary GP-level files and GP practice reference data.</li>
+          <li>Join GP practice codes to practice postcodes.</li>
+          <li>Convert practice postcodes into outward postcode districts.</li>
+          <li>Aggregate eligible and vaccinated counts by postcode district.</li>
+          <li>Assign risk bands using the 90% and 95% coverage thresholds.</li>
         </ol>
+        <h2>Important limitation</h2>
+        <p>Postcode-district figures are local coverage indicators derived from GP-level source records. They are not household-level records and should not be used to identify individual vaccination status.</p>
       </section>
     </main>
   );
@@ -472,7 +507,7 @@ function NotFoundPage() {
   return (
     <main className="main-content page-shell centered">
       <h1>Page not found</h1>
-      <p>The rebuilt app does not have this route yet.</p>
+      <p>The app does not have this route.</p>
       <a className="btn btn-red" href="/">Back to HerdWatch</a>
     </main>
   );
