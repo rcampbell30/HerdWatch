@@ -7,337 +7,44 @@
 <title>Coverage Map — HerdWatch</title>
 <meta name="description" content="Explore MMR vaccination coverage by postcode district and risk band."/>
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { overflow-x: hidden; }
-body { overflow-x: hidden; background: #f8f7f4; color: #1a1a1a; font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; }
-a { color: inherit; }
-.nav { background: #1a1a1a; padding: 0 40px; display: flex; align-items: center; justify-content: space-between; gap: 12px; height: 60px; position: sticky; top: 0; z-index: 100; }
-.nav-brand { font-weight: 800; font-size: 1.3rem; color: white; text-decoration: none; letter-spacing: -0.02em; flex-shrink: 0; }
-.nav-brand span { color: #dc2626; }
-.nav-links { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; flex: 1 1 auto; min-width: 0; justify-content: flex-end; align-items: center; }
-.nav-links::-webkit-scrollbar { display: none; }
-.nav-link { color: #999; text-decoration: none; font-size: 0.82rem; padding: 6px 14px; border-radius: 20px; transition: all 0.2s; white-space: nowrap; }
-.nav-link:hover, .nav-link.active { color: white; background: #333; }
-.hero { background: #1a1a1a; color: white; padding: 70px 40px 52px; position: relative; overflow: hidden; }
-.hero::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(255,255,255,0.025) 79px, rgba(255,255,255,0.025) 80px); pointer-events: none; }
-.hero-inner { max-width: 1100px; margin: 0 auto; position: relative; }
-.hero-tag { display: inline-block; background: #dc2626; color: white; font-size: 0.7rem; padding: 4px 12px; border-radius: 2px; margin-bottom: 24px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 800; }
-.hero-title { font-size: clamp(2.1rem, 5vw, 4rem); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; margin-bottom: 18px; }
-.hero-title em { font-style: normal; color: #dc2626; }
-.hero-sub { max-width: 680px; font-size: 1.05rem; color: #aaa; line-height: 1.65; }
-.main-content { max-width: 1100px; margin: 0 auto; padding: 44px 40px 60px; }
-.notice { background: #fffbeb; border: 1px solid #f4d4a4; color: #67410b; padding: 15px 18px; border-radius: 12px; margin-bottom: 22px; }
-.controls { display: grid; grid-template-columns: minmax(0, 1fr) 180px 180px; gap: 12px; margin-bottom: 22px; }
-.control, .search { width: 100%; border: 2px solid #e5e5e5; border-radius: 10px; padding: 13px 14px; background: white; color: #1a1a1a; font: inherit; outline: none; }
-.control:focus, .search:focus { border-color: #dc2626; }
-.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px; }
-.stat-card { background: white; border-radius: 12px; padding: 20px; position: relative; overflow: hidden; }
-.stat-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: #1a1a1a; }
-.stat-card.risk::after { background: #dc2626; }
-.stat-card.vulnerable::after { background: #d97706; }
-.stat-card.protected::after { background: #16a34a; }
-.stat-num { font-size: 2.15rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
-.stat-label { color: #777; font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 800; margin-top: 8px; }
-.map-shell { display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 22px; align-items: start; }
-.map-panel, .side-panel, .table-panel { background: white; border-radius: 14px; padding: 22px; }
-.panel-header { display: flex; justify-content: space-between; gap: 12px; align-items: end; margin-bottom: 18px; }
-.panel-title { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.02em; }
-.panel-sub { color: #777; font-size: 0.88rem; margin-top: 3px; }
-.legend { display: flex; gap: 8px; flex-wrap: wrap; font-size: 0.78rem; color: #666; }
-.legend-item { display: inline-flex; align-items: center; gap: 5px; }
-.swatch { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
-.swatch.risk { background: #dc2626; }
-.swatch.vulnerable { background: #d97706; }
-.swatch.protected { background: #16a34a; }
-.tile-map { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 10px; }
-.map-tile { display: flex; min-height: 92px; flex-direction: column; justify-content: space-between; border-radius: 12px; padding: 12px; text-decoration: none; border: 2px solid transparent; transition: all 0.15s; }
-.map-tile:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); border-color: currentColor; }
-.map-tile strong { font-size: 1.02rem; }
-.map-tile span { font-size: 0.82rem; opacity: 0.9; }
-.map-tile.risk { background: #fef2f2; color: #dc2626; }
-.map-tile.vulnerable { background: #fffbeb; color: #d97706; }
-.map-tile.protected { background: #f0fdf4; color: #16a34a; }
-.side-card { border-bottom: 1px solid #f0f0f0; padding: 14px 0; }
-.side-card:first-child { padding-top: 0; }
-.side-card:last-child { border-bottom: 0; padding-bottom: 0; }
-.side-card a { text-decoration: none; display: flex; justify-content: space-between; gap: 12px; align-items: center; }
-.side-card a:hover strong { color: #dc2626; }
-.side-meta { color: #888; font-size: 0.78rem; margin-top: 2px; }
-.pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; }
-.pill.risk { background: #fef2f2; color: #dc2626; }
-.pill.vulnerable { background: #fffbeb; color: #d97706; }
-.pill.protected { background: #f0fdf4; color: #16a34a; }
-.table-panel { margin-top: 22px; overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
-th, td { padding: 12px 14px; border-bottom: 1px solid #f2f2f2; text-align: left; white-space: nowrap; }
-th { color: #777; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; }
-td a { color: #dc2626; font-weight: 800; text-decoration: none; }
-.footer { background: #1a1a1a; color: #666; padding: 36px 40px; margin-top: 60px; }
-.footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
-.footer-brand { font-weight: 800; color: white; font-size: 1.1rem; }
-.footer-brand span { color: #dc2626; }
-.footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
-.footer-link { color: #666; text-decoration: none; font-size: 0.82rem; }
-.footer-link:hover { color: white; }
-.empty { color: #777; padding: 18px; background: #f8f7f4; border-radius: 10px; }
-@media (max-width: 900px) {
-  .controls { grid-template-columns: 1fr; }
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-  .map-shell { grid-template-columns: 1fr; }
-}
-@media (max-width: 640px) {
-  .nav { height: 56px; padding: 0 16px; }
-  .nav-brand { font-size: 1.1rem; }
-  .nav-link { font-size: 0.72rem; padding: 5px 8px; }
-  .hero { padding: 48px 20px 38px; }
-  .main-content { padding: 30px 16px; }
-  .stats-grid { grid-template-columns: 1fr; }
-  .panel-header { align-items: flex-start; flex-direction: column; }
-  .tile-map { grid-template-columns: repeat(auto-fill, minmax(82px, 1fr)); }
-  .footer { padding: 28px 16px; }
-  .footer-inner { align-items: flex-start; flex-direction: column; }
-}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html,body{overflow-x:hidden}body{background:#f8f7f4;color:#1a1a1a;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;line-height:1.6}a{color:inherit}.nav{background:#1a1a1a;padding:0 40px;display:flex;align-items:center;justify-content:space-between;gap:12px;height:60px;position:sticky;top:0;z-index:100}.nav-brand{font-weight:800;font-size:1.3rem;color:white;text-decoration:none;letter-spacing:-.02em;flex-shrink:0}.nav-brand span{color:#dc2626}.nav-links{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;flex:1 1 auto;min-width:0;justify-content:flex-end;align-items:center}.nav-links::-webkit-scrollbar{display:none}.nav-link{color:#999;text-decoration:none;font-size:.82rem;padding:6px 14px;border-radius:20px;transition:all .2s;white-space:nowrap}.nav-link:hover,.nav-link.active{color:white;background:#333}.hero{background:#1a1a1a;color:white;padding:70px 40px 52px;position:relative;overflow:hidden}.hero::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 79px,rgba(255,255,255,.025) 79px,rgba(255,255,255,.025) 80px);pointer-events:none}.hero-inner{max-width:1100px;margin:0 auto;position:relative}.hero-tag{display:inline-block;background:#dc2626;color:white;font-size:.7rem;padding:4px 12px;border-radius:2px;margin-bottom:24px;letter-spacing:.1em;text-transform:uppercase;font-weight:800}.hero-title{font-size:clamp(2.1rem,5vw,4rem);font-weight:800;letter-spacing:-.03em;line-height:1.05;margin-bottom:18px}.hero-title em{font-style:normal;color:#dc2626}.hero-sub{max-width:680px;font-size:1.05rem;color:#aaa;line-height:1.65}.main-content{max-width:1100px;margin:0 auto;padding:44px 40px 60px}.notice{background:#ecfdf5;border:1px solid #bbf7d0;color:#14532d;padding:15px 18px;border-radius:12px;margin-bottom:22px}.notice.warning{background:#fffbeb;border-color:#f4d4a4;color:#67410b}.controls{display:grid;grid-template-columns:minmax(0,1fr) 180px 180px;gap:12px;margin-bottom:22px}.control,.search{width:100%;border:2px solid #e5e5e5;border-radius:10px;padding:13px 14px;background:white;color:#1a1a1a;font:inherit;outline:none}.control:focus,.search:focus{border-color:#dc2626}.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}.stat-card{background:white;border-radius:12px;padding:20px;position:relative;overflow:hidden}.stat-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:4px;background:#1a1a1a}.stat-card.risk::after{background:#dc2626}.stat-card.vulnerable::after{background:#d97706}.stat-card.protected::after{background:#16a34a}.stat-num{font-size:2.15rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums}.stat-label{color:#777;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;font-weight:800;margin-top:8px}.map-shell{display:grid;grid-template-columns:minmax(0,1fr) 330px;gap:22px;align-items:start}.map-panel,.side-panel,.table-panel{background:white;border-radius:14px;padding:22px}.panel-header{display:flex;justify-content:space-between;gap:12px;align-items:end;margin-bottom:18px}.panel-title{font-size:1.25rem;font-weight:800;letter-spacing:-.02em}.panel-sub{color:#777;font-size:.88rem;margin-top:3px}.legend{display:flex;gap:8px;flex-wrap:wrap;font-size:.78rem;color:#666}.legend-item{display:inline-flex;align-items:center;gap:5px}.swatch{width:11px;height:11px;border-radius:3px;display:inline-block}.swatch.risk{background:#dc2626}.swatch.vulnerable{background:#d97706}.swatch.protected{background:#16a34a}.tile-map{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:10px}.map-tile{display:flex;min-height:92px;flex-direction:column;justify-content:space-between;border-radius:12px;padding:12px;text-decoration:none;border:2px solid transparent;transition:all .15s}.map-tile:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.08);border-color:currentColor}.map-tile strong{font-size:1.02rem}.map-tile span{font-size:.82rem;opacity:.9}.map-tile.risk{background:#fef2f2;color:#dc2626}.map-tile.vulnerable{background:#fffbeb;color:#d97706}.map-tile.protected{background:#f0fdf4;color:#16a34a}.side-card{border-bottom:1px solid #f0f0f0;padding:14px 0}.side-card:first-child{padding-top:0}.side-card:last-child{border-bottom:0;padding-bottom:0}.side-card a{text-decoration:none;display:flex;justify-content:space-between;gap:12px;align-items:center}.side-card a:hover strong{color:#dc2626}.side-meta{color:#888;font-size:.78rem;margin-top:2px}.pill{display:inline-block;padding:2px 8px;border-radius:999px;font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.pill.risk{background:#fef2f2;color:#dc2626}.pill.vulnerable{background:#fffbeb;color:#d97706}.pill.protected{background:#f0fdf4;color:#16a34a}.table-panel{margin-top:22px;overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{padding:12px 14px;border-bottom:1px solid #f2f2f2;text-align:left;white-space:nowrap}th{color:#777;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase}td a{color:#dc2626;font-weight:800;text-decoration:none}.footer{background:#1a1a1a;color:#666;padding:36px 40px;margin-top:60px}.footer-inner{max-width:1100px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}.footer-brand{font-weight:800;color:white;font-size:1.1rem}.footer-brand span{color:#dc2626}.footer-links{display:flex;gap:20px;flex-wrap:wrap}.footer-link{color:#666;text-decoration:none;font-size:.82rem}.footer-link:hover{color:white}.empty{color:#777;padding:18px;background:#f8f7f4;border-radius:10px;grid-column:1/-1}@media(max-width:900px){.controls{grid-template-columns:1fr}.stats-grid{grid-template-columns:1fr 1fr}.map-shell{grid-template-columns:1fr}}@media(max-width:640px){.nav{height:56px;padding:0 16px}.nav-brand{font-size:1.1rem}.nav-link{font-size:.72rem;padding:5px 8px}.hero{padding:48px 20px 38px}.main-content{padding:30px 16px}.stats-grid{grid-template-columns:1fr}.panel-header{align-items:flex-start;flex-direction:column}.tile-map{grid-template-columns:repeat(auto-fill,minmax(82px,1fr))}.footer{padding:28px 16px}.footer-inner{align-items:flex-start;flex-direction:column}}
 </style>
 </head>
 <body>
-<nav class="nav">
-  <a class="nav-brand" href="/">Herd<span>Watch</span></a>
-  <div class="nav-links">
-    <a class="nav-link" href="/">Home</a>
-    <a class="nav-link" href="/myths/">The Myth</a>
-    <a class="nav-link active" href="/map/">Map</a>
-    <a class="nav-link" href="/towns/">All Areas</a>
-    <a class="nav-link" href="/methodology/">Methodology</a>
-  </div>
-</nav>
-
-<section class="hero">
-  <div class="hero-inner">
-    <div class="hero-tag">Coverage intelligence</div>
-    <h1 class="hero-title">MMR risk <em>map</em></h1>
-    <p class="hero-sub">A colour-coded view of postcode districts by vaccination coverage. Use the filters to spot low-coverage clusters, vulnerable areas and places above the 95% target.</p>
-  </div>
-</section>
-
+<nav class="nav"><a class="nav-brand" href="/">Herd<span>Watch</span></a><div class="nav-links"><a class="nav-link" href="/">Home</a><a class="nav-link" href="/myths/">The Myth</a><a class="nav-link active" href="/map/">Map</a><a class="nav-link" href="/towns/">All Areas</a><a class="nav-link" href="/methodology/">Methodology</a></div></nav>
+<section class="hero"><div class="hero-inner"><div class="hero-tag">Coverage intelligence</div><h1 class="hero-title">MMR risk <em>map</em></h1><p class="hero-sub">A colour-coded view of postcode districts by vaccination coverage. Use the filters to spot low-coverage clusters, vulnerable areas and places above the 95% target.</p></div></section>
 <main class="main-content">
-  <div class="notice"><strong>Data note:</strong> this page uses the rebuilt starter dataset until the full NHS COVER import is restored. The layout is ready for all 1,132 areas.</div>
-
-  <div class="controls">
-    <input id="search" class="search" placeholder="Search postcode or region — FY, M15, London..." />
-    <select id="statusFilter" class="control" aria-label="Filter by risk status">
-      <option value="ALL">All statuses</option>
-      <option value="AT_RISK">At risk</option>
-      <option value="VULNERABLE">Vulnerable</option>
-      <option value="PROTECTED">Protected</option>
-    </select>
-    <select id="regionFilter" class="control" aria-label="Filter by region">
-      <option value="ALL">All regions</option>
-    </select>
-  </div>
-
+  <div id="dataNotice" class="notice warning"><strong>Loading data:</strong> fetching generated COVER area data…</div>
+  <div class="controls"><input id="search" class="search" placeholder="Search postcode or region — FY, M15, London..."/><select id="statusFilter" class="control" aria-label="Filter by risk status"><option value="ALL">All statuses</option><option value="AT_RISK">At risk</option><option value="VULNERABLE">Vulnerable</option><option value="PROTECTED">Protected</option></select><select id="regionFilter" class="control" aria-label="Filter by region"><option value="ALL">All regions</option></select></div>
   <section class="stats-grid" id="statsGrid"></section>
-
-  <div class="map-shell">
-    <section class="map-panel">
-      <div class="panel-header">
-        <div>
-          <h2 class="panel-title">Coverage tiles</h2>
-          <p class="panel-sub" id="resultCount">Loading areas…</p>
-        </div>
-        <div class="legend">
-          <span class="legend-item"><span class="swatch risk"></span>Below 90%</span>
-          <span class="legend-item"><span class="swatch vulnerable"></span>90–95%</span>
-          <span class="legend-item"><span class="swatch protected"></span>95%+</span>
-        </div>
-      </div>
-      <div class="tile-map" id="tileMap"></div>
-    </section>
-
-    <aside class="side-panel">
-      <div class="panel-header">
-        <div>
-          <h2 class="panel-title">Lowest coverage</h2>
-          <p class="panel-sub">Sorted from lowest MMR coverage upward.</p>
-        </div>
-      </div>
-      <div id="lowestList"></div>
-    </aside>
-  </div>
-
-  <section class="table-panel">
-    <div class="panel-header">
-      <div>
-        <h2 class="panel-title">Filtered area table</h2>
-        <p class="panel-sub">Use this when the tile view gets dense after the full dataset is restored.</p>
-      </div>
-    </div>
-    <table>
-      <thead><tr><th>Area</th><th>Region</th><th>Practices</th><th>Coverage</th><th>Status</th><th>Gap to 95%</th></tr></thead>
-      <tbody id="areaTable"></tbody>
-    </table>
-  </section>
+  <div class="map-shell"><section class="map-panel"><div class="panel-header"><div><h2 class="panel-title">Coverage tiles</h2><p class="panel-sub" id="resultCount">Loading areas…</p></div><div class="legend"><span class="legend-item"><span class="swatch risk"></span>Below 90%</span><span class="legend-item"><span class="swatch vulnerable"></span>90–95%</span><span class="legend-item"><span class="swatch protected"></span>95%+</span></div></div><div class="tile-map" id="tileMap"></div></section><aside class="side-panel"><div class="panel-header"><div><h2 class="panel-title">Lowest coverage</h2><p class="panel-sub">Sorted from lowest MMR coverage upward.</p></div></div><div id="lowestList"></div></aside></div>
+  <section class="table-panel"><div class="panel-header"><div><h2 class="panel-title">Filtered area table</h2><p class="panel-sub">Full generated area data. Tile view is capped for browser performance.</p></div></div><table><thead><tr><th>Area</th><th>Region</th><th>Practices</th><th>Coverage</th><th>Status</th><th>Gap to 95%</th></tr></thead><tbody id="areaTable"></tbody></table></section>
 </main>
-
-<footer class="footer">
-  <div class="footer-inner">
-    <div><div class="footer-brand">Herd<span>Watch</span></div></div>
-    <div class="footer-links">
-      <a class="footer-link" href="/">Home</a>
-      <a class="footer-link" href="/myths/">The Myth</a>
-      <a class="footer-link" href="/towns/">All Areas</a>
-      <a class="footer-link" href="/methodology/">Methodology</a>
-    </div>
-  </div>
-</footer>
-
+<footer class="footer"><div class="footer-inner"><div><div class="footer-brand">Herd<span>Watch</span></div></div><div class="footer-links"><a class="footer-link" href="/">Home</a><a class="footer-link" href="/myths/">The Myth</a><a class="footer-link" href="/towns/">All Areas</a><a class="footer-link" href="/methodology/">Methodology</a></div></div></footer>
 <script>
-const AREAS = [
-  { postcodeDistrict: 'M15', region: 'North West', practiceCount: 2, coverage: 48.4, totalEligible: 250, totalVaccinated: 121, status: 'AT_RISK' },
-  { postcodeDistrict: 'E5', region: 'London', practiceCount: 6, coverage: 57.3, totalEligible: 600, totalVaccinated: 344, status: 'AT_RISK' },
-  { postcodeDistrict: 'LS12', region: 'North East & Yorkshire', practiceCount: 5, coverage: 59.5, totalEligible: 500, totalVaccinated: 298, status: 'AT_RISK' },
-  { postcodeDistrict: 'N16', region: 'London', practiceCount: 11, coverage: 59.6, totalEligible: 1100, totalVaccinated: 656, status: 'AT_RISK' },
-  { postcodeDistrict: 'B17', region: 'Midlands', practiceCount: 4, coverage: 60.0, totalEligible: 400, totalVaccinated: 240, status: 'AT_RISK' },
-  { postcodeDistrict: 'BD1', region: 'North East & Yorkshire', practiceCount: 2, coverage: 60.7, totalEligible: 200, totalVaccinated: 121, status: 'AT_RISK' },
-  { postcodeDistrict: 'W12', region: 'London', practiceCount: 11, coverage: 62.4, totalEligible: 1100, totalVaccinated: 686, status: 'AT_RISK' },
-  { postcodeDistrict: 'B19', region: 'Midlands', practiceCount: 5, coverage: 63.7, totalEligible: 500, totalVaccinated: 319, status: 'AT_RISK' },
-  { postcodeDistrict: 'BD9', region: 'North East & Yorkshire', practiceCount: 2, coverage: 64.2, totalEligible: 200, totalVaccinated: 128, status: 'AT_RISK' },
-  { postcodeDistrict: 'L7', region: 'North West', practiceCount: 6, coverage: 64.3, totalEligible: 600, totalVaccinated: 386, status: 'AT_RISK' },
-  { postcodeDistrict: 'M40', region: 'North West', practiceCount: 7, coverage: 64.5, totalEligible: 700, totalVaccinated: 452, status: 'AT_RISK' },
-  { postcodeDistrict: 'M7', region: 'North West', practiceCount: 5, coverage: 65.5, totalEligible: 500, totalVaccinated: 328, status: 'AT_RISK' },
-  { postcodeDistrict: 'W11', region: 'London', practiceCount: 6, coverage: 66.0, totalEligible: 600, totalVaccinated: 396, status: 'AT_RISK' },
-  { postcodeDistrict: 'LS8', region: 'North East & Yorkshire', practiceCount: 6, coverage: 66.9, totalEligible: 600, totalVaccinated: 401, status: 'AT_RISK' },
-  { postcodeDistrict: 'GU12', region: 'Other', practiceCount: 1, coverage: 67.9, totalEligible: 100, totalVaccinated: 68, status: 'AT_RISK' },
-  { postcodeDistrict: 'N19', region: 'London', practiceCount: 6, coverage: 68.1, totalEligible: 600, totalVaccinated: 409, status: 'AT_RISK' },
-  { postcodeDistrict: 'M13', region: 'North West', practiceCount: 6, coverage: 68.2, totalEligible: 600, totalVaccinated: 409, status: 'AT_RISK' },
-  { postcodeDistrict: 'N9', region: 'London', practiceCount: 9, coverage: 69.5, totalEligible: 900, totalVaccinated: 626, status: 'AT_RISK' },
-  { postcodeDistrict: 'FY1', region: 'North West', practiceCount: 5, coverage: 86.7, totalEligible: 520, totalVaccinated: 451, status: 'AT_RISK' },
-  { postcodeDistrict: 'FY2', region: 'North West', practiceCount: 4, coverage: 90.8, totalEligible: 410, totalVaccinated: 372, status: 'VULNERABLE' },
-  { postcodeDistrict: 'FY3', region: 'North West', practiceCount: 7, coverage: 91.6, totalEligible: 680, totalVaccinated: 623, status: 'VULNERABLE' },
-  { postcodeDistrict: 'FY4', region: 'North West', practiceCount: 6, coverage: 92.4, totalEligible: 640, totalVaccinated: 591, status: 'VULNERABLE' },
-  { postcodeDistrict: 'SW1', region: 'London', practiceCount: 4, coverage: 94.1, totalEligible: 420, totalVaccinated: 395, status: 'VULNERABLE' },
-  { postcodeDistrict: 'M1', region: 'North West', practiceCount: 3, coverage: 89.8, totalEligible: 310, totalVaccinated: 278, status: 'AT_RISK' },
-  { postcodeDistrict: 'LS1', region: 'North East & Yorkshire', practiceCount: 3, coverage: 93.2, totalEligible: 280, totalVaccinated: 261, status: 'VULNERABLE' },
-  { postcodeDistrict: 'EX1', region: 'South West', practiceCount: 4, coverage: 96.2, totalEligible: 360, totalVaccinated: 346, status: 'PROTECTED' },
-  { postcodeDistrict: 'YO1', region: 'North East & Yorkshire', practiceCount: 2, coverage: 95.4, totalEligible: 240, totalVaccinated: 229, status: 'PROTECTED' },
-  { postcodeDistrict: 'CB1', region: 'East of England', practiceCount: 5, coverage: 97.1, totalEligible: 500, totalVaccinated: 486, status: 'PROTECTED' }
-];
-
-const labels = {
-  AT_RISK: 'At risk',
-  VULNERABLE: 'Vulnerable',
-  PROTECTED: 'Protected'
-};
-const classes = {
-  AT_RISK: 'risk',
-  VULNERABLE: 'vulnerable',
-  PROTECTED: 'protected'
-};
-
-const search = document.getElementById('search');
-const statusFilter = document.getElementById('statusFilter');
-const regionFilter = document.getElementById('regionFilter');
-const tileMap = document.getElementById('tileMap');
-const lowestList = document.getElementById('lowestList');
-const areaTable = document.getElementById('areaTable');
-const statsGrid = document.getElementById('statsGrid');
-const resultCount = document.getElementById('resultCount');
-
-for (const region of [...new Set(AREAS.map(area => area.region))].sort()) {
-  const option = document.createElement('option');
-  option.value = region;
-  option.textContent = region;
-  regionFilter.appendChild(option);
-}
-
-function formatPct(value) {
-  return Number.isInteger(value) ? `${value}%` : `${value.toFixed(1)}%`;
-}
-
-function filteredAreas() {
-  const q = search.value.trim().toUpperCase();
-  const selectedStatus = statusFilter.value;
-  const selectedRegion = regionFilter.value;
-
-  return AREAS
-    .filter(area => !q || area.postcodeDistrict.includes(q) || area.region.toUpperCase().includes(q))
-    .filter(area => selectedStatus === 'ALL' || area.status === selectedStatus)
-    .filter(area => selectedRegion === 'ALL' || area.region === selectedRegion)
-    .sort((a, b) => a.coverage - b.coverage);
-}
-
-function renderStats(items) {
-  const counts = {
-    AT_RISK: items.filter(area => area.status === 'AT_RISK').length,
-    VULNERABLE: items.filter(area => area.status === 'VULNERABLE').length,
-    PROTECTED: items.filter(area => area.status === 'PROTECTED').length
-  };
-  const avg = items.length ? items.reduce((sum, area) => sum + area.coverage, 0) / items.length : 0;
-  statsGrid.innerHTML = `
-    <div class="stat-card risk"><div class="stat-num">${counts.AT_RISK}</div><div class="stat-label">At risk</div></div>
-    <div class="stat-card vulnerable"><div class="stat-num">${counts.VULNERABLE}</div><div class="stat-label">Vulnerable</div></div>
-    <div class="stat-card protected"><div class="stat-num">${counts.PROTECTED}</div><div class="stat-label">Protected</div></div>
-    <div class="stat-card"><div class="stat-num">${items.length ? formatPct(avg) : '—'}</div><div class="stat-label">Filtered average</div></div>
-  `;
-}
-
-function renderTiles(items) {
-  resultCount.textContent = `${items.length} area${items.length === 1 ? '' : 's'} shown`;
-  if (!items.length) {
-    tileMap.innerHTML = '<div class="empty">No areas match those filters.</div>';
-    return;
-  }
-  tileMap.innerHTML = items.map(area => `
-    <a class="map-tile ${classes[area.status]}" href="/town/${area.postcodeDistrict.toLowerCase()}/">
-      <strong>${area.postcodeDistrict}</strong>
-      <span>${area.region}</span>
-      <span>${formatPct(area.coverage)}</span>
-    </a>
-  `).join('');
-}
-
-function renderLowest(items) {
-  const lowest = [...items].sort((a, b) => a.coverage - b.coverage).slice(0, 8);
-  lowestList.innerHTML = lowest.length ? lowest.map(area => `
-    <div class="side-card">
-      <a href="/town/${area.postcodeDistrict.toLowerCase()}/">
-        <div>
-          <strong>${area.postcodeDistrict}</strong>
-          <div class="side-meta">${area.region} · ${area.practiceCount} practices</div>
-        </div>
-        <div style="text-align:right">
-          <strong>${formatPct(area.coverage)}</strong><br/>
-          <span class="pill ${classes[area.status]}">${labels[area.status]}</span>
-        </div>
-      </a>
-    </div>
-  `).join('') : '<div class="empty">No low-coverage areas in this filter.</div>';
-}
-
-function renderTable(items) {
-  areaTable.innerHTML = items.map(area => `
-    <tr>
-      <td><a href="/town/${area.postcodeDistrict.toLowerCase()}/">${area.postcodeDistrict}</a></td>
-      <td>${area.region}</td>
-      <td>${area.practiceCount}</td>
-      <td>${formatPct(area.coverage)}</td>
-      <td><span class="pill ${classes[area.status]}">${labels[area.status]}</span></td>
-      <td>${Math.max(0, 95 - area.coverage).toFixed(1)} pts</td>
-    </tr>
-  `).join('');
-}
-
-function render() {
-  const items = filteredAreas();
-  renderStats(items);
-  renderTiles(items);
-  renderLowest(items);
-  renderTable(items);
-}
-
-search.addEventListener('input', render);
-statusFilter.addEventListener('change', render);
-regionFilter.addEventListener('change', render);
-render();
+let AREAS=[];
+let METADATA=null;
+const labels={AT_RISK:'At risk',VULNERABLE:'Vulnerable',PROTECTED:'Protected'};
+const classes={AT_RISK:'risk',VULNERABLE:'vulnerable',PROTECTED:'protected'};
+const search=document.getElementById('search');
+const statusFilter=document.getElementById('statusFilter');
+const regionFilter=document.getElementById('regionFilter');
+const tileMap=document.getElementById('tileMap');
+const lowestList=document.getElementById('lowestList');
+const areaTable=document.getElementById('areaTable');
+const statsGrid=document.getElementById('statsGrid');
+const resultCount=document.getElementById('resultCount');
+const dataNotice=document.getElementById('dataNotice');
+function formatPct(value){return Number.isInteger(value)?`${value}%`:`${Number(value).toFixed(1)}%`}
+function populateRegions(){regionFilter.innerHTML='<option value="ALL">All regions</option>';for(const region of [...new Set(AREAS.map(a=>a.region||'Other'))].sort()){const option=document.createElement('option');option.value=region;option.textContent=region;regionFilter.appendChild(option)}}
+function filteredAreas(){const q=search.value.trim().toUpperCase();const selectedStatus=statusFilter.value;const selectedRegion=regionFilter.value;return AREAS.filter(a=>!q||a.postcodeDistrict.includes(q)||String(a.region).toUpperCase().includes(q)).filter(a=>selectedStatus==='ALL'||a.status===selectedStatus).filter(a=>selectedRegion==='ALL'||a.region===selectedRegion).sort((a,b)=>a.coverage-b.coverage)}
+function renderStats(items){const counts={AT_RISK:items.filter(a=>a.status==='AT_RISK').length,VULNERABLE:items.filter(a=>a.status==='VULNERABLE').length,PROTECTED:items.filter(a=>a.status==='PROTECTED').length};const avg=items.length?items.reduce((sum,a)=>sum+a.coverage,0)/items.length:0;statsGrid.innerHTML=`<div class="stat-card risk"><div class="stat-num">${counts.AT_RISK.toLocaleString()}</div><div class="stat-label">At risk</div></div><div class="stat-card vulnerable"><div class="stat-num">${counts.VULNERABLE.toLocaleString()}</div><div class="stat-label">Vulnerable</div></div><div class="stat-card protected"><div class="stat-num">${counts.PROTECTED.toLocaleString()}</div><div class="stat-label">Protected</div></div><div class="stat-card"><div class="stat-num">${items.length?formatPct(avg):'—'}</div><div class="stat-label">Filtered average</div></div>`}
+function renderTiles(items){const maxTiles=600;resultCount.textContent=`${items.length.toLocaleString()} area${items.length===1?'':'s'} shown${items.length>maxTiles?` · first ${maxTiles} tiles displayed`:''}`;if(!items.length){tileMap.innerHTML='<div class="empty">No areas match those filters.</div>';return}tileMap.innerHTML=items.slice(0,maxTiles).map(a=>`<a class="map-tile ${classes[a.status]}" href="/town/${a.postcodeDistrict.toLowerCase()}/"><strong>${a.postcodeDistrict}</strong><span>${a.region}</span><span>${formatPct(a.coverage)}</span></a>`).join('')}
+function renderLowest(items){const lowest=[...items].sort((a,b)=>a.coverage-b.coverage).slice(0,8);lowestList.innerHTML=lowest.length?lowest.map(a=>`<div class="side-card"><a href="/town/${a.postcodeDistrict.toLowerCase()}/"><div><strong>${a.postcodeDistrict}</strong><div class="side-meta">${a.region} · ${a.practiceCount} practices</div></div><div style="text-align:right"><strong>${formatPct(a.coverage)}</strong><br/><span class="pill ${classes[a.status]}">${labels[a.status]}</span></div></a></div>`).join(''):'<div class="empty">No low-coverage areas in this filter.</div>'}
+function renderTable(items){const maxRows=1200;areaTable.innerHTML=items.slice(0,maxRows).map(a=>`<tr><td><a href="/town/${a.postcodeDistrict.toLowerCase()}/">${a.postcodeDistrict}</a></td><td>${a.region}</td><td>${a.practiceCount}</td><td>${formatPct(a.coverage)}</td><td><span class="pill ${classes[a.status]}">${labels[a.status]}</span></td><td>${Math.max(0,95-a.coverage).toFixed(1)} pts</td></tr>`).join('')}
+function render(){const items=filteredAreas();renderStats(items);renderTiles(items);renderLowest(items);renderTable(items)}
+async function loadData(){try{const [areasResponse,metadataResponse]=await Promise.all([fetch('/data/areas.json',{cache:'no-store'}),fetch('/data/metadata.json',{cache:'no-store'}).catch(()=>null)]);if(!areasResponse.ok)throw new Error(`areas.json returned ${areasResponse.status}`);AREAS=await areasResponse.json();METADATA=metadataResponse&&metadataResponse.ok?await metadataResponse.json():null;populateRegions();const usingExample=METADATA&&METADATA.usingExampleData;dataNotice.className=usingExample?'notice warning':'notice';dataNotice.innerHTML=usingExample?`<strong>Data note:</strong> generated data loaded, but metadata says example data is still in use.`:`<strong>Real COVER data loaded:</strong> ${AREAS.length.toLocaleString()} postcode districts from generated NHS COVER area data${METADATA?.generatedAt?` · generated ${new Date(METADATA.generatedAt).toLocaleDateString()}`:''}.`;render()}catch(error){dataNotice.className='notice warning';dataNotice.innerHTML=`<strong>Data error:</strong> could not load /data/areas.json. ${error.message}`;tileMap.innerHTML='<div class="empty">No data loaded.</div>';resultCount.textContent='Data unavailable'}}
+search.addEventListener('input',render);statusFilter.addEventListener('change',render);regionFilter.addEventListener('change',render);loadData();
 </script>
 </body>
 </html>
