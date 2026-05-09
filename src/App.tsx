@@ -78,7 +78,7 @@ function Nav() {
       <div className="nav-links">
         <a className={`nav-link ${isActive('/') ? 'active' : ''}`} href="/">Home</a>
         <a className={`nav-link ${isActive('/myths') ? 'active' : ''}`} href="/myths/">The Myth</a>
-        <a className={`nav-link ${isActive('/map') ? 'active' : ''}`} href="/map/">Map</a>
+        <a className={`nav-link ${isActive('/map') ? 'active' : ''}`} href="/map/">Explorer</a>
         <a className={`nav-link ${isActive('/towns') ? 'active' : ''}`} href="/towns/">All Areas</a>
         <a className={`nav-link ${isActive('/methodology') ? 'active' : ''}`} href="/methodology/">Methodology</a>
       </div>
@@ -97,7 +97,7 @@ function Footer() {
         <div className="footer-links">
           <a href="/" className="footer-link">Home</a>
           <a href="/myths/" className="footer-link">The Myth</a>
-          <a href="/map/" className="footer-link">Map</a>
+          <a href="/map/" className="footer-link">Explorer</a>
           <a href="/towns/" className="footer-link">All Areas</a>
           <a href="/methodology/" className="footer-link">Methodology</a>
         </div>
@@ -280,7 +280,7 @@ function HomePage() {
         <SectionHeader title="Highest Risk Areas" />
         <p className="section-note">Postcode districts with MMR coverage below 90% — sorted by lowest coverage first.</p>
         <div className="worst-grid">{highestRisk.map((area) => <AreaCard key={area.postcodeDistrict} area={area} />)}</div>
-        <div className="cta-row"><a className="btn btn-red" href="/map/">View Map →</a><a className="btn btn-dark" href="/towns/">All Areas →</a><a className="btn btn-outline" href="/methodology/">Methodology</a></div>
+        <div className="cta-row"><a className="btn btn-red" href="/map/">Open Explorer →</a><a className="btn btn-dark" href="/towns/">All Areas →</a><a className="btn btn-outline" href="/methodology/">Methodology</a></div>
       </main>
     </>
   );
@@ -356,8 +356,8 @@ function Metric({ label, value }: { label: string; value: string }) {
 function MapPage() {
   return (
     <main className="main-content page-shell">
-      <PageTitle eyebrow="Map" title="Coverage map" description="Explore the generated NHS COVER postcode-district area data by risk band." />
-      <p className="section-note">The live /map/ route is served as an interactive static dashboard that reads from /data/areas.json.</p>
+      <PageTitle eyebrow="Explorer" title="Coverage explorer" description="Search and filter generated NHS COVER postcode-district area data by region, coverage and risk band." />
+      <p className="section-note">The live /map/ route is served as an interactive coverage dashboard that reads from /data/areas.json.</p>
       <div className="map-placeholder">{areas.slice(0, 18).map((area) => <a key={area.postcodeDistrict} className={`map-cell ${riskCopy[area.status].className}`} href={`/town/${area.postcodeDistrict.toLowerCase()}/`}><strong>{area.postcodeDistrict}</strong><span>{formatPercent(area.coverage)}</span></a>)}</div>
     </main>
   );
@@ -371,7 +371,7 @@ function MethodologyPage() {
   return (
     <main className="main-content page-shell readable">
       <PageTitle eyebrow="Methodology" title="How HerdWatch handles the data" description="A plain-English summary of the current NHS COVER import and postcode-district aggregation." />
-      <section className="card prose-card"><h2>Current data status</h2><p>HerdWatch now uses generated area data from NHS COVER GP-level records, aggregated into postcode districts and risk bands. The public map reads the generated JSON file at <code>/data/areas.json</code>.</p><h2>Area aggregation</h2><ol><li>Download official NHS COVER supplementary GP-level files and GP practice reference data.</li><li>Join GP practice codes to practice postcodes.</li><li>Convert practice postcodes into outward postcode districts.</li><li>Aggregate eligible and vaccinated counts by postcode district.</li><li>Assign risk bands using the 90% and 95% coverage thresholds.</li></ol><h2>Important limitation</h2><p>Postcode-district figures are local coverage indicators derived from GP-level source records. They are not household-level records and should not be used to identify individual vaccination status.</p></section>
+      <section className="card prose-card"><h2>Current data status</h2><p>HerdWatch now uses generated area data from NHS COVER GP-level records, aggregated into postcode districts and risk bands. The public explorer reads the generated JSON file at <code>/data/areas.json</code>.</p><h2>Area aggregation</h2><ol><li>Download official NHS COVER supplementary GP-level files and GP practice reference data.</li><li>Join GP practice codes to practice postcodes.</li><li>Convert practice postcodes into outward postcode districts.</li><li>Aggregate eligible and vaccinated counts by postcode district.</li><li>Assign risk bands using the 90% and 95% coverage thresholds.</li></ol><h2>Important limitation</h2><p>Postcode-district figures are local coverage indicators derived from GP-level source records. They are not household-level records and should not be used to identify individual vaccination status.</p></section>
     </main>
   );
 }
