@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-05-08T22:01:02.415Z",
-  "usingExampleData": true,
+  "generatedAt": "2026-05-09T04:15:11.915Z",
+  "usingExampleData": false,
   "sourceFiles": {
     "areas": "data\\raw\\areas.csv",
-    "trends": "data\\raw\\trends.example.csv"
+    "trends": "data\\raw\\trends.csv"
   },
   "rawAreaRowCount": 1889,
   "areaCount": 1889,
   "duplicatePostcodeDistrictCount": 0,
-  "trendPointCount": 7,
+  "trendPointCount": 1,
   "statusCounts": {
     "AT_RISK": 614,
     "VULNERABLE": 833,

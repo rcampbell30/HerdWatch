@@ -1,44 +1,8 @@
 [
   {
-    "year": "2018–19",
-    "englandMmr1": 90.6,
-    "englandMmr2": 86.4,
-    "target": 95
-  },
-  {
-    "year": "2019–20",
-    "englandMmr1": 90.2,
-    "englandMmr2": 86.6,
-    "target": 95
-  },
-  {
-    "year": "2020–21",
-    "englandMmr1": 90.3,
-    "englandMmr2": 86.6,
-    "target": 95
-  },
-  {
-    "year": "2021–22",
-    "englandMmr1": 89.2,
-    "englandMmr2": 85.7,
-    "target": 95
-  },
-  {
-    "year": "2022–23",
-    "englandMmr1": 89.3,
-    "englandMmr2": 84.5,
-    "target": 95
-  },
-  {
-    "year": "2023–24",
-    "englandMmr1": 88.9,
-    "englandMmr2": 84.3,
-    "target": 95
-  },
-  {
-    "year": "2024–25 Q3",
-    "englandMmr1": 88.9,
-    "englandMmr2": 84,
+    "year": "2024-25",
+    "englandMmr1": 88.7,
+    "englandMmr2": 83.2,
     "target": 95
   }
 ]
