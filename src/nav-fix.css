@@ -1,0 +1,48 @@
+.nav {
+  height: auto;
+  min-height: 60px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.nav-links {
+  overflow: visible;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  row-gap: 6px;
+}
+
+.nav-link {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 760px) {
+  .nav {
+    min-height: 56px;
+    align-items: flex-start;
+    padding: 12px 16px 10px;
+  }
+
+  .nav-brand {
+    margin-bottom: 4px;
+  }
+
+  .nav-links {
+    flex: 1 0 100%;
+    width: 100%;
+    justify-content: flex-start;
+    gap: 6px;
+  }
+
+  .nav-link {
+    padding: 5px 8px;
+    font-size: 0.72rem;
+  }
+
+  .hero,
+  .hero-band {
+    padding-top: 38px;
+  }
+}
