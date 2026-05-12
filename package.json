@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run data:build && vite build",
+    "build": "npm run data:build && vite build && node scripts/create-static-route-entrypoints.mjs",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "data:download": "node scripts/download-cover-sources.mjs",
