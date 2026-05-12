@@ -58,13 +58,12 @@ function getAreaFromPath(pathname: string): HerdArea | undefined {
   return areas.find((area) => area.postcodeDistrict.toUpperCase() === slug);
 }
 
-function getPageFromPath(pathname: string): 'home' | 'towns' | 'town' | 'map' | 'myths' | 'wakefield' | 'methodology' | 'not-found' {
+function getPageFromPath(pathname: string): 'home' | 'towns' | 'town' | 'map' | 'myths' | 'methodology' | 'not-found' {
   if (pathname === '/' || pathname === '') return 'home';
   if (pathname.startsWith('/town/')) return 'town';
   if (pathname.startsWith('/towns')) return 'towns';
   if (pathname.startsWith('/map')) return 'map';
   if (pathname.startsWith('/myths')) return 'myths';
-  if (pathname.startsWith('/wakefield')) return 'wakefield';
   if (pathname.startsWith('/methodology')) return 'methodology';
   return 'not-found';
 }
@@ -365,154 +364,7 @@ function MapPage() {
 }
 
 function MythsPage() {
-  return (
-    <main className="main-content page-shell readable">
-      <PageTitle
-        eyebrow="The myth"
-        title="Herd immunity is not magic"
-        description="It is a threshold effect: when enough people are immune, infections have fewer routes through a community."
-      />
-
-      <section className="card prose-card">
-        <h2>Why the 95% line matters</h2>
-        <p>
-          Measles is unusually infectious. When MMR coverage drops below the herd-immunity target,
-          outbreaks become easier to start and harder to contain.
-        </p>
-        <p>
-          The 95% figure is not a moral judgement on individual families. It is a practical warning
-          line for communities, schools, nurseries and health systems.
-        </p>
-      </section>
-
-      <section className="card prose-card">
-        <h2>The common mistake</h2>
-        <p>
-          The mistake is thinking herd immunity means everyone is perfectly protected. It does not.
-          It means infection has fewer paths through the population, so outbreaks are less likely to
-          accelerate.
-        </p>
-        <p>
-          When coverage is patchy, even a national average can hide local vulnerability. That is why
-          HerdWatch focuses on postcode-district level signals instead of only headline national figures.
-        </p>
-      </section>
-
-      <section className="card prose-card">
-        <h2>Who low coverage puts at risk</h2>
-        <p>
-          Falling MMR coverage matters most for people who cannot rely on vaccination themselves:
-          babies too young for MMR, people with weakened immune systems, and people whose protection
-          did not fully develop after vaccination.
-        </p>
-        <p>
-          The point of the site is not to shame families. The useful civic question is simpler:
-          where are the weak spots, and how visible are they?
-        </p>
-      </section>
-
-      <section className="card prose-card">
-        <h2>What HerdWatch is measuring</h2>
-        <p>
-          HerdWatch uses generated NHS COVER area data aggregated into postcode districts. The figures
-          are local coverage indicators, not household-level records and not individual vaccination records.
-        </p>
-        <p>
-          A red area means coverage is below the safer threshold. It does not prove an outbreak is happening.
-          It means the area may be more vulnerable if measles is introduced.
-        </p>
-      </section>
-
-      <section className="card prose-card">
-        <h2>Useful next step</h2>
-        <p>
-          If you are unsure about your own or your child's vaccination status, use official NHS guidance
-          or contact your GP practice. HerdWatch is a public-interest dashboard, not medical advice.
-        </p>
-        <p>
-          <a className="btn btn-red" href="https://www.nhs.uk/vaccinations/mmr-vaccine/" target="_blank" rel="noreferrer">
-            Read NHS MMR guidance
-          </a>
-        </p>
-      </section>
-    </main>
-  );
-}
-
-function WakefieldPage() {
-  return (
-    <main className="main-content page-shell readable">
-      <PageTitle
-        eyebrow="Wakefield"
-        title="The long shadow of one bad claim"
-        description="Why one discredited MMR scare still matters for public health, local trust and outbreak vulnerability."
-      />
-
-      <section className="card prose-card">
-        <h2>Why this page exists</h2>
-        <p>
-          MMR hesitancy did not appear from nowhere. One of the biggest shocks to public confidence
-          came from a now-discredited claim linking MMR to autism.
-        </p>
-        <p>
-          The claim spread faster than the correction. That is why a local coverage tracker needs a
-          page explaining the history, not just a chart showing the numbers.
-        </p>
-      </section>
-
-      <section className="card prose-card">
-        <h2>The basic story</h2>
-        <p>
-          A small 1998 paper helped fuel public fear about the MMR vaccine. The central claim did not
-          hold up, the paper was later retracted, and the scare became a case study in how weak evidence
-          can damage public trust for decades.
-        </p>
-        <p>
-          HerdWatch does not treat that story as gossip. It treats it as infrastructure damage:
-          when trust falls, vaccination coverage can fall with it.
-        </p>
-      </section>
-
-      <section className="card prose-card">
-        <h2>What the data question becomes</h2>
-        <p>
-          The useful question is not whether one parent is to blame. The useful question is whether
-          whole areas have slipped below safer coverage levels.
-        </p>
-        <p>
-          That is why HerdWatch tracks postcode-district coverage and flags places below the 95% target
-          or below 90%, where vulnerability becomes harder to ignore.
-        </p>
-      </section>
-
-      <section className="card prose-card">
-        <h2>What this page is not saying</h2>
-        <p>
-          This page is not medical advice. It is not a substitute for a GP, NHS guidance or official
-          public health advice.
-        </p>
-        <p>
-          It is a plain-English explanation of why misinformation can have a measurable civic cost:
-          fewer protected people, weaker herd immunity and more outbreak risk.
-        </p>
-      </section>
-
-      <section className="card prose-card">
-        <h2>Where to go next</h2>
-        <p>
-          Use the explorer to look at local coverage, or read NHS guidance if you need practical
-          information about the MMR vaccine.
-        </p>
-        <p>
-          <a className="btn btn-red" href="/map/">Open the coverage explorer</a>
-          {' '}
-          <a className="btn btn-outline" href="https://www.nhs.uk/vaccinations/mmr-vaccine/" target="_blank" rel="noreferrer">
-            NHS MMR guidance
-          </a>
-        </p>
-      </section>
-    </main>
-  );
+  return <main className="main-content page-shell readable"><PageTitle eyebrow="The myth" title="Herd immunity is not magic" description="It is a threshold effect: when enough people are immune, infections have fewer routes through a community." /><section className="card prose-card"><h2>Why the 95% line matters</h2><p>Measles is unusually infectious. Small drops in vaccination coverage can therefore create large changes in local outbreak vulnerability.</p><p>HerdWatch should avoid shaming individual families. The stronger civic angle is: low coverage reveals a system-level vulnerability, especially for babies, immunocompromised people and anyone who cannot be vaccinated.</p></section></main>;
 }
 
 function MethodologyPage() {
@@ -544,7 +396,6 @@ export default function App() {
       {page === 'town' ? <TownPage area={area} /> : null}
       {page === 'map' ? <MapPage /> : null}
       {page === 'myths' ? <MythsPage /> : null}
-      {page === 'wakefield' ? <WakefieldPage /> : null}
       {page === 'methodology' ? <MethodologyPage /> : null}
       {page === 'not-found' ? <NotFoundPage /> : null}
       <Footer />

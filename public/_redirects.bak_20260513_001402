@@ -1,0 +1,12 @@
+/wakefield      /wakefield/index.html     200
+/wakefield/     /wakefield/index.html     200
+/map            /map/index.html           200
+/map/           /map/index.html           200
+/myths          /myths/index.html         200
+/myths/         /myths/index.html         200
+/towns          /index.html               200
+/towns/         /index.html               200
+/methodology    /index.html               200
+/methodology/   /index.html               200
+/town/*         /index.html               200
+/*              /index.html               200
