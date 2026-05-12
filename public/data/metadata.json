@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-09T04:25:03.770Z",
+  "generatedAt": "2026-05-12T22:59:09.910Z",
   "usingExampleData": false,
   "sourceFiles": {
     "areas": "data\\raw\\areas.csv",
@@ -8,7 +8,7 @@
   "rawAreaRowCount": 1889,
   "areaCount": 1889,
   "duplicatePostcodeDistrictCount": 0,
-  "trendPointCount": 1,
+  "trendPointCount": 5,
   "statusCounts": {
     "AT_RISK": 614,
     "VULNERABLE": 833,
