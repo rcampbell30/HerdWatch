@@ -1,0 +1,65 @@
+name: Repo Hygiene
+
+on:
+  schedule:
+    - cron: '17 4 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: repo-hygiene
+  cancel-in-progress: false
+
+jobs:
+  tidy:
+    name: Check and tidy repository structure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run repo hygiene script
+        run: npm run repo:hygiene
+
+      - name: Validate build after hygiene changes
+        run: npm run build
+
+      - name: Create pull request if hygiene changed files
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          branch: chore/daily-repo-hygiene
+          delete-branch: true
+          title: 'Daily repo hygiene tidy-up'
+          commit-message: 'Run daily repo hygiene tidy-up'
+          body: |
+            Automated HerdWatch repo hygiene run.
+
+            This PR is created only when the hygiene script changes files.
+
+            Checks performed:
+            - ensure `public/ads.txt` is the canonical ads.txt location
+            - remove duplicate misplaced ads.txt files when safe
+            - normalise Netlify redirects, including `/town/* -> /index.html`
+            - inject AdSense meta tags into source HTML pages where missing
+            - move known standalone root HTML pages into `public/<route>/index.html` when safe
+            - verify expected standalone pages exist
+            - run `npm run build` after cleanup
+          labels: |
+            automation
+            repo-hygiene
