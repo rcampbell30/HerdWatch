@@ -8,6 +8,7 @@
     "build": "npm run data:build && vite build && node scripts/create-static-route-entrypoints.mjs && node scripts/inject-adsense-meta.mjs",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
+    "repo:hygiene": "node scripts/repo-hygiene.mjs",
     "data:download": "node scripts/download-cover-sources.mjs",
     "data:cover:areas": "python scripts/build-cover-areas.py",
     "data:cover:trends": "python scripts/build-cover-trends.py",
