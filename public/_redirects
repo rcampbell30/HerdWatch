@@ -5,10 +5,10 @@
 /methodology    /methodology/   301
 /mythology      /methodology/   301
 /myths          /myths/         301
+/wakefield      /wakefield/     301
 /map/           /map/index.html           200
 /towns/         /towns/index.html         200
 /methodology/   /methodology/index.html   200
 /myths/         /myths/index.html         200
 /wakefield/     /wakefield/index.html     200
-/wakefield      /wakefield/               301
-/town/*         /town/:splat/index.html   200
+/town/*         /index.html               200
