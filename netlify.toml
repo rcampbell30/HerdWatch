@@ -6,6 +6,81 @@
   NODE_VERSION = "20"
 
 [[redirects]]
+  from = "/methodologies"
+  to = "/methodology/"
+  status = 301
+
+[[redirects]]
+  from = "/methodologies/"
+  to = "/methodology/"
+  status = 301
+
+[[redirects]]
+  from = "/map"
+  to = "/map/"
+  status = 301
+
+[[redirects]]
+  from = "/towns"
+  to = "/towns/"
+  status = 301
+
+[[redirects]]
+  from = "/methodology"
+  to = "/methodology/"
+  status = 301
+
+[[redirects]]
+  from = "/mythology"
+  to = "/methodology/"
+  status = 301
+
+[[redirects]]
+  from = "/myths"
+  to = "/myths/"
+  status = 301
+
+[[redirects]]
+  from = "/wakefield"
+  to = "/wakefield/"
+  status = 301
+
+[[redirects]]
+  from = "/town/:area"
+  to = "/town/:area/"
+  status = 301
+
+[[redirects]]
+  from = "/map/"
+  to = "/map/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/towns/"
+  to = "/towns/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/methodology/"
+  to = "/methodology/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/myths/"
+  to = "/myths/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/wakefield/"
+  to = "/wakefield/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/town/*"
+  to = "/town/:splat/index.html"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
