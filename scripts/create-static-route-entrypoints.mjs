@@ -3,7 +3,7 @@ import { dirname, join } from 'node:path';
 
 const distDir = 'dist';
 const sourceIndex = join(distDir, 'index.html');
-const baseUrl = normaliseBaseUrl(process.env.SITE_URL || process.env.URL || 'https://herdwatch.netlify.app');
+const baseUrl = normaliseBaseUrl(process.env.SITE_URL || process.env.URL || 'https://herdwatchuk.netlify.app');
 
 const routes = [
   'towns',
