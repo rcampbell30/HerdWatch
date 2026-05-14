@@ -10,7 +10,7 @@ Current generated metadata reports:
 
 - Example data: false
 - Source files: `data/raw/areas.csv` and `data/raw/trends.csv`
-- Area rows: 1,889
+- Postcode-district area records: 1,889
 - Duplicate postcode districts: 0
 - Trend points: 5
 - At-risk areas: 614
@@ -27,6 +27,28 @@ The raw official source downloads themselves are not committed because the origi
 
 Before presenting the project as fully production-grade public-health infrastructure, keep the source methodology visible and periodically refresh the data from official NHS/UKHSA sources.
 
+## Programmatic local SEO
+
+The production build now creates static route entrypoints for every generated postcode-district page under:
+
+```text
+/town/{postcode-district}/
+```
+
+Each generated town page gets route-specific search metadata:
+
+- unique `<title>`;
+- unique meta description;
+- `index, follow` robots tag;
+- canonical URL;
+- Open Graph and Twitter metadata;
+- JSON-LD `WebPage` structured data;
+- a noscript local coverage summary using the same generated area data.
+
+The build also generates `dist/sitemap.xml` from the current route list and generated area data. The sitemap includes the core public routes and every `/town/{postcode-district}/` page.
+
+`public/robots.txt` points crawlers to the generated sitemap.
+
 ## Tech stack
 
 - Vite
@@ -35,6 +57,8 @@ Before presenting the project as fully production-grade public-health infrastruc
 - Recharts
 - Netlify static deployment
 - Node data-build scripts
+- Node static SEO route generation
+- Node sitemap generation
 - Python COVER conversion scripts
 
 ## Local development
@@ -50,6 +74,8 @@ npm run dev
 npm run build
 npm run preview
 ```
+
+The production build runs the data pipeline, builds the Vite app, creates static route entrypoints, creates the sitemap, then injects the AdSense meta tag.
 
 Netlify settings are included in `netlify.toml`:
 
@@ -148,13 +174,18 @@ scripts/
   build-data.mjs
   build-cover-areas.py
   build-cover-trends.py
+  create-sitemap.mjs
+  create-static-route-entrypoints.mjs
   download-cover-sources.mjs
+  inject-adsense-meta.mjs
 public/
   data/
     areas.json
     trends.json
     metadata.json
   _redirects
+  herdwatch-nav-patch.js
+  robots.txt
 index.html
 netlify.toml
 vite.config.ts
@@ -163,9 +194,8 @@ tsconfig.json
 
 ## Next proper upgrade
 
-1. Add a clear methodology/source page to the live app.
-2. Show the latest data timestamp and `usingExampleData: false` status in the UI footer or data notes.
-3. Add CI so every pull request runs `npm run data:build` and `npm run build`.
-4. Add Leaflet, SVG, or GeoJSON-based map views.
-5. Add local authority/ICB summary pages for search and public usefulness.
-6. Add screenshots to this README.
+1. Add CI so every pull request runs `npm run data:build`, `npm run typecheck` and `npm run build`.
+2. Add Leaflet, SVG, or GeoJSON-based map views.
+3. Add local authority/ICB summary pages for search and public usefulness.
+4. Add a `/rankings/` page for lowest coverage, biggest estimated unvaccinated counts and areas closest to the 95% target.
+5. Add screenshots to this README.
