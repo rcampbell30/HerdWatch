@@ -4,27 +4,28 @@ HerdWatch is an MMR vaccination coverage tracker for England. It highlights loca
 
 ## Current status
 
-This repository originally contained a deployed/exported Next.js build from Netlify, not the original editable source code. It has now been rebuilt as a clean editable React + TypeScript + Vite project while preserving the current look and headline content from the deployed site.
+HerdWatch has been rebuilt as a clean editable React + TypeScript + Vite project and now uses rebuilt real data files rather than the earlier placeholder trend/scaffold state.
 
-Preserved headline figures from the deployed export:
+Current generated metadata reports:
 
-- England MMR1 average: 88.9%
-- Herd-immunity target: 95%
-- Unvaccinated children: 14,295
-- Total postcode districts tracked in the original deployed site: 1,132
-- At-risk areas: 461
-- Vulnerable areas: 441
-- Protected areas: 230
+- Example data: false
+- Source files: `data/raw/areas.csv` and `data/raw/trends.csv`
+- Area rows: 1,889
+- Duplicate postcode districts: 0
+- Trend points: 5
+- At-risk areas: 614
+- Vulnerable areas: 833
+- Protected areas: 442
+
+The public dashboard should still be treated as an explanatory public-health data interface, not medical advice or an official NHS/UKHSA service.
 
 ## Important data note
 
-The deployed static export did not include the original clean data import pipeline. The rebuilt source therefore includes:
+The editable source project now includes normalised generated data under both `src/data/generated/` and `public/data/`.
 
-- preserved headline stats from the deployed site;
-- a starter area dataset reconstructed from visible deployed pages;
-- placeholder historic trend data for developing the new chart UI.
+The raw official source downloads themselves are not committed because the original source/reference files can be large and are reproducible through the data pipeline. The committed normalised CSV/JSON outputs are what the React app builds from.
 
-Before presenting the trend chart as final analysis, replace the placeholder trend data with real historic NHS COVER extracts.
+Before presenting the project as fully production-grade public-health infrastructure, keep the source methodology visible and periodically refresh the data from official NHS/UKHSA sources.
 
 ## Tech stack
 
@@ -33,6 +34,8 @@ Before presenting the trend chart as final analysis, replace the placeholder tre
 - TypeScript
 - Recharts
 - Netlify static deployment
+- Node data-build scripts
+- Python COVER conversion scripts
 
 ## Local development
 
@@ -58,11 +61,14 @@ Netlify settings are included in `netlify.toml`:
 
 ## Data pipeline
 
-The app now reads generated JSON files from:
+The app reads generated JSON files from:
 
 ```text
 src/data/generated/areas.json
 src/data/generated/trends.json
+public/data/areas.json
+public/data/trends.json
+public/data/metadata.json
 ```
 
 These files are built from CSV inputs under:
@@ -72,14 +78,7 @@ data/raw/areas.csv
 data/raw/trends.csv
 ```
 
-Example files are included so the pipeline works before the real NHS COVER extracts are restored:
-
-```text
-data/raw/areas.example.csv
-data/raw/trends.example.csv
-```
-
-Run the data pipeline with:
+Run the standard data pipeline with:
 
 ```bash
 npm run data:build
@@ -93,7 +92,8 @@ The script will:
 - validate coverage ranges;
 - reject records where vaccinated children exceed eligible children;
 - write generated JSON for the React app;
-- write a report to `data/processed/data-report.json`.
+- write public JSON for static/route use;
+- write metadata to `public/data/metadata.json`.
 
 Expected area CSV columns:
 
@@ -108,6 +108,19 @@ year,england_mmr1,england_mmr2,target
 ```
 
 If `coverage` is blank in the area CSV, it will be calculated from `total_vaccinated / total_eligible * 100`.
+
+## Real COVER source workflow
+
+The repo includes scripts for refreshing from official COVER-style source files:
+
+```bash
+npm run data:download
+npm run data:cover:areas
+npm run data:cover:trends
+npm run data:cover:all
+```
+
+`data/raw/source/`, `data/raw/ref/` and processed reports are ignored because they are reproducible/downloaded build inputs.
 
 ## Project structure
 
@@ -125,13 +138,22 @@ src/
       trends.json
 data/
   raw/
+    areas.csv
+    trends.csv
     areas.example.csv
     trends.example.csv
   processed/
     .gitkeep
 scripts/
   build-data.mjs
+  build-cover-areas.py
+  build-cover-trends.py
+  download-cover-sources.mjs
 public/
+  data/
+    areas.json
+    trends.json
+    metadata.json
   _redirects
 index.html
 netlify.toml
@@ -141,8 +163,9 @@ tsconfig.json
 
 ## Next proper upgrade
 
-1. Restore the full NHS COVER dataset into `data/raw/areas.csv`.
-2. Add real historic MMR1/MMR2 coverage into `data/raw/trends.csv`.
-3. Run `npm run data:build` to replace the scaffold data.
-4. Upgrade the map page with Leaflet or a lightweight SVG/GeoJSON view.
-5. Add CI so every pull request runs `npm run data:build` and `npm run build`.
+1. Add a clear methodology/source page to the live app.
+2. Show the latest data timestamp and `usingExampleData: false` status in the UI footer or data notes.
+3. Add CI so every pull request runs `npm run data:build` and `npm run build`.
+4. Add Leaflet, SVG, or GeoJSON-based map views.
+5. Add local authority/ICB summary pages for search and public usefulness.
+6. Add screenshots to this README.
