@@ -1,6 +1,7 @@
 (() => {
   const WAKEFIELD_HREF = '/wakefield/';
   const WAKEFIELD_LABEL = 'Wakefield';
+  let localCoverageCardLoading = false;
 
   function isWakefieldActive() {
     return window.location.pathname.startsWith('/wakefield');
@@ -92,23 +93,27 @@
 
   async function addLocalCoverageCard() {
     const slug = getTownSlug();
-    if (!slug || document.querySelector('.local-coverage-card')) return;
+    if (!slug || localCoverageCardLoading || document.querySelector('.local-coverage-card')) return;
 
     const mainCol = document.querySelector('.main-col');
     const metricGrid = document.querySelector('.main-col .metric-grid');
     if (!mainCol || !metricGrid) return;
+
+    localCoverageCardLoading = true;
 
     try {
       const response = await fetch('/data/areas.json', { cache: 'force-cache' });
       if (!response.ok) return;
       const areas = await response.json();
       const area = areas.find((item) => String(item.postcodeDistrict).toUpperCase() === slug);
-      if (!area) return;
+      if (!area || document.querySelector('.local-coverage-card')) return;
 
       const card = makeLocalCoverageCard(area);
       metricGrid.insertAdjacentElement('afterend', card);
     } catch {
       // Non-critical enhancement. The React page and static noscript summary still render without this card.
+    } finally {
+      localCoverageCardLoading = false;
     }
   }
 
