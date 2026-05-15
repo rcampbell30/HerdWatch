@@ -5,7 +5,7 @@ const brandName = 'Immunity Map';
 const brandTagline = 'Local MMR coverage and herd-immunity gaps across England.';
 const distDir = 'dist';
 const sourceIndex = join(distDir, 'index.html');
-const baseUrl = normaliseBaseUrl(process.env.SITE_URL || process.env.URL || 'https://herdwatchuk.netlify.app');
+const baseUrl = normaliseBaseUrl(process.env.SITE_URL || process.env.URL || 'https://immunitymap.netlify.app');
 
 const routes = [
   'towns',
