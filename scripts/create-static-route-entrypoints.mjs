@@ -1,6 +1,8 @@
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
+const brandName = 'Immunity Map';
+const brandTagline = 'Local MMR coverage and herd-immunity gaps across England.';
 const distDir = 'dist';
 const sourceIndex = join(distDir, 'index.html');
 const baseUrl = normaliseBaseUrl(process.env.SITE_URL || process.env.URL || 'https://herdwatchuk.netlify.app');
@@ -52,7 +54,7 @@ for (const area of areas) {
 }
 
 function withTownSeo(html, area, slug) {
-  const title = `${area.postcodeDistrict} MMR Vaccination Coverage | HerdWatch`;
+  const title = `${area.postcodeDistrict} MMR Vaccination Coverage | ${brandName}`;
   const description = `Track ${area.postcodeDistrict} MMR vaccination coverage, herd-immunity gap, risk status and estimated unvaccinated children using generated NHS COVER data.`;
   const canonical = `${baseUrl}/town/${slug}/`;
   const unvaccinated = Math.max(0, area.totalEligible - area.totalVaccinated);
@@ -65,7 +67,8 @@ function withTownSeo(html, area, slug) {
     url: canonical,
     isPartOf: {
       '@type': 'WebSite',
-      name: 'HerdWatch',
+      name: brandName,
+      description: brandTagline,
       url: baseUrl
     },
     about: {
@@ -98,7 +101,7 @@ function withTownSeo(html, area, slug) {
 }
 
 function injectNoscriptSummary(html, area, unvaccinated, gap) {
-  const summary = `<noscript><main><h1>${escapeHtml(area.postcodeDistrict)} MMR vaccination coverage</h1><p>${escapeHtml(area.postcodeDistrict)} is listed in ${escapeHtml(area.region)} with ${escapeHtml(String(area.coverage))}% MMR1 coverage. The local gap to the 95% herd-immunity target is ${escapeHtml(gap)} percentage points. The generated data represents ${escapeHtml(String(area.practiceCount))} practices, ${escapeHtml(String(area.totalEligible))} eligible children, ${escapeHtml(String(area.totalVaccinated))} vaccinated children and an estimated ${escapeHtml(String(unvaccinated))} children not counted as vaccinated. HerdWatch is an explanatory public-health data interface, not medical advice.</p></main></noscript>`;
+  const summary = `<noscript><main><h1>${escapeHtml(area.postcodeDistrict)} MMR vaccination coverage</h1><p>${escapeHtml(area.postcodeDistrict)} is listed in ${escapeHtml(area.region)} with ${escapeHtml(String(area.coverage))}% MMR1 coverage. The local gap to the 95% herd-immunity target is ${escapeHtml(gap)} percentage points. The generated data represents ${escapeHtml(String(area.practiceCount))} practices, ${escapeHtml(String(area.totalEligible))} eligible children, ${escapeHtml(String(area.totalVaccinated))} vaccinated children and an estimated ${escapeHtml(String(unvaccinated))} children not counted as vaccinated. ${brandName} is an explanatory public-health data interface, not medical advice.</p></main></noscript>`;
   return html.replace('<div id="root"></div>', `<div id="root"></div>\n    ${summary}`);
 }
 
