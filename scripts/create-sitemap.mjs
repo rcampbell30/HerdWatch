@@ -2,7 +2,7 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 const distDir = 'dist';
-const baseUrl = normaliseBaseUrl(process.env.SITE_URL || process.env.URL || 'https://herdwatchuk.netlify.app');
+const baseUrl = normaliseBaseUrl(process.env.SITE_URL || process.env.URL || 'https://immunitymap.netlify.app');
 
 if (!existsSync(distDir)) {
   throw new Error('dist/ does not exist. Run vite build before creating sitemap.xml.');
