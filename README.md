@@ -1,10 +1,12 @@
-# HerdWatch
+# Immunity Map
 
-HerdWatch is an MMR vaccination coverage tracker for England. It highlights local coverage, herd-immunity gaps and outbreak vulnerability using a black/red/cream civic dashboard style.
+Immunity Map is an MMR vaccination coverage tracker for England. It highlights local coverage, herd-immunity gaps and outbreak vulnerability using a black/red/cream civic dashboard style.
+
+Repository note: the GitHub repository remains `HerdWatch`, but the public-facing product name is now **Immunity Map**.
 
 ## Current status
 
-HerdWatch has been rebuilt as a clean editable React + TypeScript + Vite project and now uses rebuilt real data files rather than the earlier placeholder trend/scaffold state.
+Immunity Map has been rebuilt as a clean editable React + TypeScript + Vite project and now uses rebuilt real data files rather than the earlier placeholder trend/scaffold state.
 
 Current generated metadata reports:
 
@@ -49,6 +51,8 @@ The build also generates `dist/sitemap.xml` from the current route list and gene
 
 `public/robots.txt` points crawlers to the generated sitemap.
 
+A final build-time branding pass applies the public product name **Immunity Map** across generated HTML/JS/CSS/XML/TXT output so older standalone static pages do not leak the previous public brand.
+
 ## Tech stack
 
 - Vite
@@ -59,6 +63,7 @@ The build also generates `dist/sitemap.xml` from the current route list and gene
 - Node data-build scripts
 - Node static SEO route generation
 - Node sitemap generation
+- Node public branding pass
 - Python COVER conversion scripts
 
 ## Local development
@@ -75,7 +80,7 @@ npm run build
 npm run preview
 ```
 
-The production build runs the data pipeline, builds the Vite app, creates static route entrypoints, creates the sitemap, then injects the AdSense meta tag.
+The production build runs the data pipeline, builds the Vite app, creates static route entrypoints, creates the sitemap, injects the AdSense meta tag, then applies the public branding pass.
 
 Netlify settings are included in `netlify.toml`:
 
@@ -171,6 +176,7 @@ data/
   processed/
     .gitkeep
 scripts/
+  apply-public-branding.mjs
   build-data.mjs
   build-cover-areas.py
   build-cover-trends.py
