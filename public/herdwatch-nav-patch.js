@@ -1,4 +1,5 @@
 (() => {
+  const BRAND_NAME = 'Immunity Map';
   const WAKEFIELD_HREF = '/wakefield/';
   const WAKEFIELD_LABEL = 'Wakefield';
   let localCoverageCardLoading = false;
@@ -79,13 +80,13 @@
       <p class="eyebrow">Local coverage summary</p>
       <h2 class="card-title">MMR coverage in ${escapeHtml(area.postcodeDistrict)}</h2>
       <p class="body-copy">
-        ${escapeHtml(area.postcodeDistrict)} is recorded in ${escapeHtml(area.region)} with <strong>${formatPercent(area.coverage)} MMR1 coverage at 24 months</strong> across ${Number(area.practiceCount).toLocaleString()} represented practices. HerdWatch currently marks this postcode district as <strong>${riskLabel(area.status)}</strong> against the 95% herd-immunity target.
+        ${escapeHtml(area.postcodeDistrict)} is recorded in ${escapeHtml(area.region)} with <strong>${formatPercent(area.coverage)} MMR1 coverage at 24 months</strong> across ${Number(area.practiceCount).toLocaleString()} represented practices. ${BRAND_NAME} currently marks this postcode district as <strong>${riskLabel(area.status)}</strong> against the 95% herd-immunity target.
       </p>
       <p class="body-copy">
         The local gap to 95% is <strong>${gap.toFixed(1)} percentage points</strong>. In the generated COVER area data, ${Number(area.totalEligible).toLocaleString()} children are counted as eligible, ${Number(area.totalVaccinated).toLocaleString()} are counted as vaccinated, and approximately ${unvaccinated.toLocaleString()} are not counted as vaccinated. These are postcode-district indicators, not household-level or individual records.
       </p>
       <p class="body-copy">
-        HerdWatch is an explanatory public-health data interface, not medical advice or an official NHS/UKHSA service. For personal vaccination guidance, use NHS advice or contact a GP practice.
+        ${BRAND_NAME} is an explanatory public-health data interface, not medical advice or an official NHS/UKHSA service. For personal vaccination guidance, use NHS advice or contact a GP practice.
       </p>
     `;
     return section;
