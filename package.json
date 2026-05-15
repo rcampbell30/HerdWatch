@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run data:build && vite build && node scripts/create-static-route-entrypoints.mjs && node scripts/create-sitemap.mjs && node scripts/inject-adsense-meta.mjs",
+    "build": "npm run data:build && vite build && node scripts/create-static-route-entrypoints.mjs && node scripts/create-sitemap.mjs && node scripts/inject-adsense-meta.mjs && node scripts/apply-public-branding.mjs",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
     "repo:hygiene": "node scripts/repo-hygiene.mjs",
