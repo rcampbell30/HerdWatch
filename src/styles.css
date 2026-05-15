@@ -98,7 +98,8 @@ a {
 
 .hero {
   position: relative;
-  overflow: hidden;
+  z-index: 1;
+  overflow: visible;
   padding: 80px 40px 60px;
   background: var(--black);
   color: white;
@@ -164,6 +165,7 @@ a {
 
 .search-wrap {
   position: relative;
+  z-index: 200;
   width: 100%;
   max-width: 520px;
 }
@@ -195,7 +197,7 @@ a {
   top: calc(100% + 8px);
   left: 0;
   right: 0;
-  z-index: 50;
+  z-index: 300;
   overflow: hidden;
   border-radius: 8px;
   background: white;
@@ -217,6 +219,8 @@ a {
 .search-item:last-child { border-bottom: 0; }
 
 .counter-bar {
+  position: relative;
+  z-index: 0;
   padding: 18px 40px;
   background: var(--red);
 }
@@ -693,6 +697,7 @@ td a { color: var(--red); font-weight: 800; text-decoration: none; }
   .hero { padding: 50px 20px 40px; }
   .hero-title { font-size: 2rem; }
   .hero-sub { font-size: 0.95rem; }
+  .search-dropdown { max-height: min(42vh, 320px); overflow-y: auto; }
   .main-content,
   .content-layout { padding: 30px 16px; }
   .hero-band { padding: 22px 16px 0; }
