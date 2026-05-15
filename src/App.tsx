@@ -15,6 +15,8 @@ import { areas, deployedNationalStats } from './data/areas';
 import { buildAreaTrend, nationalTrend } from './data/trends';
 import type { HerdArea, RiskStatus, TrendPoint } from './types';
 
+const brandName = 'Immunity Map';
+const brandTagline = 'Local MMR coverage and herd-immunity gaps across England.';
 const target = deployedNationalStats.herdImmunityTarget;
 const latestTrendPoint = nationalTrend[nationalTrend.length - 1];
 const LINE_MMR1 = '#2563eb';
@@ -69,13 +71,17 @@ function getPageFromPath(pathname: string): 'home' | 'towns' | 'town' | 'map' | 
   return 'not-found';
 }
 
+function BrandText() {
+  return <>Immunity<span>Map</span></>;
+}
+
 function Nav() {
   const pathname = window.location.pathname;
   const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href));
 
   return (
     <nav className="nav">
-      <a className="nav-brand" href="/">Herd<span>Watch</span></a>
+      <a className="nav-brand" href="/"><BrandText /></a>
       <div className="nav-links">
         <a className={`nav-link ${isActive('/') ? 'active' : ''}`} href="/">Home</a>
         <a className={`nav-link ${isActive('/myths') ? 'active' : ''}`} href="/myths/">The Myth</a>
@@ -92,7 +98,8 @@ function Footer() {
     <footer className="footer">
       <div className="footer-inner">
         <div>
-          <div className="footer-brand">Herd<span>Watch</span></div>
+          <div className="footer-brand"><BrandText /></div>
+          <div className="footer-copy">{brandTagline}</div>
           <div className="footer-copy">Data: {deployedNationalStats.sourceLabel} · postcode-district aggregation</div>
         </div>
         <div className="footer-links">
@@ -111,7 +118,7 @@ function Footer() {
 function DataNotice() {
   return (
     <div className="notice-card">
-      <strong>Data note:</strong> HerdWatch now uses generated NHS COVER area data aggregated from GP-level coverage records into postcode districts. Counts are best read as local coverage indicators, not as household-level or individual-level records.
+      <strong>Data note:</strong> {brandName} uses generated NHS COVER area data aggregated from GP-level coverage records into postcode districts. Counts are best read as local coverage indicators, not as household-level or individual-level records.
     </div>
   );
 }
@@ -210,7 +217,7 @@ function Hero({ onSearch }: { onSearch: (value: string) => void }) {
       <div className="hero-inner">
         <div className="hero-tag">{deployedNationalStats.sourceLabel}</div>
         <h1 className="hero-title">MMR vaccination<br />coverage <em>tracker</em></h1>
-        <p className="hero-sub">Find MMR coverage rates, local vulnerability and herd-immunity gaps across England.</p>
+        <p className="hero-sub">{brandTagline}</p>
         <div className="search-wrap">
           <input className="search-input" placeholder="Search postcode district — FY1, M15, LS12..." value={query} onChange={(event) => handleChange(event.target.value)} />
           {results.length > 0 ? (
@@ -246,7 +253,7 @@ function NationalPicture() {
       <SectionHeader title="National Picture" />
       <div className="context-card">
         <div className="context-item"><div className="context-val risk-text">{formatPercent(liveAreaStats.englandAverage)}</div><div className="context-item-label">England MMR1</div><div className="context-item-sub">Generated annual COVER point for {liveAreaStats.latestTrendYear}, below the 95% target.</div></div>
-        <div className="context-item bordered"><div className="context-val protected-text">{target}%</div><div className="context-item-label">Coverage Target</div><div className="context-item-sub">The working threshold HerdWatch uses to flag local vulnerability.</div></div>
+        <div className="context-item bordered"><div className="context-val protected-text">{target}%</div><div className="context-item-label">Coverage Target</div><div className="context-item-sub">The working threshold {brandName} uses to flag local vulnerability.</div></div>
         <div className="context-item"><div className="context-val vulnerable-text">{liveAreaStats.unvaccinatedChildren.toLocaleString()}</div><div className="context-item-label">Unvaccinated Estimate</div><div className="context-item-sub">Approximate count across imported GP-level area records after postcode-district aggregation.</div></div>
       </div>
     </>
@@ -394,7 +401,7 @@ function MythsPage() {
         </p>
         <p>
           When coverage is patchy, even a national average can hide local vulnerability. That is why
-          HerdWatch focuses on postcode-district level signals instead of only headline national figures.
+          {brandName} focuses on postcode-district level signals instead of only headline national figures.
         </p>
       </section>
 
@@ -412,9 +419,9 @@ function MythsPage() {
       </section>
 
       <section className="card prose-card">
-        <h2>What HerdWatch is measuring</h2>
+        <h2>What {brandName} is measuring</h2>
         <p>
-          HerdWatch uses generated NHS COVER area data aggregated into postcode districts. The figures
+          {brandName} uses generated NHS COVER area data aggregated into postcode districts. The figures
           are local coverage indicators, not household-level records and not individual vaccination records.
         </p>
         <p>
@@ -427,7 +434,7 @@ function MythsPage() {
         <h2>Useful next step</h2>
         <p>
           If you are unsure about your own or your child's vaccination status, use official NHS guidance
-          or contact your GP practice. HerdWatch is a public-interest dashboard, not medical advice.
+          or contact your GP practice. {brandName} is a public-interest dashboard, not medical advice.
         </p>
         <p>
           <a className="btn btn-red" href="https://www.nhs.uk/vaccinations/mmr-vaccine/" target="_blank" rel="noreferrer">
@@ -468,8 +475,7 @@ function WakefieldPage() {
           can damage public trust for decades.
         </p>
         <p>
-          HerdWatch does not treat that story as gossip. It treats it as infrastructure damage:
-          when trust falls, vaccination coverage can fall with it.
+          {brandName} treats that story as infrastructure damage: when trust falls, vaccination coverage can fall with it.
         </p>
       </section>
 
@@ -480,7 +486,7 @@ function WakefieldPage() {
           whole areas have slipped below safer coverage levels.
         </p>
         <p>
-          That is why HerdWatch tracks postcode-district coverage and flags places below the 95% target
+          That is why {brandName} tracks postcode-district coverage and flags places below the 95% target
           or below 90%, where vulnerability becomes harder to ignore.
         </p>
       </section>
@@ -518,8 +524,8 @@ function WakefieldPage() {
 function MethodologyPage() {
   return (
     <main className="main-content page-shell readable">
-      <PageTitle eyebrow="Methodology" title="How HerdWatch handles the data" description="A plain-English summary of the current NHS COVER import and postcode-district aggregation." />
-      <section className="card prose-card"><h2>Current data status</h2><p>HerdWatch now uses generated area data from NHS COVER GP-level records, aggregated into postcode districts and risk bands. The public explorer reads the generated JSON file at <code>/data/areas.json</code>.</p><h2>Area aggregation</h2><ol><li>Download official NHS COVER supplementary GP-level files and GP practice reference data.</li><li>Join GP practice codes to practice postcodes.</li><li>Convert practice postcodes into outward postcode districts.</li><li>Aggregate eligible and vaccinated counts by postcode district.</li><li>Assign risk bands using the 90% and 95% coverage thresholds.</li></ol><h2>Important limitation</h2><p>Postcode-district figures are local coverage indicators derived from GP-level source records. They are not household-level records and should not be used to identify individual vaccination status.</p></section>
+      <PageTitle eyebrow="Methodology" title="How {brandName} handles the data" description="A plain-English summary of the current NHS COVER import and postcode-district aggregation." />
+      <section className="card prose-card"><h2>Current data status</h2><p>{brandName} uses generated area data from NHS COVER GP-level records, aggregated into postcode districts and risk bands. The public explorer reads the generated JSON file at <code>/data/areas.json</code>.</p><h2>Area aggregation</h2><ol><li>Download official NHS COVER supplementary GP-level files and GP practice reference data.</li><li>Join GP practice codes to practice postcodes.</li><li>Convert practice postcodes into outward postcode districts.</li><li>Aggregate eligible and vaccinated counts by postcode district.</li><li>Assign risk bands using the 90% and 95% coverage thresholds.</li></ol><h2>Important limitation</h2><p>Postcode-district figures are local coverage indicators derived from GP-level source records. They are not household-level records and should not be used to identify individual vaccination status.</p></section>
     </main>
   );
 }
@@ -529,7 +535,7 @@ function PageTitle({ eyebrow, title, description }: { eyebrow: string; title: st
 }
 
 function NotFoundPage() {
-  return <main className="main-content page-shell centered"><h1>Page not found</h1><p>The app does not have this route.</p><a className="btn btn-red" href="/">Back to HerdWatch</a></main>;
+  return <main className="main-content page-shell centered"><h1>Page not found</h1><p>The app does not have this route.</p><a className="btn btn-red" href="/">Back to {brandName}</a></main>;
 }
 
 export default function App() {
