@@ -16,6 +16,16 @@ const coreRoutes = new Set([
   '/methodology/'
 ]);
 
+const validChangefreqs = new Set([
+  'always',
+  'hourly',
+  'daily',
+  'weekly',
+  'monthly',
+  'yearly',
+  'never'
+]);
+
 const forbiddenRoutePatterns = [
   { name: 'topic/tag route flood', pattern: /^\/(topics|tags)\// },
   { name: 'search route', pattern: /^\/search(\/|$)/ },
@@ -41,10 +51,22 @@ if (!existsSync(sitemapPath)) {
 }
 
 const sitemapXml = readFileSync(sitemapPath, 'utf8');
-const urls = extractLocs(sitemapXml);
+
+validateXmlShape(sitemapXml);
+
+const entries = extractUrlEntries(sitemapXml);
+const urls = entries.map((entry) => entry.loc).filter(Boolean);
+
+if (entries.length === 0) {
+  fail('No <url> entries found in dist/sitemap.xml.');
+}
 
 if (urls.length === 0) {
   fail('No <loc> URLs found in dist/sitemap.xml.');
+}
+
+if (urls.length !== entries.length) {
+  errors.push(`Sitemap has ${entries.length} <url> entries but only ${urls.length} <loc> values.`);
 }
 
 if (urls.length > maxUrls) {
@@ -53,7 +75,14 @@ if (urls.length > maxUrls) {
 
 const seen = new Set();
 
-for (const loc of urls) {
+for (const entry of entries) {
+  const { loc, lastmod, changefreq, priority } = entry;
+
+  if (!loc) {
+    errors.push('A sitemap <url> entry is missing <loc>.');
+    continue;
+  }
+
   if (seen.has(loc)) {
     errors.push(`Duplicate sitemap URL: ${loc}`);
     continue;
@@ -88,7 +117,35 @@ for (const loc of urls) {
     errors.push(`Sitemap URL contains a hash fragment: ${loc}`);
   }
 
+  if (!lastmod) {
+    errors.push(`Missing <lastmod> for ${loc}`);
+  } else if (!/^\d{4}-\d{2}-\d{2}$/.test(lastmod)) {
+    errors.push(`Invalid <lastmod> format for ${loc}: ${lastmod}. Expected YYYY-MM-DD.`);
+  }
+
+  if (!changefreq) {
+    errors.push(`Missing <changefreq> for ${loc}`);
+  } else if (!validChangefreqs.has(changefreq)) {
+    errors.push(`Invalid <changefreq> for ${loc}: ${changefreq}`);
+  }
+
+  if (!priority) {
+    errors.push(`Missing <priority> for ${loc}`);
+  } else if (!isValidPriority(priority)) {
+    errors.push(`Invalid <priority> for ${loc}: ${priority}. Expected a number from 0.0 to 1.0.`);
+  }
+
   const route = parsed.pathname;
+  const expectedChangefreq = expectedChangefreqForRoute(route);
+  const expectedPriority = expectedPriorityForRoute(route);
+
+  if (changefreq && expectedChangefreq && changefreq !== expectedChangefreq) {
+    errors.push(`Unexpected <changefreq> for ${loc}: ${changefreq}. Expected ${expectedChangefreq}.`);
+  }
+
+  if (priority && expectedPriority && priority !== expectedPriority) {
+    errors.push(`Unexpected <priority> for ${loc}: ${priority}. Expected ${expectedPriority}.`);
+  }
 
   for (const { name, pattern } of forbiddenRoutePatterns) {
     if (pattern.test(route) || pattern.test(loc)) {
@@ -141,10 +198,65 @@ if (errors.length > 0) {
 
 console.log(`SEO sitemap audit passed: ${urls.length.toLocaleString()} URLs checked for ${expectedOrigin}.`);
 
-function extractLocs(xml) {
-  return [...xml.matchAll(/<loc>([\s\S]*?)<\/loc>/gi)]
-    .map((match) => decodeXml(match[1].trim()))
-    .filter(Boolean);
+function validateXmlShape(xml) {
+  const trimmed = xml.trim();
+  if (!trimmed.startsWith('<?xml')) {
+    errors.push('Sitemap is missing XML declaration.');
+  }
+  if (!trimmed.includes('<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">')) {
+    errors.push('Sitemap is missing the standard sitemap <urlset> opening tag.');
+  }
+  if (!trimmed.endsWith('</urlset>')) {
+    errors.push('Sitemap is missing closing </urlset> tag.');
+  }
+
+  const openUrlCount = countMatches(xml, /<url>/g);
+  const closeUrlCount = countMatches(xml, /<\/url>/g);
+  if (openUrlCount !== closeUrlCount) {
+    errors.push(`Sitemap has mismatched <url> tags: ${openUrlCount} opening, ${closeUrlCount} closing.`);
+  }
+}
+
+function extractUrlEntries(xml) {
+  return [...xml.matchAll(/<url>([\s\S]*?)<\/url>/gi)].map((match) => {
+    const block = match[1];
+    return {
+      loc: getTagValue(block, 'loc'),
+      lastmod: getTagValue(block, 'lastmod'),
+      changefreq: getTagValue(block, 'changefreq'),
+      priority: getTagValue(block, 'priority')
+    };
+  });
+}
+
+function getTagValue(block, tagName) {
+  const match = block.match(new RegExp(`<${tagName}>([\\s\\S]*?)<\\/${tagName}>`, 'i'));
+  return match ? decodeXml(match[1].trim()) : '';
+}
+
+function isValidPriority(value) {
+  if (!/^\d(?:\.\d)?$/.test(value)) return false;
+  const number = Number(value);
+  return number >= 0 && number <= 1;
+}
+
+function expectedChangefreqForRoute(route) {
+  if (route === '/') return 'daily';
+  if (route.startsWith('/town/')) return 'monthly';
+  if (isTopLevelRoute(route)) return 'weekly';
+  return 'monthly';
+}
+
+function expectedPriorityForRoute(route) {
+  if (route === '/') return '1.0';
+  if (route.startsWith('/town/')) return '0.6';
+  if (isTopLevelRoute(route)) return '0.8';
+  return '0.5';
+}
+
+function isTopLevelRoute(route) {
+  const parts = route.split('/').filter(Boolean);
+  return parts.length === 1;
 }
 
 function isAllowedRoute(route) {
@@ -183,6 +295,10 @@ function decodeXml(value) {
     .replace(/&gt;/g, '>')
     .replace(/&quot;/g, '"')
     .replace(/&apos;/g, "'");
+}
+
+function countMatches(value, pattern) {
+  return [...String(value).matchAll(pattern)].length;
 }
 
 function escapeRegExp(value) {
