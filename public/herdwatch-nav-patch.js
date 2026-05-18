@@ -52,6 +52,64 @@
     }
   }
 
+  function patchPostcodeSearchCopy() {
+    const searchInputs = [...document.querySelectorAll('input.search-input')];
+
+    for (const input of searchInputs) {
+      if (input.dataset.postcodeHintPatched === 'true') continue;
+
+      const isLightTableSearch = input.classList.contains('light');
+      input.placeholder = isLightTableSearch
+        ? 'Enter first half of postcode or region — e.g. FY1, M15, NHS South West London'
+        : 'Enter first half of postcode — e.g. FY1, M15, LS12';
+      input.setAttribute('aria-label', isLightTableSearch
+        ? 'Search by first half of postcode or NHS region'
+        : 'Search by first half of postcode');
+      input.dataset.postcodeHintPatched = 'true';
+    }
+
+    const heroSearch = document.querySelector('.hero .search-wrap');
+    if (heroSearch && !heroSearch.querySelector('.postcode-search-hint')) {
+      const hint = document.createElement('p');
+      hint.className = 'postcode-search-hint';
+      hint.style.margin = '0.55rem 0 0';
+      hint.style.fontSize = '0.92rem';
+      hint.style.opacity = '0.88';
+      hint.textContent = 'Use the first half of your postcode only — for example FY1, M15 or LS12.';
+      heroSearch.appendChild(hint);
+    }
+  }
+
+  function addMethodologySourceNote() {
+    if (!window.location.pathname.startsWith('/methodology')) return;
+    if (document.querySelector('.source-refresh-card')) return;
+
+    const main = document.querySelector('main.page-shell.readable');
+    if (!main) return;
+
+    const section = document.createElement('section');
+    section.className = 'card prose-card source-refresh-card';
+    section.innerHTML = `
+      <h2>Source data and refresh workflow</h2>
+      <p>
+        ${BRAND_NAME} is built from normalised public-health coverage files in the repository, not from live personal health records. The current app dataset is generated from <code>data/raw/areas.csv</code> and <code>data/raw/trends.csv</code>, then written to <code>public/data/areas.json</code>, <code>public/data/trends.json</code> and <code>public/data/metadata.json</code> for the site to read.
+      </p>
+      <p>
+        The raw official source downloads are reproducible build inputs and should be refreshed periodically from the documented NHS/UKHSA COVER workflow before presenting the site as current public-health analysis.
+      </p>
+      <ol>
+        <li>Run <code>npm run data:cover:all</code> to refresh the official-style COVER source workflow.</li>
+        <li>Run <code>npm run data:build</code> to rebuild the normalised app dataset.</li>
+        <li>Run <code>npm run build</code> so the sitemap, town pages and SEO metadata are regenerated from the latest data.</li>
+      </ol>
+      <p>
+        The figures are postcode-district indicators for public-interest explanation. They are not household-level records, individual vaccination records, medical advice, or an official NHS/UKHSA service.
+      </p>
+    `;
+
+    main.appendChild(section);
+  }
+
   function getTownSlug() {
     const match = window.location.pathname.match(/^\/town\/([^/]+)/i);
     return match ? decodeURIComponent(match[1]).toUpperCase() : null;
@@ -130,6 +188,8 @@
   function patchLinks() {
     addWakefieldNavLink();
     addWakefieldFooterLink();
+    patchPostcodeSearchCopy();
+    addMethodologySourceNote();
     addLocalCoverageCard();
   }
 
