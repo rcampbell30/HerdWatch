@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 
 const distDir = 'dist';
-const baseUrl = normaliseBaseUrl(process.env.SITE_URL || process.env.URL || 'https://immunitymap.netlify.app');
+const baseUrl = normaliseBaseUrl(process.env.SITE_URL || 'https://immunitymap.netlify.app');
 const buildDate = new Date();
 
 if (!existsSync(distDir)) {
