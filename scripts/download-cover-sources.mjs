@@ -7,9 +7,9 @@ const refDir = path.join(root, 'data', 'raw', 'ref');
 
 const downloads = [
   {
-    label: 'Latest quarterly GP supplementary COVER data, October to December 2025',
-    url: 'https://assets.publishing.service.gov.uk/media/69c26c66d588c92c483e4c43/supplementary-vaccine-coverage-GP-data-October-to-December-2025.ods',
-    out: path.join(sourceDir, 'supplementary-vaccine-coverage-GP-data-October-to-December-2025.ods')
+    label: 'Latest quarterly GP supplementary COVER data, January to March 2026',
+    url: 'https://assets.publishing.service.gov.uk/media/6a426520db380b085e94ab10/cover-GP-Q4_2025-to-2026.ods',
+    out: path.join(sourceDir, 'cover-GP-Q4_2025-to-2026.ods')
   },
   {
     label: 'Latest annual GP supplementary COVER data, April 2024 to March 2025',
