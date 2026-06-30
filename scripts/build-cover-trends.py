@@ -9,6 +9,18 @@ OUT = ROOT / 'data' / 'raw' / 'trends.csv'
 REPORT = ROOT / 'data' / 'processed' / 'cover-trend-report.json'
 YEAR_RE = re.compile(r'(20\d{2})[-_ ]?(?:to)?[-_ ]?(20\d{2})')
 
+# Latest official quarterly England headline values from the UKHSA COVER
+# January to March 2026 HTML report. Keep this as an explicit snapshot until
+# the pipeline is upgraded to parse the national quarterly ODS automatically.
+LATEST_QUARTERLY_SNAPSHOT = {
+    'year': '2025-26 Q4',
+    'sort': 2025.75,
+    'england_mmr1': 87.3,  # MMR1 measured at 24 months, England
+    'england_mmr2': 84.1,  # MMR2 measured at 5 years, England
+    'target': 95,
+    'source': 'UKHSA COVER quarterly report, January to March 2026'
+}
+
 def ncol(x):
     return re.sub(r'\s+', ' ', str(x).strip().lower()).replace('\n', ' ')
 
@@ -108,13 +120,21 @@ def main():
     if not rows:
         REPORT.write_text(json.dumps({'files': reports}, indent=2), encoding='utf-8')
         raise SystemExit('No trend rows extracted. See data/processed/cover-trend-report.json')
+
+    rows.append(dict(LATEST_QUARTERLY_SNAPSHOT))
+    reports.append({
+        'file': 'GOV.UK HTML report',
+        'source': LATEST_QUARTERLY_SNAPSHOT['source'],
+        'note': 'Quarterly snapshot appended so the public graph includes the newest COVER values before automatic quarterly ODS trend extraction is added.'
+    })
+
     rows = sorted({r['year']: r for r in rows}.values(), key=lambda r: r['sort'])
     with OUT.open('w', newline='', encoding='utf-8') as h:
         w = csv.DictWriter(h, fieldnames=['year','england_mmr1','england_mmr2','target'])
         w.writeheader()
         for r in rows:
             w.writerow({k: r[k] for k in ['year','england_mmr1','england_mmr2','target']})
-    REPORT.write_text(json.dumps({'method':'Weighted from official annual GP supplementary COVER files', 'rows': rows, 'files': reports}, indent=2), encoding='utf-8')
+    REPORT.write_text(json.dumps({'method':'Weighted from official annual GP supplementary COVER files, plus latest UKHSA quarterly England snapshot', 'rows': rows, 'files': reports}, indent=2), encoding='utf-8')
     print(f'Wrote {len(rows)} trend rows to {OUT.relative_to(ROOT)}')
 
 if __name__ == '__main__':
