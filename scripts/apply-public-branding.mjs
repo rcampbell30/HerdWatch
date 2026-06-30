@@ -26,6 +26,8 @@ const replacements = [
   ['generated annual series', 'generated COVER series'],
   ['one annual COVER point', 'one COVER point'],
   ['Generated annual COVER point for', 'Generated COVER point for'],
+  ['England MMR1', 'England MMR1 (24m)'],
+  ['England MMR2', 'England MMR2 (5y)'],
   ['HerdWatch', 'Immunity Map']
 ];
 
