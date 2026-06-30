@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Build HerdWatch area data from official COVER GP supplementary data.
+"""Build Immunity Map area data from official COVER GP supplementary data.
 
 The UKHSA/GOV.UK GP supplementary COVER workbook gives GP-level coverage values.
 This script:
-- detects the GP-level MMR1-at-24-months columns;
+- detects the GP-level MMR1-at-24-months columns across changing workbook layouts;
 - joins GP practice codes to ODS practice postcode reference data;
 - derives the correct postcode district/outward code, e.g. M7 from M7 3XX, not M73;
-- aggregates GP rows into HerdWatch's data/raw/areas.csv schema.
+- aggregates GP rows into Immunity Map's data/raw/areas.csv schema.
 
 Expected input after `npm run data:download`:
 - data/raw/source/*.ods
@@ -36,7 +36,7 @@ PRACTICE_CODE_RE = re.compile(r"^[A-Z][A-Z0-9]{4,7}$", re.I)
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Build HerdWatch postcode-district area data from COVER GP ODS data.")
+    parser = argparse.ArgumentParser(description="Build Immunity Map postcode-district area data from COVER GP ODS data.")
     parser.add_argument("--source", type=Path, default=None, help="Specific COVER GP supplementary ODS file.")
     parser.add_argument("--reference", type=Path, default=REF_DIR / "epraccur.csv", help="ODS GP reference CSV.")
     parser.add_argument("--out", type=Path, default=RAW_DIR / "areas.csv", help="Output areas.csv path.")
@@ -49,19 +49,22 @@ def main() -> None:
     if not args.reference.exists():
         raise SystemExit(f"Reference file not found: {args.reference}. Run `npm run data:download` first.")
 
-    workbook = pd.read_excel(source, sheet_name=None, engine="odf")
+    workbook = pd.read_excel(source, sheet_name=None, engine="odf", header=None)
     sheet_name, frame, columns = find_cover_sheet(workbook)
     ref = load_reference(args.reference)
 
-    data = frame[[columns["practice_code"], columns["denominator"], columns["coverage"]] + ([columns["region"]] if columns.get("region") else [])].copy()
-    data = data.rename(
-        columns={
-            columns["practice_code"]: "practice_code",
-            columns["denominator"]: "total_eligible",
-            columns["coverage"]: "coverage",
-            columns.get("region") or "": "region",
+    data = pd.DataFrame(
+        {
+            "practice_code": frame[columns["practice_code"]],
+            "total_eligible": frame[columns["denominator"]],
         }
     )
+    if columns.get("coverage"):
+        data["coverage"] = frame[columns["coverage"]]
+    if columns.get("numerator"):
+        data["total_vaccinated_source"] = frame[columns["numerator"]]
+    if columns.get("region"):
+        data["region"] = frame[columns["region"]]
 
     data["practice_code"] = data["practice_code"].astype(str).str.strip().str.upper()
     data = data[data["practice_code"].str.match(PRACTICE_CODE_RE, na=False)]
@@ -79,13 +82,28 @@ def main() -> None:
     data["region"] = data["region"].fillna(data.get("reference_region", "Other")).fillna("Other")
 
     data["total_eligible"] = pd.to_numeric(data["total_eligible"], errors="coerce")
-    data["coverage"] = pd.to_numeric(data["coverage"].astype(str).str.replace("%", "", regex=False), errors="coerce")
+    if "coverage" in data.columns:
+        data["coverage"] = parse_percent(data["coverage"])
+    if "total_vaccinated_source" in data.columns:
+        data["total_vaccinated_source"] = pd.to_numeric(data["total_vaccinated_source"], errors="coerce")
+
+    if "coverage" not in data.columns and "total_vaccinated_source" in data.columns:
+        data["coverage"] = data["total_vaccinated_source"] / data["total_eligible"] * 100
+
     data = data.dropna(subset=["total_eligible", "coverage"])
     data = data[data["total_eligible"] > 0]
+    data = data[(data["coverage"] >= 0) & (data["coverage"] <= 100)]
 
-    # The GP supplementary file exposes denominator + percentage, not a clean numerator.
-    # Reconstruct an approximate vaccinated count so HerdWatch can aggregate and display counts.
-    data["total_vaccinated"] = (data["total_eligible"] * data["coverage"] / 100).round()
+    if "total_vaccinated_source" in data.columns:
+        valid_numerator = data["total_vaccinated_source"].notna() & (data["total_vaccinated_source"] >= 0) & (data["total_vaccinated_source"] <= data["total_eligible"] * 1.05)
+        if valid_numerator.mean() >= 0.8:
+            data["total_vaccinated"] = data["total_vaccinated_source"].round()
+        else:
+            data["total_vaccinated"] = (data["total_eligible"] * data["coverage"] / 100).round()
+    else:
+        # GP supplementary files often expose denominator + percentage, not a clean numerator.
+        # Reconstruct an approximate vaccinated count so Immunity Map can aggregate and display counts.
+        data["total_vaccinated"] = (data["total_eligible"] * data["coverage"] / 100).round()
 
     grouped = (
         data.groupby(["postcode_district", "region"], dropna=False)
@@ -97,7 +115,7 @@ def main() -> None:
         .reset_index()
     )
 
-    # If one outward code has GP practices crossing ICB regions, collapse to one HerdWatch row.
+    # If one outward code has GP practices crossing ICB regions, collapse to one Immunity Map row.
     collapsed = []
     for postcode, group in grouped.groupby("postcode_district", dropna=False):
         total_eligible = int(round(group["total_eligible"].sum()))
@@ -120,8 +138,8 @@ def main() -> None:
 
     write_import_report(source, sheet_name, columns, len(frame), len(out), missing_postcode)
     print(f"Read {source.relative_to(ROOT)} sheet={sheet_name!r}.")
-    print(f"Using practice_code={columns['practice_code']!r}, denominator={columns['denominator']!r}, coverage={columns['coverage']!r}.")
-    print("Vaccinated counts reconstructed from denominator × coverage.")
+    print(f"Using practice_code={columns['practice_code']!r}, denominator={columns['denominator']!r}, coverage={columns.get('coverage')!r}, numerator={columns.get('numerator')!r}.")
+    print("Vaccinated counts reconstructed or read from numerator depending on available COVER columns.")
     print(f"Wrote {len(out):,} postcode districts to {args.out.relative_to(ROOT)}.")
     print("Next: npm run data:build && npm run build")
 
@@ -156,51 +174,204 @@ def best_ods_source(directory: Path) -> Path | None:
 def find_cover_sheet(workbook: dict[str, pd.DataFrame]) -> tuple[str, pd.DataFrame, dict[str, str]]:
     guesses = []
     for sheet_name, raw in workbook.items():
-        frame = normalise_frame(raw)
-        columns = list(frame.columns)
-        found = {
-            "practice_code": find_col(columns, [r"^gpcode$", r"^gp code$", r"\bgpcode\b", r"practice.*code", r"ods.*code"]),
-            "denominator": find_col(columns, [r"^number of children who reached 24 months$", r"children.*reached.*24 months", r"reached.*24 months"]),
-            "coverage": find_col(columns, [r"^coverage at 24 months mmr1 \(%\)$", r"coverage.*24 months.*mmr1", r"mmr1.*24.*cover", r"coverage.*mmr"]),
-            "region": find_col(columns, [r"^icb name$", r"region", r"nhs england region", r"ukhsa region"]),
-        }
-        score = sum(bool(value) for value in found.values())
-        if found["practice_code"] and found["denominator"] and found["coverage"]:
-            score += 10
-        guesses.append({"sheet": sheet_name, "score": score, "columns": found, "all_columns": columns[:80]})
+        frame, header_report = normalise_frame(raw)
+        columns = detect_columns(frame)
+        score = score_detected_columns(columns)
+        guesses.append(
+            {
+                "sheet": sheet_name,
+                "score": score,
+                "header": header_report,
+                "columns": columns,
+                "all_columns": list(frame.columns)[:120],
+                "sample_rows": frame.head(3).fillna("").astype(str).to_dict(orient="records"),
+            }
+        )
 
     guesses.sort(key=lambda item: item["score"], reverse=True)
     (PROCESSED_DIR / "cover-column-report.json").write_text(json.dumps({"guesses": guesses}, indent=2), encoding="utf-8")
 
     best = guesses[0] if guesses else None
-    if not best or not best["columns"].get("practice_code") or not best["columns"].get("denominator") or not best["columns"].get("coverage"):
-        raise SystemExit("Could not detect GP code, denominator and MMR1 coverage columns. See data/processed/cover-column-report.json.")
+    has_required = best and best["columns"].get("practice_code") and best["columns"].get("denominator") and (best["columns"].get("coverage") or best["columns"].get("numerator"))
+    if not has_required:
+        raise SystemExit(
+            "Could not detect GP code, denominator and MMR1 coverage/numerator columns. "
+            "See data/processed/cover-column-report.json."
+        )
 
-    return best["sheet"], normalise_frame(workbook[best["sheet"]]), best["columns"]
+    frame, _ = normalise_frame(workbook[best["sheet"]], preferred_header=best["header"].get("bottomRowIndex"))
+    return best["sheet"], frame, best["columns"]
 
 
-def normalise_frame(df: pd.DataFrame) -> pd.DataFrame:
+def score_detected_columns(columns: dict[str, str | None]) -> int:
+    score = 0
+    if columns.get("practice_code"):
+        score += 20
+    if columns.get("denominator"):
+        score += 20
+    if columns.get("coverage"):
+        score += 20
+    if columns.get("numerator"):
+        score += 12
+    if columns.get("region"):
+        score += 4
+    return score
+
+
+def normalise_frame(df: pd.DataFrame, preferred_header: int | None = None) -> tuple[pd.DataFrame, dict[str, object]]:
     df = df.dropna(how="all").dropna(axis=1, how="all").copy()
     if df.empty:
-        return df
+        return df, {"bottomRowIndex": 0, "headerRows": [0], "score": 0}
 
-    best_header_idx = 0
-    best_score = -1
-    for idx in range(min(12, len(df))):
-        values = [normalise_col(value) for value in df.iloc[idx].tolist()]
-        joined = " ".join(values)
-        score = sum(keyword in joined for keyword in ["gpcode", "mmr", "coverage", "reached 24 months"])
-        if score > best_score:
-            best_header_idx = idx
-            best_score = score
+    if preferred_header is not None:
+        bottom = min(preferred_header, len(df) - 1)
+        start = max(0, bottom - 2)
+        return frame_from_header(df, list(range(start, bottom + 1))), {"bottomRowIndex": bottom, "headerRows": list(range(start, bottom + 1)), "score": None}
 
-    header = [normalise_col(value) or f"col_{i}" for i, value in enumerate(df.iloc[best_header_idx].tolist())]
-    out = df.iloc[best_header_idx + 1 :].copy()
-    out.columns = dedupe(header)
+    best = {"score": -1, "bottomRowIndex": 0, "headerRows": [0]}
+    max_scan = min(80, len(df))
+    for bottom in range(max_scan):
+        for start in range(max(0, bottom - 2), bottom + 1):
+            header_rows = list(range(start, bottom + 1))
+            headers = build_headers(df, header_rows)
+            score = header_score(headers)
+            non_empty = sum(bool(h) for h in headers)
+            if non_empty < 4:
+                continue
+            score -= bottom * 0.05
+            if score > best["score"]:
+                best = {"score": score, "bottomRowIndex": bottom, "headerRows": header_rows}
+
+    frame = frame_from_header(df, best["headerRows"])
+    return frame, best
+
+
+def frame_from_header(df: pd.DataFrame, header_rows: list[int]) -> pd.DataFrame:
+    headers = build_headers(df, header_rows)
+    out = df.iloc[max(header_rows) + 1 :].copy()
+    out.columns = dedupe([header or f"col_{i}" for i, header in enumerate(headers)])
     return out.dropna(how="all")
 
 
+def build_headers(df: pd.DataFrame, header_rows: list[int]) -> list[str]:
+    headers = []
+    for col in df.columns:
+        parts = []
+        for row in header_rows:
+            value = df.at[row, col]
+            text = normalise_col(value)
+            if text and text != "nan" and text not in parts:
+                parts.append(text)
+        headers.append(" ".join(parts))
+    return headers
+
+
+def header_score(headers: list[str]) -> float:
+    joined = " | ".join(headers)
+    score = 0.0
+    score += 14 if re.search(r"\bgp\s*code\b|\bgpcode\b|practice.*code|organisation.*code|ods.*code", joined, re.I) else 0
+    score += 12 if re.search(r"denom|eligible|cohort|children.*(?:24 months|2 years)|(?:reached|reaching).*24 months", joined, re.I) else 0
+    score += 12 if re.search(r"mmr|measles", joined, re.I) and re.search(r"coverage|percentage|percent|%|rate", joined, re.I) else 0
+    score += 6 if re.search(r"24 months|2 years|two years", joined, re.I) else 0
+    score += 4 if re.search(r"icb|region|nhs england", joined, re.I) else 0
+    score += min(8, len([h for h in headers if h]) / 5)
+    return score
+
+
+def detect_columns(frame: pd.DataFrame) -> dict[str, str | None]:
+    columns = list(frame.columns)
+    detected = {
+        "practice_code": best_column(
+            columns,
+            positives=[
+                (r"\bgp\s*code\b|\bgpcode\b", 14),
+                (r"practice.*code|code.*practice", 10),
+                (r"organisation.*code|organization.*code|ods.*code|provider.*code", 7),
+                (r"\bcode\b", 2),
+            ],
+            negatives=[(r"icb|sub\s*icb|region|nhs england|local authority|postcode|name", 8)],
+            min_score=6,
+        ),
+        "denominator": best_column(
+            columns,
+            positives=[
+                (r"denom|eligible|cohort", 10),
+                (r"number.*children|children.*number", 5),
+                (r"reached|reaching|aged|age|turning", 4),
+                (r"24\s*months?|2\s*years?|two\s*years?", 6),
+            ],
+            negatives=[(r"coverage|percentage|percent|%|rate", 12), (r"mmr|measles|vaccinat|immunis", 7), (r"5\s*years?|60\s*months?|second|dose\s*2|mmr2", 10)],
+            min_score=8,
+        ),
+        "coverage": best_column(
+            columns,
+            positives=[
+                (r"coverage|percentage|percent|%|rate", 10),
+                (r"mmr\s*1|mmr1|dose\s*1|first\s*dose|one\s*dose", 7),
+                (r"mmr|measles", 4),
+                (r"24\s*months?|2\s*years?|two\s*years?", 4),
+            ],
+            negatives=[(r"mmr\s*2|mmr2|dose\s*2|second\s*dose|5\s*years?|60\s*months?", 12), (r"denom|eligible|cohort|number.*children|reached|reaching", 6)],
+            min_score=10,
+        ),
+        "numerator": best_column(
+            columns,
+            positives=[
+                (r"numerator|vaccinated|received|given|immunised|immunized", 7),
+                (r"number", 3),
+                (r"mmr\s*1|mmr1|dose\s*1|first\s*dose|one\s*dose", 7),
+                (r"mmr|measles", 4),
+                (r"24\s*months?|2\s*years?|two\s*years?", 3),
+            ],
+            negatives=[(r"coverage|percentage|percent|%|rate", 12), (r"denom|eligible|cohort|reached|reaching", 8), (r"mmr\s*2|mmr2|dose\s*2|second\s*dose|5\s*years?|60\s*months?", 12)],
+            min_score=10,
+        ),
+        "region": best_column(
+            columns,
+            positives=[(r"^icb name$|\bicb\b.*name", 8), (r"nhs england region|ukhsa region|region", 6), (r"sub\s*icb.*name", 5)],
+            negatives=[(r"code|postcode", 5)],
+            min_score=5,
+        ),
+    }
+
+    if detected["practice_code"] is None:
+        detected["practice_code"] = infer_column_by_values(frame, PRACTICE_CODE_RE, min_matches=20)
+
+    return detected
+
+
+def best_column(columns: list[str], positives: list[tuple[str, int]], negatives: list[tuple[str, int]] | None = None, min_score: int = 1) -> str | None:
+    best_name = None
+    best_score = min_score - 1
+    for column in columns:
+        text = normalise_col(column)
+        score = 0
+        for pattern, weight in positives:
+            if re.search(pattern, text, re.I):
+                score += weight
+        for pattern, weight in negatives or []:
+            if re.search(pattern, text, re.I):
+                score -= weight
+        if score > best_score:
+            best_name = column
+            best_score = score
+    return best_name
+
+
+def parse_percent(series: pd.Series) -> pd.Series:
+    values = pd.to_numeric(
+        series.astype(str).str.replace("%", "", regex=False).str.replace("*", "", regex=False).str.strip(),
+        errors="coerce",
+    )
+    positive = values[(values > 0) & values.notna()]
+    if not positive.empty and positive.median() <= 1:
+        values = values * 100
+    return values
+
+
 def normalise_col(value: object) -> str:
+    if pd.isna(value):
+        return ""
     return re.sub(r"\s+", " ", str(value).strip().lower()).replace("\n", " ")
 
 
@@ -212,15 +383,6 @@ def dedupe(columns: Iterable[str]) -> list[str]:
         seen[column] = count + 1
         out.append(column if count == 0 else f"{column}_{count + 1}")
     return out
-
-
-def find_col(columns: list[str], patterns: list[str]) -> str | None:
-    for pattern in patterns:
-        regex = re.compile(pattern, re.I)
-        for column in columns:
-            if regex.search(str(column)):
-                return column
-    return None
 
 
 def load_reference(path: Path) -> pd.DataFrame:
@@ -257,16 +419,16 @@ def load_reference(path: Path) -> pd.DataFrame:
     return out.drop_duplicates(subset=["practice_code"])
 
 
-def infer_column_by_values(df: pd.DataFrame, regex: re.Pattern[str], min_matches: int) -> int | None:
+def infer_column_by_values(df: pd.DataFrame, regex: re.Pattern[str], min_matches: int) -> str | None:
     best_col = None
     best_count = 0
     for column in df.columns:
-        sample = df[column].dropna().astype(str).str.strip().head(800)
+        sample = df[column].dropna().astype(str).str.strip().head(1200)
         count = int(sample.apply(lambda value: bool(regex.match(value))).sum())
         if count > best_count:
             best_col = column
             best_count = count
-    return int(best_col) if best_count >= min_matches else None
+    return str(best_col) if best_count >= min_matches else None
 
 
 def postcode_district(postcode: object) -> str | None:
@@ -275,7 +437,7 @@ def postcode_district(postcode: object) -> str | None:
     return match.group(1) if match else None
 
 
-def write_import_report(source: Path, sheet_name: str, columns: dict[str, str], raw_rows: int, area_rows: int, missing_postcode: int) -> None:
+def write_import_report(source: Path, sheet_name: str, columns: dict[str, str | None], raw_rows: int, area_rows: int, missing_postcode: int) -> None:
     report = {
         "source": str(source.relative_to(ROOT)) if source.is_relative_to(ROOT) else str(source),
         "sheet": sheet_name,
@@ -283,7 +445,7 @@ def write_import_report(source: Path, sheet_name: str, columns: dict[str, str], 
         "rawRows": raw_rows,
         "areaRows": area_rows,
         "missingPostcodeMatches": missing_postcode,
-        "note": "Vaccinated counts are reconstructed from denominator × coverage because the GP supplementary workbook exposes coverage percentages rather than a clean MMR1 numerator column.",
+        "note": "Vaccinated counts are read from a numerator column where available, otherwise reconstructed from denominator × coverage because GP supplementary workbooks can expose percentages without a clean MMR1 numerator column.",
     }
     (PROCESSED_DIR / "cover-import-report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
 
