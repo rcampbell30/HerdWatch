@@ -21,6 +21,11 @@ const replacements = [
   ['HerdWatch treats that story as infrastructure damage', 'Immunity Map treats that story as infrastructure damage'],
   ['That is why HerdWatch tracks postcode-district coverage', 'That is why Immunity Map tracks postcode-district coverage'],
   ['HerdWatch names him because he should be named.', 'Immunity Map names him because he should be named.'],
+  ['Annual COVER series', 'COVER series + latest quarterly snapshot'],
+  ['Latest annual COVER point', 'Latest COVER point'],
+  ['generated annual series', 'generated COVER series'],
+  ['one annual COVER point', 'one COVER point'],
+  ['Generated annual COVER point for', 'Generated COVER point for'],
   ['HerdWatch', 'Immunity Map']
 ];
 
