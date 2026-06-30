@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "repo:hygiene": "node scripts/repo-hygiene.mjs",
     "data:download": "node scripts/download-cover-sources.mjs",
-    "data:cover:areas": "python3 scripts/build-cover-areas.py",
+    "data:cover:areas": "python3 scripts/build-cover-areas-netlify.py",
     "data:cover:trends": "python3 scripts/build-cover-trends.py",
     "data:cover:all": "npm run data:download && npm run data:cover:areas && npm run data:cover:trends && npm run data:build",
     "data:build": "node scripts/build-data.mjs",
