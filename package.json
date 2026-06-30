@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "npm run data:build && vite build && node scripts/create-static-route-entrypoints.mjs && node scripts/create-sitemap.mjs && npm run seo:audit && node scripts/inject-adsense-meta.mjs && node scripts/apply-public-branding.mjs",
+    "build": "python3 -m pip install -r requirements.txt && npm run data:cover:all && vite build && node scripts/create-static-route-entrypoints.mjs && node scripts/create-sitemap.mjs && npm run seo:audit && node scripts/inject-adsense-meta.mjs && node scripts/apply-public-branding.mjs",
     "seo:audit": "node scripts/audit-sitemap.mjs",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
