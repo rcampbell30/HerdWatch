@@ -83,7 +83,7 @@ def main() -> None:
     data = data.dropna(subset=["total_eligible", "coverage"])
     data = data[data["total_eligible"] > 0]
 
-    # The 2024-25 GP supplementary file exposes denominator + percentage, not a clean numerator.
+    # The GP supplementary file exposes denominator + percentage, not a clean numerator.
     # Reconstruct an approximate vaccinated count so HerdWatch can aggregate and display counts.
     data["total_vaccinated"] = (data["total_eligible"] * data["coverage"] / 100).round()
 
@@ -140,10 +140,12 @@ def best_ods_source(directory: Path) -> Path | None:
             value += 40
         if "gp" in name:
             value += 40
+        if "2025-to-2026" in name or "2025-2026" in name:
+            value += 200
+        if "q4" in name or "january-to-march-2026" in name or "jan-to-mar-2026" in name:
+            value += 80
         if "annual" in name:
-            value += 30
-        if "2024-to-2025" in name or "2024-2025" in name:
-            value += 100
+            value -= 20
         if "data-tables" in name or "data_tables" in name:
             value -= 80
         return value, name
@@ -281,7 +283,7 @@ def write_import_report(source: Path, sheet_name: str, columns: dict[str, str], 
         "rawRows": raw_rows,
         "areaRows": area_rows,
         "missingPostcodeMatches": missing_postcode,
-        "note": "Vaccinated counts are reconstructed from denominator × coverage because the 2024-25 GP supplementary workbook exposes coverage percentages rather than a clean MMR1 numerator column.",
+        "note": "Vaccinated counts are reconstructed from denominator × coverage because the GP supplementary workbook exposes coverage percentages rather than a clean MMR1 numerator column.",
     }
     (PROCESSED_DIR / "cover-import-report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
 
