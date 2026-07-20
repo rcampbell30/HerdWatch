@@ -399,8 +399,9 @@ function MapPage() {
   const regionOptions = useMemo(() => [...new Set(areas.map((area) => area.region))].sort(), []);
   const filtered = useMemo(() => {
     const trimmed = query.trim().toUpperCase();
+    const hasExactDistrict = trimmed.length > 0 && areas.some((area) => area.postcodeDistrict === trimmed);
     return [...areas]
-      .filter((area) => !trimmed || area.postcodeDistrict.includes(trimmed) || area.region.toUpperCase().includes(trimmed))
+      .filter((area) => !trimmed || (hasExactDistrict ? area.postcodeDistrict === trimmed : area.postcodeDistrict.includes(trimmed) || area.region.toUpperCase().includes(trimmed)))
       .filter((area) => status === 'ALL' || area.status === status)
       .filter((area) => region === 'ALL' || area.region === region)
       .sort((a, b) => a.coverage - b.coverage || a.postcodeDistrict.localeCompare(b.postcodeDistrict));
