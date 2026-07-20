@@ -925,26 +925,34 @@ td a { color: var(--red); font-weight: 800; text-decoration: none; }
 
 .footer {
   margin-top: 60px;
-  padding: 36px 40px;
+  padding: 0 40px;
   background: var(--black);
   color: #b3b3b3;
 }
 
 .footer-inner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
   max-width: 1100px;
   margin: 0 auto;
 }
 
-.footer-brand { font-size: 1.1rem; }
-.footer-links { display: flex; flex-wrap: wrap; gap: 20px; }
+.footer-main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 30px 0 22px;
+}
+
+.footer-brand { font-size: 1.15rem; }
+.footer-summary { margin: 4px 0 0; color: #8f8f8f; font-size: 0.8rem; line-height: 1.45; }
+.footer-links,
+.footer-legal { display: flex; flex-wrap: wrap; gap: 8px 18px; }
+.footer-links { justify-content: flex-end; }
+.footer-meta { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 24px; padding: 16px 0 22px; border-top: 1px solid #353535; }
 .footer-link { color: #b3b3b3; font-family: var(--font-heading); font-size: 0.82rem; text-decoration: none; }
 .footer-link:hover { color: white; }
-.footer-copy { font-size: 0.78rem; }
+.footer-copy { max-width: 780px; margin: 0; color: #8f8f8f; font-size: 0.76rem; line-height: 1.55; }
 .footer-copy a { color: #e5e5e5; }
 
 @media (max-width: 900px) {
@@ -979,7 +987,8 @@ td a { color: var(--red); font-weight: 800; text-decoration: none; }
   .context-item { padding: 0; text-align: left; }
   .card-heading-row,
   .status-banner,
-  .footer-inner { flex-direction: column; align-items: flex-start; }
+  .footer-main,
+  .footer-meta { flex-direction: column; align-items: flex-start; }
   .status-right { text-align: left; }
   .metric-grid { grid-template-columns: 1fr; }
   .cta-row,
@@ -990,5 +999,8 @@ td a { color: var(--red); font-weight: 800; text-decoration: none; }
   .map-filter-grid label:last-child { grid-column: auto; }
   .map-result-bar { align-items: flex-start; flex-direction: column; gap: 3px; }
   .coverage-map-frame { height: 480px; min-height: 480px; border-radius: 10px; }
-  .footer { padding: 24px 16px; }
+  .footer { padding: 0 16px; }
+  .footer-main { gap: 20px; padding-top: 26px; }
+  .footer-links { justify-content: flex-start; }
+  .footer-meta { gap: 12px; }
 }
