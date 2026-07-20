@@ -1,5 +1,6 @@
 (() => {
   const BRAND_NAME = 'Immunity Map';
+  const CREATOR_NAME = 'Rory Campbell';
   const WAKEFIELD_HREF = '/wakefield/';
   const WAKEFIELD_LABEL = 'Wakefield';
   let localCoverageCardLoading = false;
@@ -52,6 +53,22 @@
     }
   }
 
+  function addCreatorCredit() {
+    const footer = document.querySelector('.footer');
+    if (!footer || footer.querySelector('.creator-credit')) return;
+
+    const brandBlock = footer.querySelector('.footer-brand')?.parentElement;
+    const credit = document.createElement('div');
+    credit.className = 'footer-copy creator-credit';
+    credit.textContent = `Created and maintained by ${CREATOR_NAME}.`;
+
+    if (brandBlock) {
+      brandBlock.appendChild(credit);
+    } else {
+      footer.querySelector('.footer-inner')?.appendChild(credit);
+    }
+  }
+
   function patchPostcodeSearchCopy() {
     const searchInputs = [...document.querySelectorAll('input.search-input')];
 
@@ -77,6 +94,30 @@
       hint.style.opacity = '0.88';
       hint.textContent = 'Use the first half of your postcode only — for example FY1, M15 or LS12.';
       heroSearch.appendChild(hint);
+    }
+  }
+
+  function addMethodologyCreatorNote() {
+    if (!window.location.pathname.startsWith('/methodology')) return;
+    if (document.querySelector('.creator-note-card')) return;
+
+    const main = document.querySelector('main.page-shell.readable');
+    if (!main) return;
+
+    const section = document.createElement('section');
+    section.className = 'card prose-card creator-note-card';
+    section.innerHTML = `
+      <h2>Project stewardship</h2>
+      <p>
+        ${BRAND_NAME} was created and is maintained by <strong>${CREATOR_NAME}</strong> as an independent public-health data project.
+      </p>
+    `;
+
+    const pageTitle = main.querySelector('.page-title');
+    if (pageTitle?.nextSibling) {
+      main.insertBefore(section, pageTitle.nextSibling);
+    } else {
+      main.appendChild(section);
     }
   }
 
@@ -188,7 +229,9 @@
   function patchLinks() {
     addWakefieldNavLink();
     addWakefieldFooterLink();
+    addCreatorCredit();
     patchPostcodeSearchCopy();
+    addMethodologyCreatorNote();
     addMethodologySourceNote();
     addLocalCoverageCard();
   }
