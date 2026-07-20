@@ -3,7 +3,7 @@ import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 
 const distDir = 'dist';
-const baseUrl = normaliseBaseUrl(process.env.SITE_URL || 'https://immunitymap.netlify.app');
+const baseUrl = normaliseBaseUrl(process.env.SITE_URL || 'https://immunitymap.org');
 const buildDate = new Date();
 
 if (!existsSync(distDir)) {
@@ -27,6 +27,7 @@ const rawAreaCsvPath = firstExisting([
 const metadata = JSON.parse(readFileSync(metadataPath, 'utf8'));
 const areas = JSON.parse(readFileSync(areasPath, 'utf8'));
 const fallbackLastmod = toDateOnly(metadata.generatedAt) || toDateOnly(buildDate) || new Date().toISOString().slice(0, 10);
+const dataLastmod = toDateOnly(metadata.sourceDataAsOf) || toDateOnly(metadata.generatedAt) || fallbackLastmod;
 const areaSourceLineByPostcode = rawAreaCsvPath.endsWith('.csv')
   ? buildAreaSourceLineMap(readFileSync(rawAreaCsvPath, 'utf8'))
   : new Map();
@@ -80,6 +81,10 @@ function renderUrl({ loc, lastmod, changefreq, priority }) {
 }
 
 function getLastmodForRoute(route) {
+  if (route === '/' || route === '/map/' || route === '/towns/') {
+    return dataLastmod;
+  }
+
   if (route.startsWith('/town/')) {
     const townLastmod = getTownLastmod(route);
     if (townLastmod) return townLastmod;
@@ -101,6 +106,10 @@ function getLastmodForRoute(route) {
 }
 
 function getTownLastmod(route) {
+  // Town pages are derived from one processed dataset. Its date is more
+  // accurate than stale per-line git history after a complete data refresh.
+  if (dataLastmod) return dataLastmod;
+
   const postcodeDistrict = getTownPostcodeDistrict(route);
   if (!postcodeDistrict) return null;
 

@@ -1,18 +1,26 @@
 {
-  "generatedAt": "2026-05-12T23:27:22.109Z",
+  "generatedAt": "2026-07-20T12:40:11.603Z",
+  "sourceDataAsOf": "2025-26 Q4",
   "usingExampleData": false,
-  "sourceFiles": {
-    "areas": "data\\raw\\areas.csv",
-    "trends": "data\\raw\\trends.csv"
+  "source": {
+    "collectionUrl": "https://www.gov.uk/government/statistics/cover-of-vaccination-evaluated-rapidly-cover-programme-2025-to-2026-quarterly-data",
+    "methodologyUrl": "https://www.gov.uk/government/publications/cover-of-vaccination-evaluated-rapidly-cover-programme-quality-and-methodology-information/quality-and-methodology-information-cover-programme",
+    "licence": "Open Government Licence v3.0"
   },
-  "rawAreaRowCount": 1889,
-  "areaCount": 1889,
+  "geography": "GP-practice outward postcode district; not patient home postcode",
+  "rankingMinimumEligible": 30,
+  "sourceFiles": {
+    "areas": "data/raw/areas.csv",
+    "trends": "data/raw/trends.csv"
+  },
+  "rawAreaRowCount": 1857,
+  "areaCount": 1857,
   "duplicatePostcodeDistrictCount": 0,
-  "trendPointCount": 5,
+  "trendPointCount": 2,
   "statusCounts": {
-    "AT_RISK": 614,
-    "VULNERABLE": 833,
-    "PROTECTED": 442
+    "AT_RISK": 856,
+    "VULNERABLE": 594,
+    "PROTECTED": 407
   },
   "coverageBands": {
     "atRisk": "coverage < 90",

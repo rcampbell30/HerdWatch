@@ -2,7 +2,7 @@ import type { TrendPoint } from '../types';
 import generatedTrend from './generated/trends.json';
 
 // Generated from data/raw/trends.csv by `npm run data:build`.
-// At present this may contain a single annual COVER point if only one source year has been normalised.
+// The public chart uses like-for-like England Q4 headline points from UKHSA.
 export const nationalTrend = generatedTrend as TrendPoint[];
 
 export function buildAreaTrend(currentCoverage: number): TrendPoint[] {

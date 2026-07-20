@@ -1,22 +1,11 @@
 import { useMemo, useState } from 'react';
-import {
-  CartesianGrid,
-  LabelList,
-  Legend,
-  Line,
-  LineChart,
-  ReferenceLine,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis
-} from 'recharts';
+import type { FormEvent } from 'react';
 import { areas, deployedNationalStats } from './data/areas';
 import { buildAreaTrend, nationalTrend } from './data/trends';
 import type { HerdArea, RiskStatus, TrendPoint } from './types';
 
 const brandName = 'Immunity Map';
-const brandTagline = 'Local MMR coverage and herd-immunity gaps across England.';
+const brandTagline = 'Recorded MMR coverage grouped by GP-practice postcode district across England.';
 const target = deployedNationalStats.herdImmunityTarget;
 const latestTrendPoint = nationalTrend[nationalTrend.length - 1];
 const LINE_MMR1 = '#2563eb';
@@ -30,15 +19,20 @@ const liveAreaStats = {
   vulnerableAreas: areas.filter((area) => area.status === 'VULNERABLE').length,
   protectedAreas: areas.filter((area) => area.status === 'PROTECTED').length,
   unvaccinatedChildren: areas.reduce((sum, area) => sum + Math.max(0, area.totalEligible - area.totalVaccinated), 0),
+  aggregateCoverage: (() => {
+    const eligible = areas.reduce((sum, area) => sum + area.totalEligible, 0);
+    const vaccinated = areas.reduce((sum, area) => sum + area.totalVaccinated, 0);
+    return eligible > 0 ? (vaccinated / eligible) * 100 : 0;
+  })(),
   englandAverage: latestTrendPoint?.englandMmr1 ?? deployedNationalStats.englandAverage,
   englandMmr2: latestTrendPoint?.englandMmr2,
   latestTrendYear: latestTrendPoint?.year ?? '2024-25'
 };
 
 const riskCopy: Record<RiskStatus, { label: string; description: string; className: string }> = {
-  AT_RISK: { label: 'AT RISK', description: 'Below 90% — outbreak vulnerability is high.', className: 'risk' },
-  VULNERABLE: { label: 'VULNERABLE', description: '90–95% — below the herd-immunity target.', className: 'vulnerable' },
-  PROTECTED: { label: 'PROTECTED', description: 'At or above the 95% herd-immunity target.', className: 'protected' }
+  AT_RISK: { label: 'WELL BELOW TARGET', description: 'Recorded coverage is below 90%.', className: 'risk' },
+  VULNERABLE: { label: 'BELOW TARGET', description: 'Recorded coverage is between 90% and 95%.', className: 'vulnerable' },
+  PROTECTED: { label: 'MEETS TARGET', description: 'Recorded coverage is at or above 95%.', className: 'protected' }
 };
 
 function formatPercent(value: number): string {
@@ -80,11 +74,12 @@ function Nav() {
   const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href));
 
   return (
-    <nav className="nav">
+    <nav className="nav" aria-label="Primary navigation">
       <a className="nav-brand" href="/"><BrandText /></a>
       <div className="nav-links">
         <a className={`nav-link ${isActive('/') ? 'active' : ''}`} href="/">Home</a>
         <a className={`nav-link ${isActive('/myths') ? 'active' : ''}`} href="/myths/">The Myth</a>
+        <a className={`nav-link ${isActive('/wakefield') ? 'active' : ''}`} href="/wakefield/">Wakefield</a>
         <a className={`nav-link ${isActive('/map') ? 'active' : ''}`} href="/map/">Explorer</a>
         <a className={`nav-link ${isActive('/towns') ? 'active' : ''}`} href="/towns/">All Areas</a>
         <a className={`nav-link ${isActive('/methodology') ? 'active' : ''}`} href="/methodology/">Methodology</a>
@@ -100,16 +95,24 @@ function Footer() {
         <div>
           <div className="footer-brand"><BrandText /></div>
           <div className="footer-copy">{brandTagline}</div>
-          <div className="footer-copy">Data: {deployedNationalStats.sourceLabel} · postcode-district aggregation</div>
+          <div className="footer-copy">Data: {deployedNationalStats.sourceLabel} · grouped by GP-practice postcode district</div>
+          <div className="footer-copy">Created and maintained by Rory Campbell.</div>
         </div>
         <div className="footer-links">
           <a href="/" className="footer-link">Home</a>
           <a href="/myths/" className="footer-link">The Myth</a>
+          <a href="/wakefield/" className="footer-link">Wakefield</a>
           <a href="/map/" className="footer-link">Explorer</a>
           <a href="/towns/" className="footer-link">All Areas</a>
           <a href="/methodology/" className="footer-link">Methodology</a>
+          <a href="/privacy.html" className="footer-link">Privacy</a>
+          <a href="/terms.html" className="footer-link">Terms</a>
         </div>
-        <div className="footer-copy">Not medical advice. Consult your GP for vaccination guidance.</div>
+        <div className="footer-copy">
+          Contains UK Health Security Agency data licensed under the{' '}
+          <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noreferrer">Open Government Licence v3.0</a>.
+          {' '}Not medical advice.
+        </div>
       </div>
     </footer>
   );
@@ -117,9 +120,54 @@ function Footer() {
 
 function DataNotice() {
   return (
-    <div className="notice-card">
-      <strong>Data note:</strong> {brandName} uses generated NHS COVER area data aggregated from GP-level coverage records into postcode districts. Counts are best read as local coverage indicators, not as household-level or individual-level records.
+    <div className="notice-card" role="note">
+      <strong>Important:</strong> These figures group GP-practice records by the postcode of the practice, not the home postcode of each child. Patients may live outside the district. Treat them as practice-location indicators, not resident-population estimates. The quarterly figures are provisional.
     </div>
+  );
+}
+
+function CoverageChartGraphic({ data, selectedAreaName }: { data: TrendPoint[]; selectedAreaName?: string }) {
+  const width = 760;
+  const height = 340;
+  const margin = { top: 52, right: 42, bottom: 54, left: 54 };
+  const values = data.flatMap((point) => [point.englandMmr1, point.englandMmr2, point.selectedArea]).filter((value): value is number => typeof value === 'number');
+  const minimum = Math.min(...values);
+  const yMin = selectedAreaName ? Math.max(0, Math.floor((minimum - 3) / 10) * 10) : 80;
+  const plotWidth = width - margin.left - margin.right;
+  const plotHeight = height - margin.top - margin.bottom;
+  const xAt = (index: number) => data.length === 1 ? margin.left + plotWidth / 2 : margin.left + (index / (data.length - 1)) * plotWidth;
+  const yAt = (value: number) => margin.top + ((100 - value) / (100 - yMin)) * plotHeight;
+  const step = yMin < 80 ? 10 : 5;
+  const ticks: number[] = [];
+  for (let value = Math.ceil(yMin / step) * step; value <= 100; value += step) ticks.push(value);
+  if (!ticks.includes(95)) ticks.push(95);
+  ticks.sort((a, b) => a - b);
+
+  const pointsFor = (key: 'englandMmr1' | 'englandMmr2' | 'selectedArea') => data
+    .map((point, index) => typeof point[key] === 'number' ? `${xAt(index)},${yAt(point[key])}` : null)
+    .filter((value): value is string => value !== null)
+    .join(' ');
+
+  const series = [
+    { key: 'englandMmr1' as const, label: 'England MMR1', colour: LINE_MMR1 },
+    { key: 'englandMmr2' as const, label: 'England MMR2', colour: LINE_MMR2 },
+    ...(selectedAreaName ? [{ key: 'selectedArea' as const, label: selectedAreaName, colour: LINE_AREA }] : [])
+  ];
+
+  return (
+    <svg className="coverage-chart" viewBox={`0 0 ${width} ${height}`} aria-hidden="true" focusable="false">
+      <g className="chart-legend-svg">
+        {series.map((item, index) => <g key={item.key} transform={`translate(${margin.left + index * 190} 22)`}><line x1="0" y1="0" x2="24" y2="0" stroke={item.colour} strokeWidth="4" /><text x="32" y="5">{item.label}</text></g>)}
+      </g>
+      {ticks.map((tick) => <g key={tick}><line x1={margin.left} x2={width - margin.right} y1={yAt(tick)} y2={yAt(tick)} className="chart-grid-line" /><text x={margin.left - 10} y={yAt(tick) + 4} textAnchor="end" className="chart-axis-label">{tick}%</text></g>)}
+      <line x1={margin.left} x2={width - margin.right} y1={yAt(95)} y2={yAt(95)} stroke={LINE_TARGET} strokeWidth="2" strokeDasharray="6 5" />
+      <text x={width - margin.right} y={yAt(95) - 7} textAnchor="end" className="chart-target-label">95% target</text>
+      {data.map((point, index) => <text key={point.year} x={xAt(index)} y={height - 18} textAnchor="middle" className="chart-axis-label">{point.year}</text>)}
+      {series.map((item) => {
+        const points = pointsFor(item.key);
+        return <g key={item.key}>{points.split(' ').length > 1 ? <polyline points={points} fill="none" stroke={item.colour} strokeWidth="4" strokeLinejoin="round" /> : null}{data.map((point, index) => { const value = point[item.key]; return typeof value === 'number' ? <circle key={`${item.key}-${point.year}`} cx={xAt(index)} cy={yAt(value)} r="5" fill={item.colour}><title>{item.label}: {formatPercent(value)} in {point.year}</title></circle> : null; })}</g>;
+      })}
+    </svg>
   );
 }
 
@@ -136,70 +184,40 @@ function TrendChart({ data, selectedAreaName }: { data: TrendPoint[]; selectedAr
     );
   }
 
-  const first = data[0];
   const latest = data[data.length - 1];
   const latestMmr1 = latest.englandMmr1;
   const gap = Number((target - latestMmr1).toFixed(1));
   const hasSeries = data.length > 1;
-  const change = hasSeries ? Number((latestMmr1 - first.englandMmr1).toFixed(1)) : 0;
-  const direction = change < 0 ? 'fallen' : change > 0 ? 'risen' : 'held flat';
-  const values = data.flatMap((point) => [point.englandMmr1, point.englandMmr2, point.selectedArea]).filter((value): value is number => typeof value === 'number');
-  const minValue = Math.min(...values);
-  const yAxisMin = selectedAreaName ? Math.max(0, Math.floor((minValue - 3) / 10) * 10) : 80;
-  const chartData = data.map((point, index) => {
-    const isLatest = index === data.length - 1;
-    return {
-      ...point,
-      englandMmr1Label: isLatest ? `MMR1 ${formatPercent(point.englandMmr1)}` : '',
-      englandMmr2Label: isLatest ? `MMR2 ${formatPercent(point.englandMmr2)}` : '',
-      selectedAreaLabel: isLatest && typeof point.selectedArea === 'number' ? `${selectedAreaName} ${formatPercent(point.selectedArea)}` : ''
-    };
-  });
-
   return (
     <section className="card trend-card">
       <div className="card-heading-row">
         <div>
-          <p className="eyebrow">{hasSeries ? 'Annual COVER series' : 'Latest annual COVER point'}</p>
+          <p className="eyebrow">{hasSeries ? 'Official COVER comparison' : 'Latest COVER point'}</p>
           <h2 className="card-title">Vaccination coverage {hasSeries ? 'trend' : 'snapshot'}</h2>
         </div>
-        <span className="data-badge">Generated COVER data</span>
+        <span className="data-badge">Processed UKHSA COVER data</span>
       </div>
-      <div className="chart-wrap" aria-label="MMR vaccination coverage chart">
-        <ResponsiveContainer width="100%" height={340}>
-          <LineChart data={chartData} margin={{ top: 12, right: selectedAreaName ? 74 : 66, left: 0, bottom: 10 }}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="year" tick={{ fontSize: 12 }} />
-            <YAxis domain={[yAxisMin, 100]} tickFormatter={(value) => `${value}%`} tick={{ fontSize: 12 }} />
-            <Tooltip formatter={(value: number) => `${Number(value).toFixed(1)}%`} />
-            <Legend verticalAlign="top" height={30} />
-            <ReferenceLine y={target} label="95% target" stroke={LINE_TARGET} strokeDasharray="5 5" strokeWidth={2} />
-            <Line type="monotone" dataKey="englandMmr1" name="England MMR1" stroke={LINE_MMR1} strokeWidth={3} dot>
-              <LabelList dataKey="englandMmr1Label" position="right" fill={LINE_MMR1} fontSize={12} />
-            </Line>
-            <Line type="monotone" dataKey="englandMmr2" name="England MMR2" stroke={LINE_MMR2} strokeWidth={3} dot>
-              <LabelList dataKey="englandMmr2Label" position="right" fill={LINE_MMR2} fontSize={12} />
-            </Line>
-            {selectedAreaName ? (
-              <Line type="monotone" dataKey="selectedArea" name={selectedAreaName} stroke={LINE_AREA} strokeWidth={3} dot>
-                <LabelList dataKey="selectedAreaLabel" position="right" fill={LINE_AREA} fontSize={12} />
-              </Line>
-            ) : null}
-          </LineChart>
-        </ResponsiveContainer>
+      <div className="chart-wrap" role="img" aria-label={`MMR vaccination coverage chart. Latest England MMR1 is ${formatPercent(latest.englandMmr1)} and MMR2 is ${formatPercent(latest.englandMmr2)} for ${latest.year}.`}>
+        <CoverageChartGraphic data={data} selectedAreaName={selectedAreaName} />
       </div>
+      <table className="sr-only">
+        <caption>MMR vaccination coverage values shown in the chart</caption>
+        <thead><tr><th>Period</th><th>England MMR1</th><th>England MMR2</th>{selectedAreaName ? <th>{selectedAreaName}</th> : null}</tr></thead>
+        <tbody>{data.map((point) => <tr key={point.year}><td>{point.year}</td><td>{formatPercent(point.englandMmr1)}</td><td>{formatPercent(point.englandMmr2)}</td>{selectedAreaName ? <td>{typeof point.selectedArea === 'number' ? formatPercent(point.selectedArea) : 'Not available'}</td> : null}</tr>)}</tbody>
+      </table>
       <div className="trend-insight">
         {hasSeries ? (
-          <><strong>Insight:</strong> England MMR1 coverage has {direction} by {Math.abs(change).toFixed(1)} percentage points across the generated annual series and is currently {gap.toFixed(1)} points below the 95% target.</>
+          <><strong>Latest point:</strong> England MMR1 is {formatPercent(latest.englandMmr1)} for {latest.year}, {gap.toFixed(1)} percentage points below the 95% target.{selectedAreaName ? ' The local figure is a latest-period snapshot; a local time series is not available.' : ''}</>
         ) : (
-          <><strong>Insight:</strong> the current generated trend file contains one annual COVER point. It shows England MMR1 at {formatPercent(latest.englandMmr1)} and England MMR2 at {formatPercent(latest.englandMmr2)} for {latest.year}.</>
+          <><strong>Latest point:</strong> England MMR1 is {formatPercent(latest.englandMmr1)} and England MMR2 is {formatPercent(latest.englandMmr2)} for {latest.year}.</>
         )}
       </div>
+      <p className="chart-source"><a href="https://www.gov.uk/government/statistics/cover-of-vaccination-evaluated-rapidly-cover-programme-2025-to-2026-quarterly-data/quarterly-vaccination-coverage-statistics-for-children-aged-up-to-5-years-in-the-uk-cover-programme-january-to-march-2026" target="_blank" rel="noreferrer">UKHSA COVER source and provisional-data notes</a></p>
     </section>
   );
 }
 
-function Hero({ onSearch }: { onSearch: (value: string) => void }) {
+function Hero() {
   const [query, setQuery] = useState('');
   const results = useMemo(() => {
     const trimmed = query.trim().toUpperCase();
@@ -207,30 +225,36 @@ function Hero({ onSearch }: { onSearch: (value: string) => void }) {
     return areas.filter((area) => area.postcodeDistrict.includes(trimmed) || area.region.toUpperCase().includes(trimmed)).slice(0, 8);
   }, [query]);
 
-  const handleChange = (value: string) => {
-    setQuery(value);
-    onSearch(value);
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const exact = results.find((area) => area.postcodeDistrict === query.trim().toUpperCase());
+    const destination = exact ?? results[0];
+    if (destination) window.location.assign(`/town/${destination.postcodeDistrict.toLowerCase()}/`);
   };
 
   return (
     <section className="hero">
       <div className="hero-inner">
         <div className="hero-tag">{deployedNationalStats.sourceLabel}</div>
-        <h1 className="hero-title">MMR vaccination<br />coverage <em>tracker</em></h1>
+        <h1 className="hero-title"><span>MMR vaccination</span>{' '}<br /><span>coverage <em>tracker</em></span></h1>
         <p className="hero-sub">{brandTagline}</p>
-        <div className="search-wrap">
-          <input className="search-input" placeholder="Search postcode district — FY1, M15, LS12..." value={query} onChange={(event) => handleChange(event.target.value)} />
+        <form className="search-wrap" onSubmit={handleSubmit}>
+          <label className="sr-only" htmlFor="home-area-search">Search by GP-practice postcode district or NHS region</label>
+          <div className="search-row">
+            <input id="home-area-search" className="search-input" placeholder="Search practice postcode district — FY1, M15, LS12..." value={query} onChange={(event) => setQuery(event.target.value)} aria-controls="home-search-results" aria-expanded={results.length > 0} />
+            <button className="search-button" type="submit">Go</button>
+          </div>
           {results.length > 0 ? (
-            <div className="search-dropdown">
+            <div className="search-dropdown" id="home-search-results" role="listbox" aria-label="Matching practice postcode districts">
               {results.map((area) => (
-                <a key={area.postcodeDistrict} href={`/town/${area.postcodeDistrict.toLowerCase()}/`} className="search-item">
+                <a key={area.postcodeDistrict} href={`/town/${area.postcodeDistrict.toLowerCase()}/`} className="search-item" role="option" aria-selected="false">
                   <span>{area.postcodeDistrict} · {area.region}</span>
                   <strong>{formatPercent(area.coverage)}</strong>
                 </a>
               ))}
             </div>
-          ) : null}
-        </div>
+          ) : query.trim() ? <p className="search-empty" role="status">No matching practice postcode district or region.</p> : null}
+        </form>
       </div>
     </section>
   );
@@ -239,9 +263,9 @@ function Hero({ onSearch }: { onSearch: (value: string) => void }) {
 function StatGrid() {
   return (
     <div className="stats-grid">
-      <div className="stat-card risk"><div className="stat-num risk">{liveAreaStats.atRiskAreas.toLocaleString()}</div><div className="stat-label">AT RISK</div><div className="stat-desc">Postcode districts below 90%</div></div>
-      <div className="stat-card vulnerable"><div className="stat-num vulnerable">{liveAreaStats.vulnerableAreas.toLocaleString()}</div><div className="stat-label">VULNERABLE</div><div className="stat-desc">Postcode districts 90–95%</div></div>
-      <div className="stat-card protected"><div className="stat-num protected">{liveAreaStats.protectedAreas.toLocaleString()}</div><div className="stat-label">PROTECTED</div><div className="stat-desc">Postcode districts at or above 95%</div></div>
+      <div className="stat-card risk"><div className="stat-num risk">{liveAreaStats.atRiskAreas.toLocaleString()}</div><div className="stat-label">WELL BELOW TARGET</div><div className="stat-desc">Practice postcode districts below 90%</div></div>
+      <div className="stat-card vulnerable"><div className="stat-num vulnerable">{liveAreaStats.vulnerableAreas.toLocaleString()}</div><div className="stat-label">BELOW TARGET</div><div className="stat-desc">Practice postcode districts from 90% to below 95%</div></div>
+      <div className="stat-card protected"><div className="stat-num protected">{liveAreaStats.protectedAreas.toLocaleString()}</div><div className="stat-label">MEETS TARGET</div><div className="stat-desc">Practice postcode districts at or above 95%</div></div>
       <div className="stat-card total"><div className="stat-num">{liveAreaStats.totalAreasTracked.toLocaleString()}</div><div className="stat-label">TOTAL AREAS</div><div className="stat-desc">Imported postcode districts</div></div>
     </div>
   );
@@ -252,9 +276,9 @@ function NationalPicture() {
     <>
       <SectionHeader title="National Picture" />
       <div className="context-card">
-        <div className="context-item"><div className="context-val risk-text">{formatPercent(liveAreaStats.englandAverage)}</div><div className="context-item-label">England MMR1</div><div className="context-item-sub">Generated annual COVER point for {liveAreaStats.latestTrendYear}, below the 95% target.</div></div>
+        <div className="context-item"><div className="context-val risk-text">{formatPercent(liveAreaStats.englandAverage)}</div><div className="context-item-label">England MMR1</div><div className="context-item-sub">Official COVER point for {liveAreaStats.latestTrendYear}, below the 95% target.</div></div>
         <div className="context-item bordered"><div className="context-val protected-text">{target}%</div><div className="context-item-label">Coverage Target</div><div className="context-item-sub">The working threshold {brandName} uses to flag local vulnerability.</div></div>
-        <div className="context-item"><div className="context-val vulnerable-text">{liveAreaStats.unvaccinatedChildren.toLocaleString()}</div><div className="context-item-label">Unvaccinated Estimate</div><div className="context-item-sub">Approximate count across imported GP-level area records after postcode-district aggregation.</div></div>
+        <div className="context-item"><div className="context-val vulnerable-text">{formatPercent(liveAreaStats.aggregateCoverage)}</div><div className="context-item-label">Coverage across included records</div><div className="context-item-sub">Eligible-child weighted coverage across imported GP-practice rows.</div></div>
       </div>
     </>
   );
@@ -268,26 +292,26 @@ function AreaCard({ area }: { area: HerdArea }) {
   const meta = riskCopy[area.status];
   return (
     <a className="town-card" href={`/town/${area.postcodeDistrict.toLowerCase()}/`}>
-      <div><div className="town-district">{area.postcodeDistrict}</div><div className="town-meta">{area.practiceCount} practices · {area.region}</div></div>
+      <div><div className="town-district">{area.postcodeDistrict}</div><div className="town-meta">{area.practiceCount} {area.practiceCount === 1 ? 'practice' : 'practices'} · {area.region}</div>{area.totalEligible < 30 ? <span className="small-sample">Small sample: {area.totalEligible} eligible records</span> : null}</div>
       <div className="town-card-right"><div className={`town-cov ${meta.className}-text`}>{formatPercent(area.coverage)}</div><div className={`town-badge ${meta.className}`}>{meta.label}</div></div>
     </a>
   );
 }
 
 function HomePage() {
-  const highestRisk = [...areas].sort((a, b) => a.coverage - b.coverage).slice(0, 18);
+  const lowestRecordedCoverage = [...areas].filter((area) => area.totalEligible >= 30).sort((a, b) => a.coverage - b.coverage).slice(0, 18);
   return (
     <>
-      <Hero onSearch={() => undefined} />
+      <Hero />
       <div className="counter-bar"><div className="counter-inner"><div className="counter-num">{liveAreaStats.unvaccinatedChildren.toLocaleString()}</div><div className="counter-label">children in imported GP coverage rows not counted as vaccinated<br />after postcode-district aggregation</div></div></div>
       <main className="main-content">
         <DataNotice />
         <StatGrid />
         <NationalPicture />
         <TrendChart data={nationalTrend} />
-        <SectionHeader title="Highest Risk Areas" />
-        <p className="section-note">Postcode districts with MMR coverage below 90% — sorted by lowest coverage first.</p>
-        <div className="worst-grid">{highestRisk.map((area) => <AreaCard key={area.postcodeDistrict} area={area} />)}</div>
+        <SectionHeader title="Lowest recorded coverage" />
+        <p className="section-note">Practice postcode districts with at least 30 eligible records, sorted by recorded MMR1 coverage. Smaller samples remain available in the Explorer.</p>
+        <div className="worst-grid">{lowestRecordedCoverage.map((area) => <AreaCard key={area.postcodeDistrict} area={area} />)}</div>
         <div className="cta-row"><a className="btn btn-red" href="/map/">Open Explorer →</a><a className="btn btn-dark" href="/towns/">All Areas →</a><a className="btn btn-outline" href="/methodology/">Methodology</a></div>
       </main>
     </>
@@ -305,17 +329,20 @@ function TownsPage() {
 
   return (
     <main className="main-content page-shell">
-      <PageTitle eyebrow="All areas" title="Vaccination coverage by postcode district" description={`Search ${liveAreaStats.totalAreasTracked.toLocaleString()} postcode districts generated from NHS COVER GP-level area data.`} />
+      <PageTitle eyebrow="All areas" title="Vaccination coverage by practice postcode district" description={`Search ${liveAreaStats.totalAreasTracked.toLocaleString()} practice-location groups derived from UKHSA COVER GP-level data.`} />
       <DataNotice />
-      <input className="search-input light" placeholder="Search area or region" value={query} onChange={(event) => { setQuery(event.target.value); setVisibleCount(80); }} />
+      <label className="field-label" htmlFor="all-areas-search">Search practice postcode district or NHS region</label>
+      <input id="all-areas-search" className="search-input light" placeholder="Search area or region" value={query} onChange={(event) => { setQuery(event.target.value); setVisibleCount(80); }} />
+      <p className="result-status" role="status" aria-live="polite">{filtered.length.toLocaleString()} matching {filtered.length === 1 ? 'area' : 'areas'}.</p>
       <div className="table-card">
         <table>
+          <caption className="sr-only">Coverage grouped by GP-practice postcode district</caption>
           <thead><tr><th>Area</th><th>Region</th><th>Practices</th><th>Coverage</th><th>Status</th><th>Gap to 95%</th></tr></thead>
           <tbody>
             {visible.map((area) => (
               <tr key={area.postcodeDistrict}>
                 <td><a href={`/town/${area.postcodeDistrict.toLowerCase()}/`}>{area.postcodeDistrict}</a></td>
-                <td>{area.region}</td><td>{area.practiceCount}</td><td>{formatPercent(area.coverage)}</td>
+                <td>{area.region}</td><td>{area.practiceCount}</td><td>{formatPercent(area.coverage)}{area.totalEligible < 30 ? <span className="small-sample table-sample">Small sample</span> : null}</td>
                 <td><span className={`town-badge ${riskCopy[area.status].className}`}>{riskCopy[area.status].label}</span></td>
                 <td>{Math.max(0, target - area.coverage).toFixed(1)} pts</td>
               </tr>
@@ -339,17 +366,19 @@ function TownPage({ area }: { area?: HerdArea }) {
 
   return (
     <>
-      <section className="hero-band"><div className="hero-inner"><div className="breadcrumb"><a className="bc-link" href="/">Home</a><span className="bc-sep">/</span><a className="bc-link" href="/towns/">Areas</a><span className="bc-sep">/</span><span className="bc-cur">{area.postcodeDistrict}</span></div><h1 className="hero-title"><span className="postcode">{area.postcodeDistrict}</span> vaccination coverage</h1></div></section>
+      <section className="hero-band"><div className="hero-inner"><div className="breadcrumb"><a className="bc-link" href="/">Home</a><span className="bc-sep">/</span><a className="bc-link" href="/towns/">Areas</a><span className="bc-sep">/</span><span className="bc-cur">{area.postcodeDistrict}</span></div><h1 className="hero-title"><span className="postcode">{area.postcodeDistrict}</span> GP-practice coverage</h1></div></section>
       <main className="content-layout">
         <section className="main-col">
-          <div className={`status-banner ${meta.className}`}><div><div className="status-threat">Threat level</div><div className="status-label">{meta.label}</div><div className="status-desc">{meta.description}</div></div><div className="status-right"><div className="big-coverage">{formatPercent(area.coverage)}</div><div className="cov-label">MMR1 coverage at 24 months</div></div></div>
-          <div className="metric-grid card"><Metric label="Eligible children" value={area.totalEligible.toLocaleString()} /><Metric label="Vaccinated" value={area.totalVaccinated.toLocaleString()} /><Metric label="Unvaccinated" value={unvaccinated(area).toLocaleString()} /><Metric label="Needed for 95%" value={neededForTarget(area).toLocaleString()} /></div>
+          <DataNotice />
+          <div className={`status-banner ${meta.className}`}><div><div className="status-threat">Coverage band</div><div className="status-label">{meta.label}</div><div className="status-desc">{meta.description}</div></div><div className="status-right"><div className="big-coverage">{formatPercent(area.coverage)}</div><div className="cov-label">Recorded MMR1 coverage at 24 months</div></div></div>
+          {area.totalEligible < 30 ? <div className="sample-warning" role="note"><strong>Small sample:</strong> this percentage is based on {area.totalEligible.toLocaleString()} eligible records and may change sharply with only a few records.</div> : null}
+          <div className="metric-grid card"><Metric label="Eligible records" value={area.totalEligible.toLocaleString()} /><Metric label="Recorded vaccinated" value={area.totalVaccinated.toLocaleString()} /><Metric label="Not recorded vaccinated" value={unvaccinated(area).toLocaleString()} /><Metric label="Additional records for 95%" value={neededForTarget(area).toLocaleString()} /></div>
           <TrendChart data={areaTrend} selectedAreaName={area.postcodeDistrict} />
-          <section className="card"><h2 className="card-title">How to read this</h2><p className="body-copy">Coverage below 95% means measles can spread more easily if it enters the community. Coverage below 90% is treated here as a clearer local warning signal, not a diagnosis of an outbreak. Postcode-district figures are generated from GP-level source records, so they are a local signal rather than a household-level measurement.</p></section>
+          <section className="card"><h2 className="card-title">How to read this</h2><p className="body-copy">The percentage combines COVER records for GP practices whose practice postcode begins {area.postcodeDistrict}. It does not estimate vaccination among everyone living in {area.postcodeDistrict}, and it does not indicate that an outbreak is occurring. Coverage below 95% means the recorded group is below the programme target.</p></section>
         </section>
         <aside className="side-col">
-          <div className="side-card"><h2 className="side-title">Area summary</h2><div className="fact-item"><span>📍</span><p>{area.postcodeDistrict} is in {area.region}.</p></div><div className="fact-item"><span>🏥</span><p>{area.practiceCount} practices are represented in the imported GP-level COVER records for this postcode district.</p></div><div className="fact-item"><span>🎯</span><p>Gap to target: {Math.max(0, target - area.coverage).toFixed(1)} percentage points.</p></div></div>
-          <div className="side-card"><h2 className="side-title">Nearby / similar areas</h2>{nearby.map((item) => <AreaCard key={item.postcodeDistrict} area={item} />)}</div>
+          <div className="side-card"><h2 className="side-title">Record summary</h2><div className="fact-item"><span aria-hidden="true">📍</span><p>The practice-postcode grouping is assigned to {area.region}.</p></div><div className="fact-item"><span aria-hidden="true">🏥</span><p>{area.practiceCount} {area.practiceCount === 1 ? 'practice is' : 'practices are'} represented in the imported GP-level COVER records.</p></div><div className="fact-item"><span aria-hidden="true">🎯</span><p>Gap to target: {Math.max(0, target - area.coverage).toFixed(1)} percentage points.</p></div></div>
+          <div className="side-card"><h2 className="side-title">Similar coverage in the same NHS grouping</h2>{nearby.map((item) => <AreaCard key={item.postcodeDistrict} area={item} />)}</div>
           <div className="gp-cta"><h3>Need vaccination guidance?</h3><p>Use official NHS advice or contact your GP practice.</p><a className="gp-btn" href="https://www.nhs.uk/vaccinations/mmr-vaccine/" target="_blank" rel="noreferrer">NHS MMR advice</a></div>
         </aside>
       </main>
@@ -524,8 +553,36 @@ function WakefieldPage() {
 function MethodologyPage() {
   return (
     <main className="main-content page-shell readable">
-      <PageTitle eyebrow="Methodology" title="How {brandName} handles the data" description="A plain-English summary of the current NHS COVER import and postcode-district aggregation." />
-      <section className="card prose-card"><h2>Current data status</h2><p>{brandName} uses generated area data from NHS COVER GP-level records, aggregated into postcode districts and risk bands. The public explorer reads the generated JSON file at <code>/data/areas.json</code>.</p><h2>Area aggregation</h2><ol><li>Download official NHS COVER supplementary GP-level files and GP practice reference data.</li><li>Join GP practice codes to practice postcodes.</li><li>Convert practice postcodes into outward postcode districts.</li><li>Aggregate eligible and vaccinated counts by postcode district.</li><li>Assign risk bands using the 90% and 95% coverage thresholds.</li></ol><h2>Important limitation</h2><p>Postcode-district figures are local coverage indicators derived from GP-level source records. They are not household-level records and should not be used to identify individual vaccination status.</p></section>
+      <PageTitle eyebrow="Methodology" title={`How ${brandName} handles the data`} description="Sources, calculations, geography, small-number rules and limitations for the GP-practice postcode indicators." />
+      <section className="card prose-card">
+        <h2>Project stewardship</h2>
+        <p>{brandName} was created and is maintained by <strong>Rory Campbell</strong> as an independent public-interest project. It is not an official NHS or UKHSA service and does not provide medical advice.</p>
+      </section>
+      <section className="card prose-card">
+        <h2>Official source</h2>
+        <p>The site processes UKHSA COVER supplementary GP-practice data and GP-practice reference data. National comparison figures come from the UKHSA quarterly COVER releases.</p>
+        <p><a href="https://www.gov.uk/government/statistics/cover-of-vaccination-evaluated-rapidly-cover-programme-2025-to-2026-quarterly-data" target="_blank" rel="noreferrer">Open the current UKHSA COVER collection</a> · <a href="https://www.gov.uk/government/publications/cover-of-vaccination-evaluated-rapidly-cover-programme-quality-and-methodology-information/quality-and-methodology-information-cover-programme" target="_blank" rel="noreferrer">Read UKHSA quality and methodology information</a></p>
+      </section>
+      <section className="card prose-card">
+        <h2>How an area figure is calculated</h2>
+        <ol><li>Download the official GP-level COVER file and practice reference data.</li><li>Join each GP practice code to the postcode of that practice.</li><li>Convert the practice postcode to its outward postcode district, such as FY1 or M15.</li><li>Sum eligible and recorded-vaccinated counts for practices sharing that district.</li><li>Calculate coverage as <code>recorded vaccinated ÷ eligible × 100</code>.</li></ol>
+        <p>When combining several districts, the site uses the same eligible-child-weighted calculation. It does not average the displayed district percentages.</p>
+      </section>
+      <section className="card prose-card">
+        <h2>The central geographical limitation</h2>
+        <p><strong>The postcode is the location of the GP practice, not the home postcode of each child.</strong> Registered patients can live outside the district. These pages are therefore practice-location indicators and must not be interpreted as resident-population estimates.</p>
+        <p>The source is aggregate and cannot identify any child or household. The figures are provisional, can be revised and may be affected by differences in GP systems, patient movement, incomplete records and unmatched practice-reference data.</p>
+      </section>
+      <section className="card prose-card">
+        <h2>Coverage bands and small numbers</h2>
+        <ul><li><strong>Well below target:</strong> below 90%.</li><li><strong>Below target:</strong> 90% to below 95%.</li><li><strong>Meets target:</strong> 95% or higher.</li></ul>
+        <p>These are descriptive coverage bands, not outbreak predictions. Districts with fewer than 30 eligible records receive a small-sample warning and are excluded from homepage lowest-coverage rankings, while remaining visible in the Explorer.</p>
+      </section>
+      <section className="card prose-card">
+        <h2>Reproducibility and licence</h2>
+        <p>The processing scripts, normalised CSV/JSON files and validation rules are maintained in the project repository. The pipeline rejects impossible coverage values, aggregates duplicate districts by counts and reports duplicate/unmatched conditions during generation.</p>
+        <p>Contains UK Health Security Agency data licensed under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noreferrer">Open Government Licence v3.0</a>.</p>
+      </section>
     </main>
   );
 }
@@ -544,15 +601,18 @@ export default function App() {
   const area = getAreaFromPath(pathname);
   return (
     <>
+      <a className="skip-link" href="#main-content">Skip to main content</a>
       <Nav />
-      {page === 'home' ? <HomePage /> : null}
-      {page === 'towns' ? <TownsPage /> : null}
-      {page === 'town' ? <TownPage area={area} /> : null}
-      {page === 'map' ? <MapPage /> : null}
-      {page === 'myths' ? <MythsPage /> : null}
-      {page === 'wakefield' ? <WakefieldPage /> : null}
-      {page === 'methodology' ? <MethodologyPage /> : null}
-      {page === 'not-found' ? <NotFoundPage /> : null}
+      <div id="main-content">
+        {page === 'home' ? <HomePage /> : null}
+        {page === 'towns' ? <TownsPage /> : null}
+        {page === 'town' ? <TownPage area={area} /> : null}
+        {page === 'map' ? <MapPage /> : null}
+        {page === 'myths' ? <MythsPage /> : null}
+        {page === 'wakefield' ? <WakefieldPage /> : null}
+        {page === 'methodology' ? <MethodologyPage /> : null}
+        {page === 'not-found' ? <NotFoundPage /> : null}
+      </div>
       <Footer />
     </>
   );

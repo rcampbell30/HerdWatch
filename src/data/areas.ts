@@ -7,7 +7,7 @@ export const areas = generatedAreas as HerdArea[];
 
 export const deployedNationalStats = {
   sourceLabel: 'UKHSA COVER Q4 2025–26 GP data · England',
-  englandAverage: 88.9,
+  englandAverage: 87.3,
   herdImmunityTarget: 95,
   unvaccinatedChildren: 14295,
   totalAreasTracked: 1132,

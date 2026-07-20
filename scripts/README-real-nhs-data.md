@@ -1,8 +1,8 @@
 # Real NHS COVER data import notes
 
-HerdWatch is now wired for real NHS COVER data.
+Immunity Map is wired for real NHS COVER data.
 
-It still needs the official source files to be downloaded and converted before the public dashboard can honestly claim to use the full real dataset.
+The production build downloads and converts the official source files before rebuilding the public dashboard.
 
 ## Official sources
 
@@ -31,10 +31,10 @@ data/raw/ref/
 
 Those folders are intentionally ignored by Git because official ODS/ZIP source files can be large.
 
-## Current rebuilt target used by HerdWatch
+## Current rebuilt target used by Immunity Map
 
 ```text
-NHS COVER Q3 2024–25 · England
+UKHSA COVER Q4 2025–26 · England
 ```
 
 The real area-level build should be based on GP-level supplementary COVER data, then grouped to postcode district using a GP-practice postcode reference file.
@@ -86,7 +86,7 @@ If column detection fails, inspect that report and update the regex aliases in:
 scripts/build-cover-areas.py
 ```
 
-## Files HerdWatch expects
+## Files Immunity Map expects
 
 Real normalised data should end up here:
 
@@ -129,10 +129,10 @@ Notes:
 
 - `postcode_district` should be uppercase, e.g. `FY1`, `M15`, `LS12`.
 - `coverage` can be blank; the script will calculate it from `total_vaccinated / total_eligible * 100`.
-- Risk status is calculated automatically:
-  - below 90 = `AT_RISK`
-  - 90 to below 95 = `VULNERABLE`
-  - 95+ = `PROTECTED`
+- Coverage bands are calculated automatically:
+  - below 90 = well below target (`AT_RISK` internally)
+  - 90 to below 95 = below target (`VULNERABLE` internally)
+  - 95+ = meets target (`PROTECTED` internally)
 
 ## trends.csv schema
 
@@ -143,7 +143,7 @@ year,england_mmr1,england_mmr2,target
 Example:
 
 ```csv
-2024–25 Q3,88.9,84.0,95
+2025-26 Q4,87.3,84.1,95
 ```
 
 Historic trend data should be manually checked against the relevant annual/quarterly COVER tables before being published as final.

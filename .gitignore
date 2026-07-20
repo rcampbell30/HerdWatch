@@ -5,6 +5,9 @@ dist
 .env.local
 .netlify
 .vite
+__pycache__/
+*.py[cod]
+*.bak_*
 
 # Official source downloads are large and reproducible via npm run data:download
 data/raw/source/

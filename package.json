@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "python3 -m pip install -r requirements.txt && npm run data:cover:all && vite build && node scripts/create-static-route-entrypoints.mjs && node scripts/create-sitemap.mjs && npm run seo:audit && node scripts/inject-adsense-meta.mjs && node scripts/apply-public-branding.mjs",
+    "build": "python3 -m pip install -r requirements.txt && npm run data:cover:all && npm run build:static",
+    "build:static": "vite build && node scripts/create-static-route-entrypoints.mjs && node scripts/create-sitemap.mjs && npm run seo:audit && node scripts/inject-adsense-meta.mjs && node scripts/apply-public-branding.mjs",
     "seo:audit": "node scripts/audit-sitemap.mjs",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview",
@@ -18,18 +19,17 @@
     "data:validate": "node scripts/build-data.mjs"
   },
   "dependencies": {
-    "@vitejs/plugin-react": "latest",
-    "vite": "latest",
-    "typescript": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "recharts": "latest"
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
   },
   "devDependencies": {
-    "@types/react": "latest",
-    "@types/react-dom": "latest"
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.3",
+    "typescript": "7.0.2",
+    "vite": "8.1.5"
   },
   "engines": {
-    "node": ">=20"
+    "node": "^20.19.0 || >=22.12.0"
   }
 }

@@ -1,6 +1,6 @@
 # Immunity Map
 
-Immunity Map is an MMR vaccination coverage tracker for England. It highlights local coverage, herd-immunity gaps and outbreak vulnerability using a black/red/cream civic dashboard style.
+Immunity Map is an MMR vaccination coverage tracker for England. It groups UKHSA COVER records by the postcode district of each GP practice and presents descriptive coverage bands in a black/red/cream civic dashboard style.
 
 Repository note: the GitHub repository remains `HerdWatch`, but the public-facing product name is now **Immunity Map**.
 
@@ -12,14 +12,14 @@ Current generated metadata reports:
 
 - Example data: false
 - Source files: `data/raw/areas.csv` and `data/raw/trends.csv`
-- Postcode-district area records: 1,889
+- Postcode-district area records: 1,857
 - Duplicate postcode districts: 0
-- Trend points: 5
-- At-risk areas: 614
-- Vulnerable areas: 833
-- Protected areas: 442
+- Like-for-like quarterly trend points: 2
+- Well below target areas (below 90%): 856
+- Below target areas (90% to below 95%): 594
+- Areas meeting the target (95% or higher): 407
 
-The public dashboard should still be treated as an explanatory public-health data interface, not medical advice or an official NHS/UKHSA service.
+The public dashboard is an explanatory public-health data interface, not medical advice or an official NHS/UKHSA service. Practice postcode districts must not be interpreted as the home location of registered children.
 
 ## Important data note
 
@@ -58,7 +58,6 @@ A final build-time branding pass applies the public product name **Immunity Map*
 - Vite
 - React
 - TypeScript
-- Recharts
 - Netlify static deployment
 - Node data-build scripts
 - Node static SEO route generation
@@ -190,7 +189,11 @@ public/
     trends.json
     metadata.json
   _redirects
-  herdwatch-nav-patch.js
+  _headers
+  404.html
+  editorial.css
+  favicon.svg
+  og-immunity-map.png
   robots.txt
 index.html
 netlify.toml
@@ -200,8 +203,7 @@ tsconfig.json
 
 ## Next proper upgrade
 
-1. Add CI so every pull request runs `npm run data:build`, `npm run typecheck` and `npm run build`.
-2. Add Leaflet, SVG, or GeoJSON-based map views.
-3. Add local authority/ICB summary pages for search and public usefulness.
-4. Add a `/rankings/` page for lowest coverage, biggest estimated unvaccinated counts and areas closest to the 95% target.
-5. Add screenshots to this README.
+1. Add Leaflet, SVG, or GeoJSON-based map views.
+2. Add local authority/ICB summary pages for search and public usefulness.
+3. Add a `/rankings/` page for lowest coverage, biggest estimated unvaccinated counts and areas closest to the 95% target.
+4. Add screenshots to this README.
