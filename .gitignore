@@ -12,5 +12,6 @@ __pycache__/
 # Official source downloads are large and reproducible via npm run data:download
 data/raw/source/
 data/raw/ref/
+data/raw/map/
 data/processed/*.json
 !data/processed/.gitkeep

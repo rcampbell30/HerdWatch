@@ -163,8 +163,7 @@ function moveKnownStandaloneHtmlFiles() {
 function checkExpectedStaticPages() {
   const expected = [
     'public/myths/index.html',
-    'public/wakefield/index.html',
-    'public/map/index.html'
+    'public/wakefield/index.html'
   ];
 
   for (const path of expected) {

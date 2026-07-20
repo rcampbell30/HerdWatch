@@ -8,6 +8,8 @@ Repository note: the GitHub repository remains `HerdWatch`, but the public-facin
 
 Immunity Map has been rebuilt as a clean editable React + TypeScript + Vite project and now uses rebuilt real data files rather than the earlier placeholder trend/scaffold state.
 
+The Explorer is a real MapLibre geographic view. It plots every represented practice-postcode district at a lightweight ONS-derived reference centroid, draws a generalised official England outline, distinguishes small samples, and keeps the complete filterable table as an accessible fallback.
+
 Current generated metadata reports:
 
 - Example data: false
@@ -64,6 +66,7 @@ A final build-time branding pass applies the public product name **Immunity Map*
 - Node sitemap generation
 - Node public branding pass
 - Python COVER conversion scripts
+- MapLibre GL JS geographic explorer
 
 ## Local development
 
@@ -99,6 +102,8 @@ src/data/generated/trends.json
 public/data/areas.json
 public/data/trends.json
 public/data/metadata.json
+public/data/map-centroids.json
+public/data/england-outline.geojson
 ```
 
 These files are built from CSV inputs under:
@@ -138,6 +143,21 @@ year,england_mmr1,england_mmr2,target
 ```
 
 If `coverage` is blank in the area CSV, it will be calculated from `total_vaccinated / total_eligible * 100`.
+
+## Geographic map data
+
+The deployable geography files are derived from the official ONS Postcode Directory (May 2026) and ONS Countries (December 2025) ultra-generalised boundary. Each map point is the arithmetic mean of live England postcode-unit centroids in an outward postcode district represented by the COVER data.
+
+The point is a district reference location only. It is not a patient location, exact GP-practice coordinate, postcode boundary or resident-population estimate.
+
+The 235 MB ONSPD source archive is deliberately not committed. After downloading it from the ONS Open Geography Portal, refresh and validate geography with:
+
+```bash
+npm run map:geography -- --onspd-zip /path/to/ONSPD_MAY_2026.zip
+npm run map:validate
+```
+
+Every production build runs `map:validate` and will fail if current coverage districts and map coordinates fall out of sync.
 
 ## Real COVER source workflow
 
@@ -179,6 +199,8 @@ scripts/
   build-data.mjs
   build-cover-areas.py
   build-cover-trends.py
+  build-map-geography.py
+  validate-map-data.mjs
   create-sitemap.mjs
   create-static-route-entrypoints.mjs
   download-cover-sources.mjs
@@ -188,6 +210,8 @@ public/
     areas.json
     trends.json
     metadata.json
+    map-centroids.json
+    england-outline.geojson
   _redirects
   _headers
   404.html
@@ -201,9 +225,8 @@ vite.config.ts
 tsconfig.json
 ```
 
-## Next proper upgrade
+## Potential next upgrades
 
-1. Add Leaflet, SVG, or GeoJSON-based map views.
-2. Add local authority/ICB summary pages for search and public usefulness.
-3. Add a `/rankings/` page for lowest coverage, biggest estimated unvaccinated counts and areas closest to the 95% target.
-4. Add screenshots to this README.
+1. Add local authority/ICB summary pages for search and public usefulness.
+2. Add a `/rankings/` page for lowest coverage, biggest estimated unvaccinated counts and areas closest to the 95% target.
+3. Add screenshots to this README.

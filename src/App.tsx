@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
 import { areas, deployedNationalStats } from './data/areas';
 import { buildAreaTrend, nationalTrend } from './data/trends';
+import { CoverageMap } from './CoverageMap';
 import type { HerdArea, RiskStatus, TrendPoint } from './types';
 
 const brandName = 'Immunity Map';
@@ -391,11 +392,91 @@ function Metric({ label, value }: { label: string; value: string }) {
 }
 
 function MapPage() {
+  const [query, setQuery] = useState('');
+  const [status, setStatus] = useState<RiskStatus | 'ALL'>('ALL');
+  const [region, setRegion] = useState('ALL');
+  const [visibleCount, setVisibleCount] = useState(80);
+  const regionOptions = useMemo(() => [...new Set(areas.map((area) => area.region))].sort(), []);
+  const filtered = useMemo(() => {
+    const trimmed = query.trim().toUpperCase();
+    const hasExactDistrict = trimmed.length > 0 && areas.some((area) => area.postcodeDistrict === trimmed);
+    return [...areas]
+      .filter((area) => !trimmed || (hasExactDistrict ? area.postcodeDistrict === trimmed : area.postcodeDistrict.includes(trimmed) || area.region.toUpperCase().includes(trimmed)))
+      .filter((area) => status === 'ALL' || area.status === status)
+      .filter((area) => region === 'ALL' || area.region === region)
+      .sort((a, b) => a.coverage - b.coverage || a.postcodeDistrict.localeCompare(b.postcodeDistrict));
+  }, [query, region, status]);
+  const visibleRows = filtered.slice(0, visibleCount);
+  const filteredEligible = filtered.reduce((sum, area) => sum + area.totalEligible, 0);
+  const filteredVaccinated = filtered.reduce((sum, area) => sum + area.totalVaccinated, 0);
+  const filteredCoverage = filteredEligible > 0 ? (filteredVaccinated / filteredEligible) * 100 : null;
+  const hasFilters = query.trim().length > 0 || status !== 'ALL' || region !== 'ALL';
+
+  const resetFilters = () => {
+    setQuery('');
+    setStatus('ALL');
+    setRegion('ALL');
+    setVisibleCount(80);
+  };
+
   return (
     <main className="main-content page-shell">
-      <PageTitle eyebrow="Explorer" title="Coverage explorer" description="Search and filter generated NHS COVER postcode-district area data by region, coverage and risk band." />
-      <p className="section-note">The live /map/ route is served as an interactive coverage dashboard that reads from /data/areas.json.</p>
-      <div className="map-placeholder">{areas.slice(0, 18).map((area) => <a key={area.postcodeDistrict} className={`map-cell ${riskCopy[area.status].className}`} href={`/town/${area.postcodeDistrict.toLowerCase()}/`}><strong>{area.postcodeDistrict}</strong><span>{formatPercent(area.coverage)}</span></a>)}</div>
+      <PageTitle eyebrow="Geographic explorer" title="Recorded MMR coverage across England" description={`Explore ${areas.length.toLocaleString()} postcode-district groups based on where represented GP practices are located.`} />
+      <DataNotice />
+
+      <section className="map-controls" aria-labelledby="map-filter-title">
+        <div className="map-controls-heading">
+          <div><h2 id="map-filter-title">Filter the map</h2><p>Search a practice postcode district or NHS grouping, then narrow by recorded coverage band.</p></div>
+          {hasFilters ? <button className="map-reset" type="button" onClick={resetFilters}>Clear filters</button> : null}
+        </div>
+        <div className="map-filter-grid">
+          <label><span>Postcode district or NHS grouping</span><input className="search-input light" type="search" placeholder="Try M15 or Greater Manchester" value={query} onChange={(event) => { setQuery(event.target.value); setVisibleCount(80); }} /></label>
+          <label><span>Coverage band</span><select value={status} onChange={(event) => { setStatus(event.target.value as RiskStatus | 'ALL'); setVisibleCount(80); }}><option value="ALL">All coverage bands</option><option value="AT_RISK">Well below target (&lt;90%)</option><option value="VULNERABLE">Below target (90–&lt;95%)</option><option value="PROTECTED">Meets target (95%+)</option></select></label>
+          <label><span>NHS grouping</span><select value={region} onChange={(event) => { setRegion(event.target.value); setVisibleCount(80); }}><option value="ALL">All NHS groupings</option>{regionOptions.map((option) => <option key={option} value={option}>{option}</option>)}</select></label>
+        </div>
+      </section>
+
+      <div className="map-result-bar" role="status" aria-live="polite">
+        <strong>{filtered.length.toLocaleString()} {filtered.length === 1 ? 'district' : 'districts'}</strong>
+        <span>{filteredCoverage == null ? 'No coverage value' : `${formatPercent(filteredCoverage)} eligible-record weighted coverage`}</span>
+      </div>
+
+      <section aria-labelledby="coverage-map-title">
+        <div className="map-heading-row">
+          <div><h2 id="coverage-map-title">Practice-location reference map</h2><p>Click or tap a point to open its coverage summary.</p></div>
+          <div className="map-legend" aria-label="Map legend">
+            <span><i className="legend-dot risk" />Well below target</span>
+            <span><i className="legend-dot vulnerable" />Below target</span>
+            <span><i className="legend-dot protected" />Meets target</span>
+            <span><i className="legend-dot small" />Small sample</span>
+          </div>
+        </div>
+        <CoverageMap allAreas={areas} visibleAreas={filtered} />
+        <p className="map-caveat"><strong>Geography note:</strong> each point is a reference centroid for a GP-practice postcode district, calculated from live ONS postcode-unit centroids. It is not a patient location, an exact practice address or a postcode-district boundary. Faded outlined points have fewer than 30 eligible records.</p>
+      </section>
+
+      <section className="map-table-section" aria-labelledby="map-table-title">
+        <div className="map-heading-row"><div><h2 id="map-table-title">Accessible results table</h2><p>The same filtered records are available without using the map.</p></div></div>
+        <div className="table-card">
+          <table>
+            <caption className="sr-only">Filtered MMR coverage grouped by GP-practice postcode district</caption>
+            <thead><tr><th>Area</th><th>NHS grouping</th><th>Practices</th><th>Eligible</th><th>Coverage</th><th>Status</th></tr></thead>
+            <tbody>
+              {visibleRows.map((area) => (
+                <tr key={area.postcodeDistrict}>
+                  <td><a href={`/town/${area.postcodeDistrict.toLowerCase()}/`}>{area.postcodeDistrict}</a></td>
+                  <td>{area.region}</td>
+                  <td>{area.practiceCount}</td>
+                  <td>{area.totalEligible.toLocaleString()}</td>
+                  <td>{formatPercent(area.coverage)}{area.totalEligible < 30 ? <span className="small-sample table-sample">Small sample</span> : null}</td>
+                  <td><span className={`town-badge ${riskCopy[area.status].className}`}>{riskCopy[area.status].label}</span></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        {visibleCount < filtered.length ? <button className="btn btn-outline" type="button" onClick={() => setVisibleCount((count) => count + 80)}>View more areas ({visibleRows.length.toLocaleString()} of {filtered.length.toLocaleString()})</button> : null}
+      </section>
     </main>
   );
 }
@@ -574,6 +655,11 @@ function MethodologyPage() {
         <p>The source is aggregate and cannot identify any child or household. The figures are provisional, can be revised and may be affected by differences in GP systems, patient movement, incomplete records and unmatched practice-reference data.</p>
       </section>
       <section className="card prose-card">
+        <h2>How the geographic map is placed</h2>
+        <p>Each explorer point is a reference centroid for an outward postcode district represented in the COVER data. It is calculated as the arithmetic mean of live England postcode-unit centroids in the <a href="https://geoportal.statistics.gov.uk/datasets/6fff67d204fd4f339591ed667a6e3642" target="_blank" rel="noreferrer">ONS Postcode Directory (May 2026)</a>. The coastline uses the <a href="https://geoportal.statistics.gov.uk/datasets/818212ae5b2948bcb352842081c03762" target="_blank" rel="noreferrer">ONS Countries (December 2025) ultra-generalised boundary</a>.</p>
+        <p>The plotted point is not a postcode-district polygon, patient location or exact practice coordinate. Overlapping points can obscure one another at national zoom, so users can zoom, filter or use the complete results table.</p>
+      </section>
+      <section className="card prose-card">
         <h2>Coverage bands and small numbers</h2>
         <ul><li><strong>Well below target:</strong> below 90%.</li><li><strong>Below target:</strong> 90% to below 95%.</li><li><strong>Meets target:</strong> 95% or higher.</li></ul>
         <p>These are descriptive coverage bands, not outbreak predictions. Districts with fewer than 30 eligible records receive a small-sample warning and are excluded from homepage lowest-coverage rankings, while remaining visible in the Explorer.</p>
@@ -581,7 +667,7 @@ function MethodologyPage() {
       <section className="card prose-card">
         <h2>Reproducibility and licence</h2>
         <p>The processing scripts, normalised CSV/JSON files and validation rules are maintained in the project repository. The pipeline rejects impossible coverage values, aggregates duplicate districts by counts and reports duplicate/unmatched conditions during generation.</p>
-        <p>Contains UK Health Security Agency data licensed under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noreferrer">Open Government Licence v3.0</a>.</p>
+        <p>Contains UK Health Security Agency data licensed under the <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noreferrer">Open Government Licence v3.0</a>. Map geography contains OS data © Crown copyright and database right 2026 and Royal Mail data © Royal Mail copyright and database right 2026; source: Office for National Statistics licensed under the Open Government Licence v3.0.</p>
       </section>
     </main>
   );
