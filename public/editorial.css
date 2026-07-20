@@ -31,7 +31,7 @@ a { color: inherit; }
 .intro-card h2 { margin: 0 0 14px; font-size: 1.25rem; letter-spacing: -.02em; line-height: 1.3; }
 .intro-card p, .card p { margin: 0 0 16px; color: #333; font-size: 1.02rem; }
 .intro-card p:last-child, .card p:last-child { margin-bottom: 0; }
-.intro-card a { color: #a91d1d; font-weight: 700; }
+.intro-card p a { color: #a91d1d; font-weight: 700; }
 .section-header { display: flex; align-items: center; gap: 16px; margin: 44px 0 26px; }
 .section-title { margin: 0; font-size: 1.55rem; font-weight: 800; letter-spacing: -.02em; }
 .section-line { flex: 1; height: 2px; background: var(--line); }
