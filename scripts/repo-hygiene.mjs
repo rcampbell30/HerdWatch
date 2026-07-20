@@ -9,20 +9,19 @@ const ADS_TXT_CONTENT = 'google.com, pub-4712774395612376, DIRECT, f08c47fec0942
 const ADSENSE_META = '<meta name="google-adsense-account" content="ca-pub-4712774395612376" />';
 
 const CANONICAL_REDIRECTS = [
+  'https://immunitymap.netlify.app/* https://immunitymap.org/:splat 301!',
+  '/favicon.ico    /favicon.svg    301',
   '/methodologies  /methodology/   301',
   '/methodologies/ /methodology/   301',
-  '/map            /map/           301',
-  '/towns          /towns/         301',
-  '/methodology    /methodology/   301',
-  '/mythology      /methodology/   301',
-  '/myths          /myths/         301',
-  '/wakefield      /wakefield/     301',
-  '/map/           /map/index.html           200',
-  '/towns/         /towns/index.html         200',
-  '/methodology/   /methodology/index.html   200',
-  '/myths/         /myths/index.html         200',
-  '/wakefield/     /wakefield/index.html     200',
-  '/town/*         /index.html               200'
+  '/mythology      /myths/        301',
+  '/map            /map/          301',
+  '/towns          /towns/        301',
+  '/methodology    /methodology/  301',
+  '/myths          /myths/        301',
+  '/wakefield      /wakefield/    301',
+  '/town/:area     /town/:area/   301',
+  '/town/*         /404.html      404',
+  '/*              /404.html      404'
 ];
 
 const IGNORE_DIRS = new Set([
@@ -110,7 +109,7 @@ function ensureRedirects() {
   });
 
   const next = [...CANONICAL_REDIRECTS, ...extras].join('\n') + '\n';
-  writeIfChanged(redirectsPath, next, 'Normalised public/_redirects, including /town/* -> /index.html for React town routes');
+  writeIfChanged(redirectsPath, next, 'Normalised public/_redirects with canonical routes and real 404 fallbacks');
 }
 
 function ensureAdsenseMetaInHtmlSources() {

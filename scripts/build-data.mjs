@@ -32,7 +32,15 @@ validateTrends(trends);
 
 const metadata = {
   generatedAt: new Date().toISOString(),
+  sourceDataAsOf: process.env.SOURCE_DATA_AS_OF || trends.at(-1)?.year || null,
   usingExampleData,
+  source: {
+    collectionUrl: 'https://www.gov.uk/government/statistics/cover-of-vaccination-evaluated-rapidly-cover-programme-2025-to-2026-quarterly-data',
+    methodologyUrl: 'https://www.gov.uk/government/publications/cover-of-vaccination-evaluated-rapidly-cover-programme-quality-and-methodology-information/quality-and-methodology-information-cover-programme',
+    licence: 'Open Government Licence v3.0'
+  },
+  geography: 'GP-practice outward postcode district; not patient home postcode',
+  rankingMinimumEligible: 30,
   sourceFiles: {
     areas: path.relative(root, areaCsvPath),
     trends: path.relative(root, trendCsvPath)
@@ -68,7 +76,9 @@ const report = {
     'Example CSVs are used automatically only when real raw files are absent.',
     'The app and static map route can read public/data/areas.json after build.',
     'Duplicate postcode districts are aggregated by summing eligible/vaccinated/practice counts and recalculating coverage.',
-    'Coverage bands: below 90 = AT_RISK; 90 to below 95 = VULNERABLE; 95+ = PROTECTED.'
+    'Coverage bands: below 90 = well below target; 90 to below 95 = below target; 95+ = meets target.',
+    'Postcode districts identify GP-practice locations, not patient home addresses.',
+    'Groups with fewer than 30 eligible records remain visible but are excluded from lowest-coverage rankings.'
   ]
 };
 

@@ -23,12 +23,14 @@ function walkHtmlFiles(dir) {
 }
 
 const htmlFiles = walkHtmlFiles(distDir);
+let injectedCount = 0;
+let existingCount = 0;
 
 for (const file of htmlFiles) {
   const html = readFileSync(file, 'utf8');
 
   if (html.includes('google-adsense-account')) {
-    console.log(`AdSense meta already present in ${file}`);
+    existingCount += 1;
     continue;
   }
 
@@ -39,5 +41,7 @@ for (const file of htmlFiles) {
   }
 
   writeFileSync(file, updated);
-  console.log(`Injected AdSense meta into ${file}`);
+  injectedCount += 1;
 }
+
+console.log(`AdSense metadata checked in ${htmlFiles.length.toLocaleString()} HTML files: ${injectedCount.toLocaleString()} injected, ${existingCount.toLocaleString()} already present.`);

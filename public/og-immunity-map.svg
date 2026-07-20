@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">Immunity Map</title>
+  <desc id="desc">MMR coverage grouped by GP-practice postcode district across England.</desc>
+  <rect width="1200" height="630" fill="#1a1a1a"/>
+  <g opacity=".08" stroke="#f8f7f4">
+    <path d="M0 105h1200M0 210h1200M0 315h1200M0 420h1200M0 525h1200"/>
+    <path d="M100 0v630M200 0v630M300 0v630M400 0v630M500 0v630M600 0v630M700 0v630M800 0v630M900 0v630M1000 0v630M1100 0v630"/>
+  </g>
+  <rect x="72" y="72" width="228" height="42" rx="3" fill="#dc2626"/>
+  <text x="96" y="100" fill="#fff" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="800" letter-spacing="2">PUBLIC HEALTH DATA</text>
+  <text x="72" y="240" fill="#f8f7f4" font-family="Inter, Arial, sans-serif" font-size="92" font-weight="800" letter-spacing="-4">Immunity</text>
+  <text x="476" y="240" fill="#dc2626" font-family="Inter, Arial, sans-serif" font-size="92" font-weight="800" letter-spacing="-4">Map</text>
+  <text x="72" y="325" fill="#b3b3b3" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="500">MMR coverage grouped by GP-practice</text>
+  <text x="72" y="376" fill="#b3b3b3" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="500">postcode district across England.</text>
+  <g transform="translate(72 455)">
+    <rect width="280" height="84" rx="12" fill="#fef2f2"/>
+    <circle cx="42" cy="42" r="15" fill="#dc2626"/>
+    <text x="72" y="51" fill="#991b1b" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Below 90%</text>
+  </g>
+  <g transform="translate(374 455)">
+    <rect width="280" height="84" rx="12" fill="#fffbeb"/>
+    <circle cx="42" cy="42" r="15" fill="#d97706"/>
+    <text x="72" y="51" fill="#92400e" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">90%–&lt;95%</text>
+  </g>
+  <g transform="translate(676 455)">
+    <rect width="280" height="84" rx="12" fill="#f0fdf4"/>
+    <circle cx="42" cy="42" r="15" fill="#16a34a"/>
+    <text x="72" y="51" fill="#166534" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">95%+</text>
+  </g>
+  <text x="1128" y="588" text-anchor="end" fill="#b3b3b3" font-family="Inter, Arial, sans-serif" font-size="24">immunitymap.org</text>
+</svg>

@@ -3,7 +3,7 @@ import { join } from 'node:path';
 
 const distDir = 'dist';
 const sitemapPath = join(distDir, 'sitemap.xml');
-const expectedBaseUrl = normaliseBaseUrl(process.env.SITE_URL || 'https://immunitymap.netlify.app');
+const expectedBaseUrl = normaliseBaseUrl(process.env.SITE_URL || 'https://immunitymap.org');
 const expectedOrigin = new URL(expectedBaseUrl).origin;
 const maxUrls = Number.parseInt(process.env.MAX_SITEMAP_URLS || '2500', 10);
 
@@ -36,7 +36,8 @@ const forbiddenRoutePatterns = [
 
 const legacyHosts = [
   'herdwatchuk.netlify.app',
-  'www.herdwatchuk.netlify.app'
+  'www.herdwatchuk.netlify.app',
+  'immunitymap.netlify.app'
 ];
 
 const errors = [];

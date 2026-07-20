@@ -3,7 +3,19 @@
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "20"
+  NODE_VERSION = "20.19.0"
+  SITE_URL = "https://immunitymap.org"
+
+[[redirects]]
+  from = "https://immunitymap.netlify.app/*"
+  to = "https://immunitymap.org/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/favicon.ico"
+  to = "/favicon.svg"
+  status = 301
 
 [[redirects]]
   from = "/methodologies"
@@ -13,6 +25,11 @@
 [[redirects]]
   from = "/methodologies/"
   to = "/methodology/"
+  status = 301
+
+[[redirects]]
+  from = "/mythology"
+  to = "/myths/"
   status = 301
 
 [[redirects]]
@@ -27,11 +44,6 @@
 
 [[redirects]]
   from = "/methodology"
-  to = "/methodology/"
-  status = 301
-
-[[redirects]]
-  from = "/mythology"
   to = "/methodology/"
   status = 301
 
@@ -51,36 +63,34 @@
   status = 301
 
 [[redirects]]
-  from = "/map/"
-  to = "/map/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/towns/"
-  to = "/towns/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/methodology/"
-  to = "/methodology/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/myths/"
-  to = "/myths/index.html"
-  status = 200
-
-[[redirects]]
-  from = "/wakefield/"
-  to = "/wakefield/index.html"
-  status = 200
-
-[[redirects]]
   from = "/town/*"
-  to = "/town/:splat/index.html"
-  status = 200
+  to = "/404.html"
+  status = 404
 
 [[redirects]]
   from = "/*"
-  to = "/index.html"
-  status = 200
+  to = "/404.html"
+  status = 404
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), geolocation=(), microphone=()"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/og-immunity-map.png"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300, must-revalidate"
