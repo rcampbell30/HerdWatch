@@ -93,26 +93,29 @@ function Footer() {
   return (
     <footer className="footer">
       <div className="footer-inner">
-        <div>
-          <div className="footer-brand"><BrandText /></div>
-          <div className="footer-copy">{brandTagline}</div>
-          <div className="footer-copy">Data: {deployedNationalStats.sourceLabel} · grouped by GP-practice postcode district</div>
-          <div className="footer-copy">Created and maintained by Rory Campbell.</div>
+        <div className="footer-main">
+          <div>
+            <a className="footer-brand" href="/"><BrandText /></a>
+            <p className="footer-summary">Independent public-interest MMR coverage project.</p>
+          </div>
+          <nav className="footer-links" aria-label="Footer navigation">
+            <a href="/map/" className="footer-link">Explorer</a>
+            <a href="/towns/" className="footer-link">All areas</a>
+            <a href="/myths/" className="footer-link">MMR evidence</a>
+            <a href="/wakefield/" className="footer-link">Wakefield record</a>
+            <a href="/methodology/" className="footer-link">Methodology</a>
+          </nav>
         </div>
-        <div className="footer-links">
-          <a href="/" className="footer-link">Home</a>
-          <a href="/myths/" className="footer-link">The Myth</a>
-          <a href="/wakefield/" className="footer-link">Wakefield</a>
-          <a href="/map/" className="footer-link">Explorer</a>
-          <a href="/towns/" className="footer-link">All Areas</a>
-          <a href="/methodology/" className="footer-link">Methodology</a>
-          <a href="/privacy.html" className="footer-link">Privacy</a>
-          <a href="/terms.html" className="footer-link">Terms</a>
-        </div>
-        <div className="footer-copy">
-          Contains UK Health Security Agency data licensed under the{' '}
-          <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noreferrer">Open Government Licence v3.0</a>.
-          {' '}Not medical advice.
+        <div className="footer-meta">
+          <p className="footer-copy">
+            Created and maintained by Rory Campbell. Contains UK Health Security Agency data licensed under the{' '}
+            <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noreferrer">Open Government Licence v3.0</a>.{' '}
+            Not medical advice.
+          </p>
+          <nav className="footer-legal" aria-label="Legal">
+            <a href="/privacy.html" className="footer-link">Privacy</a>
+            <a href="/terms.html" className="footer-link">Terms</a>
+          </nav>
         </div>
       </div>
     </footer>
@@ -560,32 +563,36 @@ function WakefieldPage() {
   return (
     <main className="main-content page-shell readable">
       <PageTitle
-        eyebrow="Wakefield"
-        title="The long shadow of one bad claim"
-        description="Why one discredited MMR scare still matters for public health, local trust and outbreak vulnerability."
+        eyebrow="Who he was · documented record"
+        title="Andrew Wakefield: who he was and how he was involved"
+        description="Wakefield was a doctor and gastroenterology researcher at London's Royal Free Hospital, the lead investigator and first-listed author of the 1998 Lancet paper, and the researcher who publicly urged parents to choose separate vaccines instead of MMR."
       />
 
       <section className="card prose-card">
-        <h2>Why this page exists</h2>
+        <h2>His direct role in the MMR scare</h2>
         <p>
-          MMR hesitancy did not appear from nowhere. One of the biggest shocks to public confidence
-          came from a now-discredited claim linking MMR to autism.
+          Wakefield was not a commentator who became attached to the story later. He led the Royal Free
+          research and was the first-named author of the{' '}
+          <a href="https://www.thelancet.com/journals/lancet/article/PIIS0140-6736%2897%2911096-0/abstract" target="_blank" rel="noreferrer">1998 Lancet case series</a>,
+          which described 12 children but could not establish that MMR caused autism.
         </p>
         <p>
-          The claim spread faster than the correction. That is why a local coverage tracker needs a
-          page explaining the history, not just a chart showing the numbers.
+          At the paper's press launch, he recommended separate vaccines rather than MMR. A{' '}
+          <a href="https://www.parliament.uk/globalassets/documents/post/postpn219.pdf" target="_blank" rel="noreferrer">Parliamentary Office of Science and Technology review</a>{' '}
+          records that intervention, the ensuing media coverage and the fall in vaccination rates that followed.
+          That combination of research leadership and public advocacy is why he is central to this history.
         </p>
       </section>
 
       <section className="card prose-card">
-        <h2>The basic story</h2>
+        <h2>What happened next</h2>
         <p>
-          A small 1998 paper helped fuel public fear about the MMR vaccine. The central claim did not
-          hold up, the paper was later retracted, and the scare became a case study in how weak evidence
-          can damage public trust for decades.
+          The paper was fully retracted in 2010, Wakefield was removed from the UK medical register,
+          and a later BMJ investigation described the article as fraudulent.
         </p>
         <p>
-          {brandName} treats that story as infrastructure damage: when trust falls, vaccination coverage can fall with it.
+          {brandName} documents those established facts while avoiding unsupported death totals or the
+          claim that one historical episode explains every later change in coverage.
         </p>
       </section>
 

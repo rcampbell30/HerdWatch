@@ -13,7 +13,7 @@ const routes = [
   { slug: 'methodology', title: `Data Sources and Methodology | ${brandName}`, description: 'How Immunity Map processes UKHSA COVER GP-practice data, calculates weighted coverage and handles geography and small samples.' },
   { slug: 'map', title: `MMR Coverage Explorer | ${brandName}`, description: 'Search UKHSA COVER records grouped by GP-practice postcode district, NHS region and recorded MMR1 coverage band.' },
   { slug: 'myths', title: `MMR, Autism and Vaccine Safety | ${brandName}`, description: 'A calm, sourced explanation of the evidence on MMR and autism and the known side effects of the vaccine.' },
-  { slug: 'wakefield', title: `Andrew Wakefield: What the Evidence Shows | ${brandName}`, description: 'A sourced account of the retracted 1998 MMR paper, the professional findings that followed and the limits of responsible attribution.' }
+  { slug: 'wakefield', title: `Andrew Wakefield: What the Evidence Shows | ${brandName}`, description: 'Who Andrew Wakefield was, how his 1998 Lancet paper and public statements made him central to the MMR scare, and what later investigations established.' }
 ];
 
 if (!existsSync(sourceIndex)) {
