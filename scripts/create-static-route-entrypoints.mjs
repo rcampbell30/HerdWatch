@@ -67,6 +67,16 @@ function withTownSeo(html, area, slug) {
     about: {
       '@type': 'Dataset',
       name: `${area.postcodeDistrict} GP-practice MMR vaccination coverage`,
+      description: `Aggregated UKHSA COVER records for GP practices located in ${area.postcodeDistrict}, including recorded MMR1 coverage at 24 months, eligible records, vaccinated records and represented practices. This is a practice-location indicator, not a resident-population estimate.`,
+      url: canonical,
+      creator: {
+        '@type': 'Person',
+        name: 'Rory Campbell',
+        url: `${baseUrl}/methodology/`
+      },
+      license: 'https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/',
+      isAccessibleForFree: true,
+      isBasedOn: 'https://www.gov.uk/government/statistics/cover-of-vaccination-evaluated-rapidly-cover-programme-2025-to-2026-quarterly-data',
       spatialCoverage: {
         '@type': 'Place',
         identifier: area.postcodeDistrict,
