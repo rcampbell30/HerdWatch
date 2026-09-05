@@ -230,3 +230,23 @@ tsconfig.json
 1. Add local authority/ICB summary pages for search and public usefulness.
 2. Add a `/rankings/` page for lowest coverage, biggest estimated unvaccinated counts and areas closest to the 95% target.
 3. Add screenshots to this README.
+
+## Reporting dates, count precision and search
+
+The dashboard displays the GP reporting period independently from the national comparison series.
+`data/raw/areas-provenance.json` holds the area CSV SHA-256, source filename, reporting period and last successful source import timestamp. The COVER importer writes it after producing the CSV. `data:build` checks the digest and never invents or advances an import timestamp. If the CSV is replaced without matching provenance, the UI shows unknown dates. The historical committed CSV has a documented reporting period but no recoverable source import timestamp.
+
+`generatedAt` remains the JSON build timestamp, not the age of the observations. A successful re-import of a configured file is not discovery of a new UKHSA release. Review and update source URLs in `scripts/download-cover-sources.mjs` and national quarterly snapshots in `scripts/build-cover-trends.py` when new releases become available.
+
+Counts derived from vaccinated totals are conservatively labelled approximate throughout the dashboard, local pages and generated HTML/structured data, because the existing importer may reconstruct numerators from rounded percentages and the historical CSV does not retain per-row precision flags. Eligible record and practice counts remain unmodified.
+
+Search on Home, All Areas and Explorer accepts full postcodes (including lowercase or no space), exact districts, NHS groupings and GP-address town names. A full postcode is reduced locally to its outward district; no address lookup service is called. Ambiguous place searches open all matches, not an arbitrary first district.
+
+Place aliases in `src/data/generated/search-places.json` are drawn from active GP address towns in the NHS ODS epraccur reference (initial index retrieved 5 September 2026). They identify search matches, not town boundaries or the user's registered practice. The index covers 1,852 of the existing 1,857 districts; all districts remain searchable by postcode. It is rebuilt at the end of `data:cover:all`, or explicitly with:
+
+```bash
+npm run data:places
+npm test
+```
+
+The place-index builder validates the known 27-field epraccur layout and minimum district match rate before writing. If the source format changes, review the town/postcode/status fields before changing that validation. Normal static builds use the committed index and require no external geocoding API.

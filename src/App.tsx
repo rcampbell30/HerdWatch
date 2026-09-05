@@ -3,6 +3,9 @@ import type { FormEvent } from 'react';
 import { areas, deployedNationalStats } from './data/areas';
 import { buildAreaTrend, nationalTrend } from './data/trends';
 import { CoverageMap } from './CoverageMap';
+import { searchAreas } from './search';
+import places from './data/generated/search-places.json';
+import metadata from './data/generated/metadata.json';
 import type { HerdArea, RiskStatus, TrendPoint } from './types';
 
 const brandName = 'Immunity Map';
@@ -32,7 +35,7 @@ const liveAreaStats = {
 
 const riskCopy: Record<RiskStatus, { label: string; description: string; className: string }> = {
   AT_RISK: { label: 'WELL BELOW TARGET', description: 'Recorded coverage is below 90%.', className: 'risk' },
-  VULNERABLE: { label: 'BELOW TARGET', description: 'Recorded coverage is between 90% and 95%.', className: 'vulnerable' },
+  VULNERABLE: { label: 'BELOW TARGET', description: 'Recorded coverage is from 90% to below 95%.', className: 'vulnerable' },
   PROTECTED: { label: 'MEETS TARGET', description: 'Recorded coverage is at or above 95%.', className: 'protected' }
 };
 
@@ -79,11 +82,11 @@ function Nav() {
       <a className="nav-brand" href="/"><BrandText /></a>
       <div className="nav-links">
         <a className={`nav-link ${isActive('/') ? 'active' : ''}`} href="/">Home</a>
-        <a className={`nav-link ${isActive('/myths') ? 'active' : ''}`} href="/myths/">The Myth</a>
-        <a className={`nav-link ${isActive('/wakefield') ? 'active' : ''}`} href="/wakefield/">Wakefield</a>
         <a className={`nav-link ${isActive('/map') ? 'active' : ''}`} href="/map/">Explorer</a>
         <a className={`nav-link ${isActive('/towns') ? 'active' : ''}`} href="/towns/">All Areas</a>
         <a className={`nav-link ${isActive('/methodology') ? 'active' : ''}`} href="/methodology/">Methodology</a>
+        <a className={`nav-link ${isActive('/myths') ? 'active' : ''}`} href="/myths/">MMR evidence</a>
+        <a className={`nav-link ${isActive('/wakefield') ? 'active' : ''}`} href="/wakefield/">Wakefield</a>
       </div>
     </nav>
   );
@@ -123,11 +126,25 @@ function Footer() {
 }
 
 function DataNotice() {
+  const importedAt = metadata.lastSuccessfulImportAt;
   return (
     <div className="notice-card" role="note">
-      <strong>Important:</strong> These figures group GP-practice records by the postcode of the practice, not the home postcode of each child. Patients may live outside the district. Treat them as practice-location indicators, not resident-population estimates. The quarterly figures are provisional.
+      <div className="data-dates">
+        <span><strong>GP data period:</strong> {metadata.reportingPeriod ?? 'Not recorded — see methodology'}</span>
+        <span><strong>Last successful source import:</strong> {importedAt ? new Date(importedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }) : 'Date not recorded for this dataset'}</span>
+        <a href="/methodology/">Sources and limitations</a>
+      </div>
+      <p><strong>What these figures mean:</strong> Records are grouped by the GP practice’s postcode, not each child’s home. They describe recorded vaccination coverage, not measured immunity or an outbreak forecast. Patients may live outside the district. The quarterly figures are provisional.</p>
     </div>
   );
+}
+
+function SearchHelp() {
+  return <p className="search-help">Use a full postcode, district or place name. Results describe practices in that district, which may differ from your own GP. Place names come from NHS practice addresses.</p>;
+}
+
+function CountNote() {
+  return <p className="count-note"><strong>Approximate counts:</strong> vaccinated totals may be reconstructed from rounded source percentages. Counts not recorded as vaccinated and additional records needed for 95% inherit that uncertainty. Missing vaccination records do not prove a child is unvaccinated.</p>;
 }
 
 function CoverageChartGraphic({ data, selectedAreaName }: { data: TrendPoint[]; selectedAreaName?: string }) {
@@ -222,18 +239,16 @@ function TrendChart({ data, selectedAreaName }: { data: TrendPoint[]; selectedAr
 }
 
 function Hero() {
-  const [query, setQuery] = useState('');
-  const results = useMemo(() => {
-    const trimmed = query.trim().toUpperCase();
-    if (!trimmed) return [];
-    return areas.filter((area) => area.postcodeDistrict.includes(trimmed) || area.region.toUpperCase().includes(trimmed)).slice(0, 8);
-  }, [query]);
+  const [query, setQuery] = useState(() => new URLSearchParams(window.location.search).get('q') ?? '');
+  const results = useMemo(() => query.trim() ? searchAreas(areas, query, places) : [], [query]);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const exact = results.find((area) => area.postcodeDistrict === query.trim().toUpperCase());
-    const destination = exact ?? results[0];
-    if (destination) window.location.assign(`/town/${destination.postcodeDistrict.toLowerCase()}/`);
+    if (results.length === 1) {
+      window.location.assign(`/town/${results[0].postcodeDistrict.toLowerCase()}/`);
+    } else if (results.length > 1) {
+      window.location.assign(`/towns/?q=${encodeURIComponent(query.trim())}`);
+    }
   };
 
   return (
@@ -243,22 +258,24 @@ function Hero() {
         <h1 className="hero-title"><span>MMR vaccination</span>{' '}<br /><span>coverage <em>tracker</em></span></h1>
         <p className="hero-sub">{brandTagline}</p>
         <form className="search-wrap" onSubmit={handleSubmit}>
-          <label className="sr-only" htmlFor="home-area-search">Search by GP-practice postcode district or NHS region</label>
+          <label className="sr-only" htmlFor="home-area-search">Search by postcode, place name or NHS grouping</label>
           <div className="search-row">
-            <input id="home-area-search" className="search-input" placeholder="Search practice postcode district — FY1, M15, LS12..." value={query} onChange={(event) => setQuery(event.target.value)} aria-controls="home-search-results" aria-expanded={results.length > 0} />
+            <input id="home-area-search" className="search-input" placeholder="Try Blackpool, FY1 or a full postcode" value={query} onChange={(event) => setQuery(event.target.value)} aria-describedby="home-search-help" />
             <button className="search-button" type="submit">Go</button>
           </div>
           {results.length > 0 ? (
-            <div className="search-dropdown" id="home-search-results" role="listbox" aria-label="Matching practice postcode districts">
-              {results.map((area) => (
-                <a key={area.postcodeDistrict} href={`/town/${area.postcodeDistrict.toLowerCase()}/`} className="search-item" role="option" aria-selected="false">
-                  <span>{area.postcodeDistrict} · {area.region}</span>
+            <div className="search-dropdown" id="home-search-results" aria-label="Matching practice postcode districts">
+              {results.slice(0, 8).map((area) => (
+                <a key={area.postcodeDistrict} href={`/town/${area.postcodeDistrict.toLowerCase()}/`} className="search-item">
+                  <span>{area.postcodeDistrict} · {(places as Record<string, string[]>)[area.postcodeDistrict]?.join(", ") || area.region}</span>
                   <strong>{formatPercent(area.coverage)}</strong>
                 </a>
               ))}
+              {results.length > 8 ? <a className="search-item" href={`/towns/?q=${encodeURIComponent(query.trim())}`}>View all {results.length} matching districts</a> : null}
             </div>
-          ) : query.trim() ? <p className="search-empty" role="status">No matching practice postcode district or region.</p> : null}
+          ) : query.trim() ? <p className="search-empty" role="status">No matching practice district. Try a place name or another postcode; some districts have no represented practices.</p> : null}
         </form>
+        <div id="home-search-help"><SearchHelp /></div>
       </div>
     </section>
   );
@@ -307,9 +324,10 @@ function HomePage() {
   return (
     <>
       <Hero />
-      <div className="counter-bar"><div className="counter-inner"><div className="counter-num">{liveAreaStats.unvaccinatedChildren.toLocaleString()}</div><div className="counter-label">children in imported GP coverage rows not counted as vaccinated<br />after postcode-district aggregation</div></div></div>
+      <div className="counter-bar"><div className="counter-inner"><div className="counter-num">≈{liveAreaStats.unvaccinatedChildren.toLocaleString()}</div><div className="counter-label">estimated records not counted as vaccinated<br />across included GP-practice groups</div></div></div>
       <main className="main-content">
         <DataNotice />
+        <CountNote />
         <StatGrid />
         <NationalPicture />
         <TrendChart data={nationalTrend} />
@@ -323,20 +341,18 @@ function HomePage() {
 }
 
 function TownsPage() {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(() => new URLSearchParams(window.location.search).get('q') ?? '');
   const [visibleCount, setVisibleCount] = useState(80);
-  const filtered = useMemo(() => {
-    const trimmed = query.trim().toUpperCase();
-    return [...areas].filter((area) => !trimmed || area.postcodeDistrict.includes(trimmed) || area.region.toUpperCase().includes(trimmed)).sort((a, b) => a.coverage - b.coverage);
-  }, [query]);
+  const filtered = useMemo(() => searchAreas(areas, query, places).sort((a, b) => a.coverage - b.coverage), [query]);
   const visible = filtered.slice(0, visibleCount);
 
   return (
     <main className="main-content page-shell">
       <PageTitle eyebrow="All areas" title="Vaccination coverage by practice postcode district" description={`Search ${liveAreaStats.totalAreasTracked.toLocaleString()} practice-location groups derived from UKHSA COVER GP-level data.`} />
       <DataNotice />
-      <label className="field-label" htmlFor="all-areas-search">Search practice postcode district or NHS region</label>
-      <input id="all-areas-search" className="search-input light" placeholder="Search area or region" value={query} onChange={(event) => { setQuery(event.target.value); setVisibleCount(80); }} />
+      <label className="field-label" htmlFor="all-areas-search">Search postcode, place name or NHS grouping</label>
+      <input id="all-areas-search" className="search-input light" placeholder="Try Blackpool, FY1 or a full postcode" value={query} onChange={(event) => { setQuery(event.target.value); setVisibleCount(80); }} />
+      <SearchHelp />
       <p className="result-status" role="status" aria-live="polite">{filtered.length.toLocaleString()} matching {filtered.length === 1 ? 'area' : 'areas'}.</p>
       <div className="table-card">
         <table>
@@ -345,7 +361,7 @@ function TownsPage() {
           <tbody>
             {visible.map((area) => (
               <tr key={area.postcodeDistrict}>
-                <td><a href={`/town/${area.postcodeDistrict.toLowerCase()}/`}>{area.postcodeDistrict}</a></td>
+                <td><a href={`/town/${area.postcodeDistrict.toLowerCase()}/`}>{area.postcodeDistrict}</a><span className="place-names">{(places as Record<string, string[]>)[area.postcodeDistrict]?.join(", ")}</span></td>
                 <td>{area.region}</td><td>{area.practiceCount}</td><td>{formatPercent(area.coverage)}{area.totalEligible < 30 ? <span className="small-sample table-sample">Small sample</span> : null}</td>
                 <td><span className={`town-badge ${riskCopy[area.status].className}`}>{riskCopy[area.status].label}</span></td>
                 <td>{Math.max(0, target - area.coverage).toFixed(1)} pts</td>
@@ -376,7 +392,8 @@ function TownPage({ area }: { area?: HerdArea }) {
           <DataNotice />
           <div className={`status-banner ${meta.className}`}><div><div className="status-threat">Coverage band</div><div className="status-label">{meta.label}</div><div className="status-desc">{meta.description}</div></div><div className="status-right"><div className="big-coverage">{formatPercent(area.coverage)}</div><div className="cov-label">Recorded MMR1 coverage at 24 months</div></div></div>
           {area.totalEligible < 30 ? <div className="sample-warning" role="note"><strong>Small sample:</strong> this percentage is based on {area.totalEligible.toLocaleString()} eligible records and may change sharply with only a few records.</div> : null}
-          <div className="metric-grid card"><Metric label="Eligible records" value={area.totalEligible.toLocaleString()} /><Metric label="Recorded vaccinated" value={area.totalVaccinated.toLocaleString()} /><Metric label="Not recorded vaccinated" value={unvaccinated(area).toLocaleString()} /><Metric label="Additional records for 95%" value={neededForTarget(area).toLocaleString()} /></div>
+          <div className="metric-grid card"><Metric label="Eligible records" value={area.totalEligible.toLocaleString()} /><Metric label="Vaccinated (approx.)" value={`≈${area.totalVaccinated.toLocaleString()}`} /><Metric label="Not recorded vaccinated (approx.)" value={`≈${unvaccinated(area).toLocaleString()}`} /><Metric label="Additional records for 95% (approx.)" value={`≈${neededForTarget(area).toLocaleString()}`} /></div>
+          <CountNote />
           <TrendChart data={areaTrend} selectedAreaName={area.postcodeDistrict} />
           <section className="card"><h2 className="card-title">How to read this</h2><p className="body-copy">The percentage combines COVER records for GP practices whose practice postcode begins {area.postcodeDistrict}. It does not estimate vaccination among everyone living in {area.postcodeDistrict}, and it does not indicate that an outbreak is occurring. Coverage below 95% means the recorded group is below the programme target.</p></section>
         </section>
@@ -395,16 +412,13 @@ function Metric({ label, value }: { label: string; value: string }) {
 }
 
 function MapPage() {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState(() => new URLSearchParams(window.location.search).get('q') ?? '');
   const [status, setStatus] = useState<RiskStatus | 'ALL'>('ALL');
   const [region, setRegion] = useState('ALL');
   const [visibleCount, setVisibleCount] = useState(80);
   const regionOptions = useMemo(() => [...new Set(areas.map((area) => area.region))].sort(), []);
   const filtered = useMemo(() => {
-    const trimmed = query.trim().toUpperCase();
-    const hasExactDistrict = trimmed.length > 0 && areas.some((area) => area.postcodeDistrict === trimmed);
-    return [...areas]
-      .filter((area) => !trimmed || (hasExactDistrict ? area.postcodeDistrict === trimmed : area.postcodeDistrict.includes(trimmed) || area.region.toUpperCase().includes(trimmed)))
+    return searchAreas(areas, query, places)
       .filter((area) => status === 'ALL' || area.status === status)
       .filter((area) => region === 'ALL' || area.region === region)
       .sort((a, b) => a.coverage - b.coverage || a.postcodeDistrict.localeCompare(b.postcodeDistrict));
@@ -429,16 +443,17 @@ function MapPage() {
 
       <section className="map-controls" aria-labelledby="map-filter-title">
         <div className="map-controls-heading">
-          <div><h2 id="map-filter-title">Filter the map</h2><p>Search a practice postcode district or NHS grouping, then narrow by recorded coverage band.</p></div>
+          <div><h2 id="map-filter-title">Filter the map</h2><p>Find a postcode or place, then narrow by recorded coverage band.</p></div>
           {hasFilters ? <button className="map-reset" type="button" onClick={resetFilters}>Clear filters</button> : null}
         </div>
         <div className="map-filter-grid">
-          <label><span>Postcode district or NHS grouping</span><input className="search-input light" type="search" placeholder="Try M15 or Greater Manchester" value={query} onChange={(event) => { setQuery(event.target.value); setVisibleCount(80); }} /></label>
+          <label><span>Postcode, place name or NHS grouping</span><input className="search-input light" type="search" placeholder="Try Blackpool, FY1 or a full postcode" value={query} onChange={(event) => { setQuery(event.target.value); setVisibleCount(80); }} /></label>
           <label><span>Coverage band</span><select value={status} onChange={(event) => { setStatus(event.target.value as RiskStatus | 'ALL'); setVisibleCount(80); }}><option value="ALL">All coverage bands</option><option value="AT_RISK">Well below target (&lt;90%)</option><option value="VULNERABLE">Below target (90–&lt;95%)</option><option value="PROTECTED">Meets target (95%+)</option></select></label>
           <label><span>NHS grouping</span><select value={region} onChange={(event) => { setRegion(event.target.value); setVisibleCount(80); }}><option value="ALL">All NHS groupings</option>{regionOptions.map((option) => <option key={option} value={option}>{option}</option>)}</select></label>
         </div>
       </section>
 
+      <SearchHelp />
       <div className="map-result-bar" role="status" aria-live="polite">
         <strong>{filtered.length.toLocaleString()} {filtered.length === 1 ? 'district' : 'districts'}</strong>
         <span>{filteredCoverage == null ? 'No coverage value' : `${formatPercent(filteredCoverage)} eligible-record weighted coverage`}</span>
@@ -467,7 +482,7 @@ function MapPage() {
             <tbody>
               {visibleRows.map((area) => (
                 <tr key={area.postcodeDistrict}>
-                  <td><a href={`/town/${area.postcodeDistrict.toLowerCase()}/`}>{area.postcodeDistrict}</a></td>
+                  <td><a href={`/town/${area.postcodeDistrict.toLowerCase()}/`}>{area.postcodeDistrict}</a><span className="place-names">{(places as Record<string, string[]>)[area.postcodeDistrict]?.join(", ")}</span></td>
                   <td>{area.region}</td>
                   <td>{area.practiceCount}</td>
                   <td>{area.totalEligible.toLocaleString()}</td>
@@ -645,6 +660,18 @@ function MethodologyPage() {
       <section className="card prose-card">
         <h2>Project stewardship</h2>
         <p>{brandName} was created and is maintained by <strong>Rory Campbell</strong> as an independent public-interest project. It is not an official NHS or UKHSA service and does not provide medical advice.</p>
+      </section>
+      <DataNotice />
+      <section className="card prose-card">
+        <h2>Dates and data updates</h2>
+        <p>The reporting period describes when the COVER observations were collected. The source import date records a successful import of the configured workbook; it does not mean a newer release was discovered. Rebuilding the site does not advance that date. The historical dataset has no recorded source import date.</p>
+        <p>National comparison points are separately maintained quarterly figures. Updating the GP dataset does not automatically update that series. New UKHSA releases must be reviewed and the configured source links and comparison points updated.</p>
+      </section>
+      <section className="card prose-card">
+        <h2>Count precision and searching</h2>
+        <CountNote />
+        <p>Full postcodes are reduced to their outward district on your device; the site does not look up your address or identify your GP. Place-name aliases come from the town field of active practices in the NHS ODS epraccur reference. They help find districts and do not define town boundaries or prove a particular practice appears in the COVER sample.</p>
+        <p><a href="https://www.odsdatasearchandexport.nhs.uk/api/getReport?report=epraccur" target="_blank" rel="noreferrer">NHS ODS practice reference</a></p>
       </section>
       <section className="card prose-card">
         <h2>Official source</h2>
