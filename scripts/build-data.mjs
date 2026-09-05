@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { sourceMetadata } from './lib/source-metadata.mjs';
 
 const root = process.cwd();
 const rawDir = path.join(root, 'data', 'raw');
@@ -30,9 +31,14 @@ const trends = parseCsv(fs.readFileSync(trendCsvPath, 'utf8')).map(normaliseTren
 validateAreas(areas);
 validateTrends(trends);
 
+const provenancePath = path.join(rawDir, 'areas-provenance.json');
+const provenance = fs.existsSync(provenancePath) ? JSON.parse(fs.readFileSync(provenancePath, 'utf8')) : null;
+const areaSource = sourceMetadata(fs.readFileSync(areaCsvPath), provenance);
+
 const metadata = {
   generatedAt: new Date().toISOString(),
-  sourceDataAsOf: process.env.SOURCE_DATA_AS_OF || trends.at(-1)?.year || null,
+  sourceDataAsOf: areaSource.reportingPeriod,
+  ...areaSource,
   usingExampleData,
   source: {
     collectionUrl: 'https://www.gov.uk/government/statistics/cover-of-vaccination-evaluated-rapidly-cover-programme-2025-to-2026-quarterly-data',
@@ -62,6 +68,7 @@ writeJson(path.join(generatedDir, 'trends.json'), trends);
 writeJson(path.join(publicDataDir, 'areas.json'), areas);
 writeJson(path.join(publicDataDir, 'trends.json'), trends);
 writeJson(path.join(publicDataDir, 'metadata.json'), metadata);
+writeJson(path.join(generatedDir, 'metadata.json'), metadata);
 
 const report = {
   ...metadata,

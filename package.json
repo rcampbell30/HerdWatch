@@ -14,11 +14,13 @@
     "data:download": "node scripts/download-cover-sources.mjs",
     "data:cover:areas": "python3 scripts/build-cover-areas-netlify.py",
     "data:cover:trends": "python3 scripts/build-cover-trends.py",
-    "data:cover:all": "npm run data:download && npm run data:cover:areas && npm run data:cover:trends && npm run data:build",
+    "data:cover:all": "npm run data:download && npm run data:cover:areas && npm run data:cover:trends && npm run data:build && npm run data:places",
     "data:build": "node scripts/build-data.mjs",
     "data:validate": "node scripts/build-data.mjs && npm run map:validate",
     "map:geography": "python3 scripts/build-map-geography.py",
-    "map:validate": "node scripts/validate-map-data.mjs"
+    "map:validate": "node scripts/validate-map-data.mjs",
+    "data:places": "python3 scripts/build-search-places.py",
+    "test": "node --test tests/*.test.mjs"
   },
   "dependencies": {
     "maplibre-gl": "5.24.0",

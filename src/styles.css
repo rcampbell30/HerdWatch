@@ -1004,3 +1004,14 @@ td a { color: var(--red); font-weight: 800; text-decoration: none; }
   .footer-links { justify-content: flex-start; }
   .footer-meta { gap: 12px; }
 }
+
+/* Data context stays readable without competing with the explorer. */
+.data-dates { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; font-size: .9375rem; line-height: 1.6; border-bottom: 1px solid var(--line); padding-bottom: .75rem; }
+.notice-card p { margin: .75rem 0 0; line-height: 1.6; }
+.search-help, .count-note { font-size: 1rem; line-height: 1.6; }
+.search-help { max-width: 65ch; }
+.hero .search-help { color: inherit; opacity: .9; margin-top: 1rem; }
+.count-note { padding: 1rem; border-left: 3px solid var(--orange); background: white; }
+.data-dates span { overflow-wrap: anywhere; }
+
+.place-names { display: block; font-size: .875rem; line-height: 1.5; color: #555; white-space: normal; }

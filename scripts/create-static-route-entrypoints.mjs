@@ -34,6 +34,7 @@ const areasPath = firstExisting([
 ]);
 const areas = JSON.parse(readFileSync(areasPath, 'utf8'));
 const sourceHtml = readFileSync(sourceIndex, 'utf8');
+const metadata = JSON.parse(readFileSync(join(distDir, 'data', 'metadata.json'), 'utf8'));
 let townPageCount = 0;
 
 for (const area of areas) {
@@ -67,7 +68,7 @@ function withTownSeo(html, area, slug) {
     about: {
       '@type': 'Dataset',
       name: `${area.postcodeDistrict} GP-practice MMR vaccination coverage`,
-      description: `Aggregated UKHSA COVER records for GP practices located in ${area.postcodeDistrict}, including recorded MMR1 coverage at 24 months, eligible records, vaccinated records and represented practices. This is a practice-location indicator, not a resident-population estimate.`,
+      description: `Aggregated UKHSA COVER records for GP practices located in ${area.postcodeDistrict}, including recorded MMR1 coverage at 24 months, eligible records, approximate vaccinated records and represented practices. This is a practice-location indicator, not a resident-population estimate.`,
       url: canonical,
       creator: {
         '@type': 'Person',
@@ -85,7 +86,7 @@ function withTownSeo(html, area, slug) {
       variableMeasured: [
         'Recorded MMR1 vaccination coverage at 24 months',
         'Eligible records',
-        'Records counted as vaccinated',
+        'Approximate records counted as vaccinated',
         'Number of represented GP practices'
       ],
       measurementTechnique: 'Eligible-child-weighted aggregation by GP-practice outward postcode district'
@@ -111,9 +112,10 @@ function withTownSeo(html, area, slug) {
 }
 
 function injectNoscriptSummary(html, area) {
+  const period = metadata.reportingPeriod ?? 'not recorded';
   const smallSample = area.totalEligible < 30 ? ' This is a small sample and the percentage may change sharply with a few records.' : '';
   const practiceWord = area.practiceCount === 1 ? 'practice' : 'practices';
-  const summary = `<noscript><main><h1>${escapeHtml(area.postcodeDistrict)} GP-practice MMR coverage</h1><p>GP practices located in ${escapeHtml(area.postcodeDistrict)} are grouped with ${escapeHtml(String(area.coverage))}% recorded MMR1 coverage at 24 months. The data represents ${escapeHtml(String(area.practiceCount))} ${practiceWord}, ${escapeHtml(String(area.totalEligible))} eligible records and ${escapeHtml(String(area.totalVaccinated))} records counted as vaccinated.${escapeHtml(smallSample)} The postcode is the practice location, not each child's home; patients may live outside the district. This is a provisional practice-location indicator, not a resident-population estimate or medical advice.</p></main></noscript>`;
+  const summary = `<noscript><main><h1>${escapeHtml(area.postcodeDistrict)} GP-practice MMR coverage</h1><p>GP practices located in ${escapeHtml(area.postcodeDistrict)} are grouped with ${escapeHtml(String(area.coverage))}% recorded MMR1 coverage at 24 months. The data represents ${escapeHtml(String(area.practiceCount))} ${practiceWord}, ${escapeHtml(String(area.totalEligible))} eligible records and approximately ${escapeHtml(String(area.totalVaccinated))} records counted as vaccinated. Vaccinated counts may be reconstructed from rounded source percentages. GP data reporting period: ${escapeHtml(period)}.${escapeHtml(smallSample)} The postcode is the practice location, not each child's home; patients may live outside the district. This is a provisional practice-location indicator, not a resident-population estimate or medical advice.</p></main></noscript>`;
   return html.replace('<div id="root"></div>', `<div id="root"></div>\n    ${summary}`);
 }
 

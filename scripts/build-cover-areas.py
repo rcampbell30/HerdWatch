@@ -16,6 +16,8 @@ Expected input after `npm run data:download`:
 from __future__ import annotations
 
 import argparse
+import hashlib
+from datetime import datetime, timezone
 import csv
 import json
 import re
@@ -136,6 +138,21 @@ def main() -> None:
     args.out.parent.mkdir(parents=True, exist_ok=True)
     out.to_csv(args.out, index=False, quoting=csv.QUOTE_MINIMAL)
 
+    # Persist the import date only after successfully writing the CSV. A local rebuild
+    # cannot advance it, and the digest prevents dates leaking onto a different CSV.
+    match = re.search(r"Q([1-4])_(20\d{2})-to-(20\d{2})", source.name, re.I)
+    period = None
+    if match:
+        quarter, start, end = match.groups()
+        period = {"1": f"April to June {start}", "2": f"July to September {start}",
+                  "3": f"October to December {start}", "4": f"January to March {end}"}[quarter]
+    provenance = {
+        "reportingPeriod": period,
+        "sourceFile": source.name,
+        "lastSuccessfulImportAt": datetime.now(timezone.utc).isoformat(),
+        "areasSha256": hashlib.sha256(args.out.read_bytes()).hexdigest(),
+    }
+    args.out.with_name("areas-provenance.json").write_text(json.dumps(provenance, indent=2) + "\n", encoding="utf-8")
     write_import_report(source, sheet_name, columns, len(frame), len(out), missing_postcode)
     print(f"Read {source.relative_to(ROOT)} sheet={sheet_name!r}.")
     print(f"Using practice_code={columns['practice_code']!r}, denominator={columns['denominator']!r}, coverage={columns.get('coverage')!r}, numerator={columns.get('numerator')!r}.")
