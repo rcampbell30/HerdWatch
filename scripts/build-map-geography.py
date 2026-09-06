@@ -45,7 +45,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--centroids-output",
         type=Path,
-        default=Path("public/data/map-centroids.json"),
+        default=Path("data/reference/map-centroids.json"),
     )
     parser.add_argument(
         "--outline-output",
@@ -92,7 +92,9 @@ def build_centroids(archive_path: Path, target_districts: set[str]) -> dict[str,
                         continue
 
                     district = row.get("pcds", "").strip().upper().split(" ", 1)[0]
-                    if district not in target_districts:
+                    # Keep all live England districts in the reference pool, so a
+                    # refreshed COVER dataset can add a district without losing its map point.
+                    if not district:
                         continue
 
                     try:
@@ -140,7 +142,7 @@ def build_centroids(archive_path: Path, target_districts: set[str]) -> dict[str,
             "coordinateReferenceSystem": "WGS84 (EPSG:4326)",
             "method": (
                 "Arithmetic mean of the longitude and latitude of live England postcode-unit "
-                "centroids within each outward postcode district represented in COVER data."
+                "centroids within every outward postcode district with live England postcodes."
             ),
             "limitation": (
                 "Each coordinate is a postcode-district reference point. It is not a district "
