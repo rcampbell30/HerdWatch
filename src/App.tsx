@@ -1,9 +1,9 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
 import { areas, deployedNationalStats } from './data/areas';
 import { buildAreaTrend, nationalTrend } from './data/trends';
 import { CoverageMap } from './CoverageMap';
-import { searchAreas } from './search';
+import { searchAreas, readExplorerFilters, writeExplorerFilters } from './search';
 import places from './data/generated/search-places.json';
 import metadata from './data/generated/metadata.json';
 import type { HerdArea, RiskStatus, TrendPoint } from './types';
@@ -214,10 +214,11 @@ function TrendChart({ data, selectedAreaName }: { data: TrendPoint[]; selectedAr
       <div className="card-heading-row">
         <div>
           <p className="eyebrow">{hasSeries ? 'Official COVER comparison' : 'Latest COVER point'}</p>
-          <h2 className="card-title">Vaccination coverage {hasSeries ? 'trend' : 'snapshot'}</h2>
+          <h2 className="card-title">{selectedAreaName ? 'Local snapshot and England comparison' : `Vaccination coverage ${hasSeries ? 'trend' : 'snapshot'}`}</h2>
         </div>
         <span className="data-badge">Processed UKHSA COVER data</span>
       </div>
+      {selectedAreaName ? <p className="body-copy">The local value is the latest snapshot only; no local history is available. England MMR1 is measured at 24 months and MMR2 at 5 years.</p> : null}
       <div className="chart-wrap" role="img" aria-label={`MMR vaccination coverage chart. Latest England MMR1 is ${formatPercent(latest.englandMmr1)} and MMR2 is ${formatPercent(latest.englandMmr2)} for ${latest.year}.`}>
         <CoverageChartGraphic data={data} selectedAreaName={selectedAreaName} />
       </div>
@@ -380,13 +381,14 @@ function TownPage({ area }: { area?: HerdArea }) {
     return <main className="main-content page-shell centered"><h1>Area not found</h1><p>This postcode district is not currently present in the generated COVER area dataset.</p><a className="btn btn-red" href="/towns/">Browse areas</a></main>;
   }
 
+  const placeName = (places as Record<string, string[]>)[area.postcodeDistrict]?.join(", ");
   const meta = riskCopy[area.status];
   const areaTrend = buildAreaTrend(area.coverage);
   const nearby = areas.filter((item) => item.region === area.region && item.postcodeDistrict !== area.postcodeDistrict).sort((a, b) => Math.abs(a.coverage - area.coverage) - Math.abs(b.coverage - area.coverage)).slice(0, 5);
 
   return (
     <>
-      <section className="hero-band"><div className="hero-inner"><div className="breadcrumb"><a className="bc-link" href="/">Home</a><span className="bc-sep">/</span><a className="bc-link" href="/towns/">Areas</a><span className="bc-sep">/</span><span className="bc-cur">{area.postcodeDistrict}</span></div><h1 className="hero-title"><span className="postcode">{area.postcodeDistrict}</span> GP-practice coverage</h1></div></section>
+      <section className="hero-band"><div className="hero-inner"><div className="breadcrumb"><a className="bc-link" href="/">Home</a><span className="bc-sep">/</span><a className="bc-link" href="/towns/">Areas</a><span className="bc-sep">/</span><span className="bc-cur">{area.postcodeDistrict}</span></div><h1 className="hero-title"><span className="postcode">{area.postcodeDistrict}</span>{placeName ? ` · ${placeName}` : ' GP-practice coverage'}</h1>{placeName ? <p className="hero-sub">GP-practice coverage in this postcode district</p> : null}</div></section>
       <main className="content-layout">
         <section className="main-col">
           <DataNotice />
@@ -395,7 +397,7 @@ function TownPage({ area }: { area?: HerdArea }) {
           <div className="metric-grid card"><Metric label="Eligible records" value={area.totalEligible.toLocaleString()} /><Metric label="Vaccinated (approx.)" value={`≈${area.totalVaccinated.toLocaleString()}`} /><Metric label="Not recorded vaccinated (approx.)" value={`≈${unvaccinated(area).toLocaleString()}`} /><Metric label="Additional records for 95% (approx.)" value={`≈${neededForTarget(area).toLocaleString()}`} /></div>
           <CountNote />
           <TrendChart data={areaTrend} selectedAreaName={area.postcodeDistrict} />
-          <section className="card"><h2 className="card-title">How to read this</h2><p className="body-copy">The percentage combines COVER records for GP practices whose practice postcode begins {area.postcodeDistrict}. It does not estimate vaccination among everyone living in {area.postcodeDistrict}, and it does not indicate that an outbreak is occurring. Coverage below 95% means the recorded group is below the programme target.</p></section>
+          <section className="card"><h2 className="card-title">How to read this</h2><p className="body-copy">The percentage combines COVER records for GP practices in postcode district {area.postcodeDistrict}. It does not estimate vaccination among everyone living in {area.postcodeDistrict}, and it does not indicate that an outbreak is occurring. Coverage below 95% means the recorded group is below the programme target.</p></section>
         </section>
         <aside className="side-col">
           <div className="side-card"><h2 className="side-title">Record summary</h2><div className="fact-item"><span aria-hidden="true">📍</span><p>The practice-postcode grouping is assigned to {area.region}.</p></div><div className="fact-item"><span aria-hidden="true">🏥</span><p>{area.practiceCount} {area.practiceCount === 1 ? 'practice is' : 'practices are'} represented in the imported GP-level COVER records.</p></div><div className="fact-item"><span aria-hidden="true">🎯</span><p>Gap to target: {Math.max(0, target - area.coverage).toFixed(1)} percentage points.</p></div></div>
@@ -412,11 +414,30 @@ function Metric({ label, value }: { label: string; value: string }) {
 }
 
 function MapPage() {
-  const [query, setQuery] = useState(() => new URLSearchParams(window.location.search).get('q') ?? '');
-  const [status, setStatus] = useState<RiskStatus | 'ALL'>('ALL');
-  const [region, setRegion] = useState('ALL');
-  const [visibleCount, setVisibleCount] = useState(80);
   const regionOptions = useMemo(() => [...new Set(areas.map((area) => area.region))].sort(), []);
+  const [filters, setFilters] = useState(() => readExplorerFilters(window.location.search, regionOptions));
+  const { query, status, region } = filters;
+  const setQuery = (query: string) => setFilters((current) => ({ ...current, query }));
+  const setStatus = (status: RiskStatus | 'ALL') => setFilters((current) => ({ ...current, status }));
+  const setRegion = (region: string) => setFilters((current) => ({ ...current, region }));
+  const [visibleCount, setVisibleCount] = useState(80);
+
+  useEffect(() => {
+    const search = writeExplorerFilters(window.location.search, filters);
+    if (search !== window.location.search) {
+      // Replace the current entry so typing does not fill the Back history.
+      window.history.replaceState(window.history.state, '', `${window.location.pathname}${search}${window.location.hash}`);
+    }
+  }, [filters]);
+
+  useEffect(() => {
+    const restoreFilters = () => {
+      setFilters(readExplorerFilters(window.location.search, regionOptions));
+      setVisibleCount(80);
+    };
+    window.addEventListener('popstate', restoreFilters);
+    return () => window.removeEventListener('popstate', restoreFilters);
+  }, [regionOptions]);
   const filtered = useMemo(() => {
     return searchAreas(areas, query, places)
       .filter((area) => status === 'ALL' || area.status === status)

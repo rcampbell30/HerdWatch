@@ -127,7 +127,7 @@ a {
   position: relative;
   z-index: 1;
   overflow: visible;
-  padding: 80px 40px 60px;
+  padding: 40px 40px 32px;
   background: var(--black);
   color: white;
 }
@@ -971,7 +971,7 @@ td a { color: var(--red); font-weight: 800; text-decoration: none; }
   .nav-brand { font-size: 1.1rem; }
   .nav-links { flex: 1 0 100%; justify-content: flex-start; }
   .nav-link { padding: 5px 8px; font-size: 0.72rem; }
-  .hero { padding: 50px 20px 40px; }
+  .hero { padding: 28px 20px 24px; }
   .hero-title { font-size: 2rem; }
   .hero-sub { font-size: 0.95rem; }
   .search-dropdown { max-height: min(42vh, 320px); overflow-y: auto; }
@@ -1015,3 +1015,10 @@ td a { color: var(--red); font-weight: 800; text-decoration: none; }
 .data-dates span { overflow-wrap: anywhere; }
 
 .place-names { display: block; font-size: .875rem; line-height: 1.5; color: #555; white-space: normal; }
+
+/* Bring the homepage search and first coverage figures into view sooner. */
+.hero .hero-tag { margin-bottom: 16px; }
+.hero .hero-title { font-size: clamp(2rem, 4vw, 3.5rem); margin-bottom: 16px; }
+.hero .hero-sub { margin-bottom: 24px; }
+.hero #home-search-help { max-width: 620px; }
+.hero-band .hero-title { overflow-wrap: anywhere; }
