@@ -10,7 +10,7 @@ import { pathToFileURL } from 'node:url';
 const output = mkdtempSync(join(tmpdir(), 'immunity-search-'));
 execFileSync(resolve('node_modules/.bin/tsc'), ['--ignoreConfig', 'src/search.ts', '--outDir', output, '--module', 'ESNext', '--target', 'ES2020', '--skipLibCheck']);
 renameSync(join(output, 'search.js'), join(output, 'search.mjs'));
-const { searchAreas, postcodeDistrict } = await import(pathToFileURL(join(output, 'search.mjs')));
+const { searchAreas, postcodeDistrict, readExplorerFilters, writeExplorerFilters } = await import(pathToFileURL(join(output, 'search.mjs')));
 after(() => rmSync(output, { recursive: true, force: true }));
 const areas = JSON.parse(readFileSync('src/data/generated/areas.json', 'utf8'));
 const places = JSON.parse(readFileSync('src/data/generated/search-places.json', 'utf8'));
@@ -38,4 +38,24 @@ test('place names preserve every matching district and NHS grouping search still
   assert.ok(searchAreas(areas, 'Greater Manchester', places).length > 0);
   assert.deepEqual(searchAreas(areas, 'Stockton-on-Tees', places), searchAreas(areas, 'Stockton on Tees', places));
   assert.equal(searchAreas(areas, '', places).length, areas.length);
+});
+
+test('shared Explorer URLs restore all filters and the same matching districts', () => {
+  const regions = [...new Set(areas.map(a => a.region))];
+  const filters = { query: 'Blackpool', status: 'AT_RISK', region: areas.find(a => a.postcodeDistrict === 'FY1').region };
+  const saved = writeExplorerFilters('?utm_source=share', filters);
+  const restored = readExplorerFilters(saved, regions);
+  assert.deepEqual(restored, filters);
+  assert.equal(new URLSearchParams(saved).get('utm_source'), 'share');
+  const matches = searchAreas(areas, restored.query, places).filter(a => a.status === restored.status && a.region === restored.region);
+  assert.deepEqual(matches.map(a => a.postcodeDistrict).sort(), ['FY1', 'FY4']);
+});
+
+test('invalid filters fall back safely and clearing removes only Explorer parameters', () => {
+  assert.deepEqual(readExplorerFilters('?q=FY1&status=invalid&region=missing', []), { query: 'FY1', status: 'ALL', region: 'ALL' });
+  const cleared = { query: '', status: 'ALL', region: 'ALL' };
+  assert.equal(writeExplorerFilters('?q=FY1&status=AT_RISK&region=anything', cleared), '');
+  assert.equal(writeExplorerFilters('?q=FY1&utm_source=share', cleared), '?utm_source=share');
+  const filters = { query: 'Stockton-on-Tees & nearby', status: 'PROTECTED', region: 'Example & region' };
+  assert.deepEqual(readExplorerFilters(writeExplorerFilters('', filters), [filters.region]), filters);
 });

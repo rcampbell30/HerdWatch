@@ -37,11 +37,13 @@
   }
 
   .nav-link {
-    padding: 5px 8px;
-    font-size: 0.72rem;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 10px 12px;
+    font-size: 0.875rem;
   }
 
-  .hero,
   .hero-band {
     padding-top: 38px;
   }
