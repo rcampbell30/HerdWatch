@@ -154,10 +154,11 @@ The 235 MB ONSPD source archive is deliberately not committed. After downloading
 
 ```bash
 npm run map:geography -- --onspd-zip /path/to/ONSPD_MAY_2026.zip
+npm run map:sync
 npm run map:validate
 ```
 
-Every production build runs `map:validate` and will fail if current coverage districts and map coordinates fall out of sync.
+Every production build runs `map:sync` to select the current coverage districts from the committed England-wide ONS reference, then runs `map:validate`. Validation still fails if a covered district lacks a verified reference point, or if display coordinates, membership or metadata totals are invalid.
 
 ## Real COVER source workflow
 
@@ -250,3 +251,14 @@ npm test
 ```
 
 The place-index builder validates the known 27-field epraccur layout and minimum district match rate before writing. If the source format changes, review the town/postcode/status fields before changing that validation. Normal static builds use the committed index and require no external geocoding API.
+
+## Geography during COVER refreshes
+
+Netlify refreshes COVER before building. GP reference changes can add and remove represented districts even when the total district count stays unchanged (for example, LA16 appeared after a refresh). The map therefore uses two distinct files:
+
+- `data/reference/map-centroids.json`: compact reference points for every district with live England postcode units in the May 2026 ONSPD archive, including districts not currently represented in COVER.
+- `public/data/map-centroids.json`: the exact subset selected for the current coverage data by `npm run map:sync`, with recalculated area and postcode-unit totals.
+
+`build:static` and `data:validate` synchronise this subset before the existing strict map validator. The frontend only receives points for actual coverage records; spare reference points are not published. A district absent from the complete reference still fails with an explicit geography-refresh instruction. No missing location is invented or coverage record dropped.
+
+The geography builder now writes its centroid output to `data/reference/map-centroids.json` by default. Regenerate it from the official ONSPD archive with the documented `map:geography` command, run `map:sync`, and commit both lightweight JSON files. The large source ZIP is not committed and is not downloaded on Netlify. `npm test` includes regressions for added/removed coverage districts and hard failure on genuinely missing coordinates.

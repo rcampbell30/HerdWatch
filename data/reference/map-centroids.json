@@ -6,16 +6,15 @@
     "sourceUpdated": "2026-06-04",
     "licence": "Open Government Licence v3.0",
     "attribution": [
-      "Contains OS data © Crown copyright and database right 2026",
-      "Contains Royal Mail data © Royal Mail copyright and database right 2026",
+      "Contains OS data \u00a9 Crown copyright and database right 2026",
+      "Contains Royal Mail data \u00a9 Royal Mail copyright and database right 2026",
       "Source: Office for National Statistics licensed under the Open Government Licence v.3.0"
     ],
     "coordinateReferenceSystem": "WGS84 (EPSG:4326)",
     "method": "Arithmetic mean of the longitude and latitude of live England postcode-unit centroids within every outward postcode district with live England postcodes.",
     "limitation": "Each coordinate is a postcode-district reference point. It is not a district boundary, patient location, or exact GP-practice coordinate.",
-    "areaCount": 1857,
-    "postcodeUnitCount": 1413838,
-    "selection": "Only districts represented in the current COVER dataset; selected from the complete England ONSPD reference pool."
+    "areaCount": 2223,
+    "postcodeUnitCount": 1493097
   },
   "centroids": {
     "AL1": {
@@ -37,6 +36,11 @@
       "longitude": -0.377713,
       "latitude": 51.780466,
       "postcodeUnitCount": 955
+    },
+    "AL4": {
+      "longitude": -0.294824,
+      "latitude": 51.773832,
+      "postcodeUnitCount": 786
     },
     "AL5": {
       "longitude": -0.35237,
@@ -168,6 +172,11 @@
       "latitude": 52.437675,
       "postcodeUnitCount": 804
     },
+    "B3": {
+      "longitude": -1.903621,
+      "latitude": 52.48395,
+      "postcodeUnitCount": 191
+    },
     "B30": {
       "longitude": -1.927731,
       "latitude": 52.42201,
@@ -213,6 +222,16 @@
       "latitude": 52.399875,
       "postcodeUnitCount": 472
     },
+    "B4": {
+      "longitude": -1.892727,
+      "latitude": 52.485272,
+      "postcodeUnitCount": 202
+    },
+    "B40": {
+      "longitude": -1.720578,
+      "latitude": 52.456208,
+      "postcodeUnitCount": 14
+    },
     "B42": {
       "longitude": -1.911735,
       "latitude": 52.533838,
@@ -242,6 +261,11 @@
       "longitude": -1.879867,
       "latitude": 52.385477,
       "postcodeUnitCount": 241
+    },
+    "B48": {
+      "longitude": -1.946925,
+      "latitude": 52.354702,
+      "postcodeUnitCount": 208
     },
     "B49": {
       "longitude": -1.867251,
@@ -333,6 +357,11 @@
       "latitude": 52.55009,
       "postcodeUnitCount": 240
     },
+    "B73": {
+      "longitude": -1.842302,
+      "latitude": 52.553262,
+      "postcodeUnitCount": 543
+    },
     "B74": {
       "longitude": -1.862257,
       "latitude": 52.584349,
@@ -423,6 +452,11 @@
       "latitude": 52.302161,
       "postcodeUnitCount": 818
     },
+    "B99": {
+      "longitude": -1.894233,
+      "latitude": 52.495954,
+      "postcodeUnitCount": 48
+    },
     "BA1": {
       "longitude": -2.361258,
       "latitude": 51.393254,
@@ -507,6 +541,11 @@
       "longitude": -2.520335,
       "latitude": 51.089743,
       "postcodeUnitCount": 202
+    },
+    "BA8": {
+      "longitude": -2.411873,
+      "latitude": 50.996442,
+      "postcodeUnitCount": 212
     },
     "BA9": {
       "longitude": -2.410217,
@@ -638,6 +677,11 @@
       "latitude": 53.815245,
       "postcodeUnitCount": 734
     },
+    "BD20": {
+      "longitude": -1.949984,
+      "latitude": 53.898409,
+      "postcodeUnitCount": 1381
+    },
     "BD21": {
       "longitude": -1.907572,
       "latitude": 53.864152,
@@ -693,6 +737,21 @@
       "latitude": 53.81304,
       "postcodeUnitCount": 540
     },
+    "BD97": {
+      "longitude": -1.796735,
+      "latitude": 53.826486,
+      "postcodeUnitCount": 4
+    },
+    "BD98": {
+      "longitude": -1.760242,
+      "latitude": 53.809625,
+      "postcodeUnitCount": 3
+    },
+    "BD99": {
+      "longitude": -1.769525,
+      "latitude": 53.794523,
+      "postcodeUnitCount": 5
+    },
     "BH1": {
       "longitude": -1.860031,
       "latitude": 50.72471,
@@ -703,10 +762,20 @@
       "latitude": 50.759541,
       "postcodeUnitCount": 512
     },
+    "BH11": {
+      "longitude": -1.920503,
+      "latitude": 50.762962,
+      "postcodeUnitCount": 518
+    },
     "BH12": {
       "longitude": -1.927683,
       "latitude": 50.737358,
       "postcodeUnitCount": 750
+    },
+    "BH13": {
+      "longitude": -1.920525,
+      "latitude": 50.708952,
+      "postcodeUnitCount": 297
     },
     "BH14": {
       "longitude": -1.944678,
@@ -717,6 +786,11 @@
       "longitude": -1.985619,
       "latitude": 50.722417,
       "postcodeUnitCount": 839
+    },
+    "BH16": {
+      "longitude": -2.047526,
+      "latitude": 50.740474,
+      "postcodeUnitCount": 410
     },
     "BH17": {
       "longitude": -1.980389,
@@ -732,6 +806,11 @@
       "longitude": -1.970939,
       "latitude": 50.611712,
       "postcodeUnitCount": 554
+    },
+    "BH2": {
+      "longitude": -1.884273,
+      "latitude": 50.721001,
+      "postcodeUnitCount": 275
     },
     "BH20": {
       "longitude": -2.149161,
@@ -813,6 +892,11 @@
       "latitude": 53.590508,
       "postcodeUnitCount": 1853
     },
+    "BL11": {
+      "longitude": -2.425463,
+      "latitude": 53.572355,
+      "postcodeUnitCount": 23
+    },
     "BL2": {
       "longitude": -2.39504,
       "latitude": 53.588494,
@@ -843,6 +927,11 @@
       "latitude": 53.631738,
       "postcodeUnitCount": 507
     },
+    "BL78": {
+      "longitude": -2.409051,
+      "latitude": 53.559877,
+      "postcodeUnitCount": 5
+    },
     "BL8": {
       "longitude": -2.32789,
       "latitude": 53.605035,
@@ -872,6 +961,11 @@
       "longitude": -0.429395,
       "latitude": 50.813962,
       "postcodeUnitCount": 688
+    },
+    "BN13": {
+      "longitude": -0.411657,
+      "latitude": 50.832783,
+      "postcodeUnitCount": 772
     },
     "BN14": {
       "longitude": -0.382074,
@@ -953,6 +1047,11 @@
       "latitude": 50.841288,
       "postcodeUnitCount": 400
     },
+    "BN42": {
+      "longitude": -0.234706,
+      "latitude": 50.837575,
+      "postcodeUnitCount": 219
+    },
     "BN43": {
       "longitude": -0.266669,
       "latitude": 50.836053,
@@ -963,10 +1062,30 @@
       "latitude": 50.890836,
       "postcodeUnitCount": 263
     },
+    "BN45": {
+      "longitude": -0.190669,
+      "latitude": 50.89666,
+      "postcodeUnitCount": 42
+    },
     "BN5": {
       "longitude": -0.268886,
       "latitude": 50.927511,
       "postcodeUnitCount": 287
+    },
+    "BN50": {
+      "longitude": -0.140791,
+      "latitude": 50.826328,
+      "postcodeUnitCount": 63
+    },
+    "BN51": {
+      "longitude": -0.058645,
+      "latitude": 50.804817,
+      "postcodeUnitCount": 9
+    },
+    "BN52": {
+      "longitude": -0.168035,
+      "latitude": 50.834403,
+      "postcodeUnitCount": 60
     },
     "BN6": {
       "longitude": -0.155365,
@@ -983,10 +1102,25 @@
       "latitude": 50.917049,
       "postcodeUnitCount": 693
     },
+    "BN88": {
+      "longitude": -0.139196,
+      "latitude": 50.826841,
+      "postcodeUnitCount": 8
+    },
     "BN9": {
       "longitude": 0.049876,
       "latitude": 50.795614,
       "postcodeUnitCount": 417
+    },
+    "BN95": {
+      "longitude": -0.330024,
+      "latitude": 50.823154,
+      "postcodeUnitCount": 1
+    },
+    "BN99": {
+      "longitude": -0.346456,
+      "latitude": 50.823446,
+      "postcodeUnitCount": 437
     },
     "BR1": {
       "longitude": 0.020933,
@@ -1108,6 +1242,16 @@
       "latitude": 51.272704,
       "postcodeUnitCount": 301
     },
+    "BS28": {
+      "longitude": -2.815227,
+      "latitude": 51.226123,
+      "postcodeUnitCount": 205
+    },
+    "BS29": {
+      "longitude": -2.879375,
+      "latitude": 51.332854,
+      "postcodeUnitCount": 135
+    },
     "BS3": {
       "longitude": -2.603196,
       "latitude": 51.438677,
@@ -1163,10 +1307,20 @@
       "latitude": 51.346517,
       "postcodeUnitCount": 720
     },
+    "BS41": {
+      "longitude": -2.653595,
+      "latitude": 51.422048,
+      "postcodeUnitCount": 196
+    },
     "BS48": {
       "longitude": -2.747768,
       "latitude": 51.424883,
       "postcodeUnitCount": 768
+    },
+    "BS49": {
+      "longitude": -2.81225,
+      "latitude": 51.383103,
+      "postcodeUnitCount": 345
     },
     "BS5": {
       "longitude": -2.551743,
@@ -1192,6 +1346,16 @@
       "longitude": -2.626778,
       "latitude": 51.487263,
       "postcodeUnitCount": 887
+    },
+    "BS98": {
+      "longitude": -2.588965,
+      "latitude": 51.459749,
+      "postcodeUnitCount": 1
+    },
+    "BS99": {
+      "longitude": -2.59634,
+      "latitude": 51.444603,
+      "postcodeUnitCount": 89
     },
     "CA1": {
       "longitude": -2.91175,
@@ -1238,6 +1402,16 @@
       "latitude": 54.47988,
       "postcodeUnitCount": 230
     },
+    "CA18": {
+      "longitude": -3.391098,
+      "latitude": 54.35432,
+      "postcodeUnitCount": 25
+    },
+    "CA19": {
+      "longitude": -3.384597,
+      "latitude": 54.387132,
+      "postcodeUnitCount": 68
+    },
     "CA2": {
       "longitude": -2.951357,
       "latitude": 54.883851,
@@ -1248,20 +1422,60 @@
       "latitude": 54.410617,
       "postcodeUnitCount": 196
     },
+    "CA21": {
+      "longitude": -3.516424,
+      "latitude": 54.445444,
+      "postcodeUnitCount": 37
+    },
     "CA22": {
       "longitude": -3.533065,
       "latitude": 54.480546,
       "postcodeUnitCount": 267
+    },
+    "CA23": {
+      "longitude": -3.49523,
+      "latitude": 54.514642,
+      "postcodeUnitCount": 73
+    },
+    "CA24": {
+      "longitude": -3.543613,
+      "latitude": 54.515469,
+      "postcodeUnitCount": 38
+    },
+    "CA25": {
+      "longitude": -3.519203,
+      "latitude": 54.523142,
+      "postcodeUnitCount": 227
+    },
+    "CA26": {
+      "longitude": -3.482841,
+      "latitude": 54.544504,
+      "postcodeUnitCount": 116
+    },
+    "CA27": {
+      "longitude": -3.593468,
+      "latitude": 54.4911,
+      "postcodeUnitCount": 56
     },
     "CA28": {
       "longitude": -3.578523,
       "latitude": 54.5433,
       "postcodeUnitCount": 966
     },
+    "CA3": {
+      "longitude": -2.940341,
+      "latitude": 54.909963,
+      "postcodeUnitCount": 535
+    },
     "CA4": {
       "longitude": -2.831729,
       "latitude": 54.847783,
       "postcodeUnitCount": 477
+    },
+    "CA5": {
+      "longitude": -3.020983,
+      "latitude": 54.855678,
+      "postcodeUnitCount": 354
     },
     "CA6": {
       "longitude": -2.89607,
@@ -1277,6 +1491,16 @@
       "longitude": -2.686996,
       "latitude": 54.938966,
       "postcodeUnitCount": 616
+    },
+    "CA9": {
+      "longitude": -2.413051,
+      "latitude": 54.8008,
+      "postcodeUnitCount": 177
+    },
+    "CA95": {
+      "longitude": -3.56645,
+      "latitude": 54.644676,
+      "postcodeUnitCount": 4
     },
     "CB1": {
       "longitude": 0.141457,
@@ -1297,6 +1521,11 @@
       "longitude": 0.123071,
       "latitude": 52.185273,
       "postcodeUnitCount": 587
+    },
+    "CB21": {
+      "longitude": 0.281152,
+      "latitude": 52.128018,
+      "postcodeUnitCount": 446
     },
     "CB22": {
       "longitude": 0.135675,
@@ -1363,10 +1592,60 @@
       "latitude": 53.218078,
       "postcodeUnitCount": 852
     },
+    "CH25": {
+      "longitude": -3.011826,
+      "latitude": 53.397005,
+      "postcodeUnitCount": 37
+    },
+    "CH26": {
+      "longitude": -3.065906,
+      "latitude": 53.365704,
+      "postcodeUnitCount": 7
+    },
+    "CH27": {
+      "longitude": -3.03676,
+      "latitude": 53.419739,
+      "postcodeUnitCount": 21
+    },
+    "CH28": {
+      "longitude": -3.111897,
+      "latitude": 53.400531,
+      "postcodeUnitCount": 5
+    },
+    "CH29": {
+      "longitude": -3.17943,
+      "latitude": 53.390175,
+      "postcodeUnitCount": 20
+    },
     "CH3": {
       "longitude": -2.819668,
       "latitude": 53.164662,
       "postcodeUnitCount": 1110
+    },
+    "CH30": {
+      "longitude": -3.098392,
+      "latitude": 53.378956,
+      "postcodeUnitCount": 1
+    },
+    "CH31": {
+      "longitude": -3.098807,
+      "latitude": 53.329682,
+      "postcodeUnitCount": 9
+    },
+    "CH32": {
+      "longitude": -2.997605,
+      "latitude": 53.36198,
+      "postcodeUnitCount": 14
+    },
+    "CH33": {
+      "longitude": -3.062638,
+      "latitude": 53.290566,
+      "postcodeUnitCount": 7
+    },
+    "CH34": {
+      "longitude": -2.904743,
+      "latitude": 53.278766,
+      "postcodeUnitCount": 64
     },
     "CH4": {
       "longitude": -2.908959,
@@ -1423,6 +1702,11 @@
       "latitude": 53.326492,
       "postcodeUnitCount": 461
     },
+    "CH61": {
+      "longitude": -3.101984,
+      "latitude": 53.34915,
+      "postcodeUnitCount": 418
+    },
     "CH62": {
       "longitude": -2.981591,
       "latitude": 53.334231,
@@ -1448,6 +1732,21 @@
       "latitude": 53.277617,
       "postcodeUnitCount": 994
     },
+    "CH70": {
+      "longitude": -2.922565,
+      "latitude": 53.192766,
+      "postcodeUnitCount": 42
+    },
+    "CH88": {
+      "longitude": -2.874748,
+      "latitude": 53.194605,
+      "postcodeUnitCount": 1
+    },
+    "CH99": {
+      "longitude": -2.895468,
+      "latitude": 53.175129,
+      "postcodeUnitCount": 17
+    },
     "CM0": {
       "longitude": 0.833,
       "latitude": 51.66175,
@@ -1457,6 +1756,11 @@
       "longitude": 0.458232,
       "latitude": 51.747474,
       "postcodeUnitCount": 1558
+    },
+    "CM11": {
+      "longitude": 0.446342,
+      "latitude": 51.623389,
+      "postcodeUnitCount": 450
     },
     "CM12": {
       "longitude": 0.41442,
@@ -1492,6 +1796,11 @@
       "longitude": 0.10611,
       "latitude": 51.755291,
       "postcodeUnitCount": 431
+    },
+    "CM19": {
+      "longitude": 0.071143,
+      "latitude": 51.7594,
+      "postcodeUnitCount": 394
     },
     "CM2": {
       "longitude": 0.486627,
@@ -1548,6 +1857,11 @@
       "latitude": 51.897387,
       "postcodeUnitCount": 1345
     },
+    "CM77": {
+      "longitude": 0.553322,
+      "latitude": 51.866001,
+      "postcodeUnitCount": 461
+    },
     "CM8": {
       "longitude": 0.637071,
       "latitude": 51.806186,
@@ -1557,6 +1871,21 @@
       "longitude": 0.698971,
       "latitude": 51.740335,
       "postcodeUnitCount": 1055
+    },
+    "CM92": {
+      "longitude": 0.06128,
+      "latitude": 51.769363,
+      "postcodeUnitCount": 18
+    },
+    "CM98": {
+      "longitude": 0.518453,
+      "latitude": 51.752109,
+      "postcodeUnitCount": 19
+    },
+    "CM99": {
+      "longitude": 0.500627,
+      "latitude": 51.742499,
+      "postcodeUnitCount": 70
     },
     "CO1": {
       "longitude": 0.896902,
@@ -1628,6 +1957,11 @@
       "latitude": 51.882692,
       "postcodeUnitCount": 1338
     },
+    "CO8": {
+      "longitude": 0.766518,
+      "latitude": 51.973484,
+      "postcodeUnitCount": 126
+    },
     "CO9": {
       "longitude": 0.609584,
       "latitude": 51.968962,
@@ -1672,6 +2006,16 @@
       "longitude": -0.114359,
       "latitude": 51.33185,
       "postcodeUnitCount": 800
+    },
+    "CR9": {
+      "longitude": -0.098434,
+      "latitude": 51.373697,
+      "postcodeUnitCount": 126
+    },
+    "CR90": {
+      "longitude": -0.113266,
+      "latitude": 51.378068,
+      "postcodeUnitCount": 45
     },
     "CT1": {
       "longitude": 1.085676,
@@ -1758,6 +2102,11 @@
       "latitude": 51.353295,
       "postcodeUnitCount": 991
     },
+    "CT50": {
+      "longitude": 1.143037,
+      "latitude": 51.07992,
+      "postcodeUnitCount": 5
+    },
     "CT6": {
       "longitude": 1.129565,
       "latitude": 51.364071,
@@ -1797,6 +2146,11 @@
       "longitude": -1.472419,
       "latitude": 52.478805,
       "postcodeUnitCount": 664
+    },
+    "CV13": {
+      "longitude": -1.4126,
+      "latitude": 52.616279,
+      "postcodeUnitCount": 371
     },
     "CV2": {
       "longitude": -1.463452,
@@ -1953,10 +2307,20 @@
       "latitude": 53.258592,
       "postcodeUnitCount": 1054
     },
+    "CW98": {
+      "longitude": -2.431112,
+      "latitude": 53.088199,
+      "postcodeUnitCount": 2
+    },
     "DA1": {
       "longitude": 0.209525,
       "latitude": 51.448078,
       "postcodeUnitCount": 1268
+    },
+    "DA10": {
+      "longitude": 0.302163,
+      "latitude": 51.44106,
+      "postcodeUnitCount": 286
     },
     "DA11": {
       "longitude": 0.350491,
@@ -1993,6 +2357,11 @@
       "latitude": 51.486501,
       "postcodeUnitCount": 342
     },
+    "DA18": {
+      "longitude": 0.136289,
+      "latitude": 51.494281,
+      "postcodeUnitCount": 68
+    },
     "DA2": {
       "longitude": 0.233628,
       "latitude": 51.432422,
@@ -2027,6 +2396,11 @@
       "longitude": 0.175584,
       "latitude": 51.475762,
       "postcodeUnitCount": 653
+    },
+    "DA9": {
+      "longitude": 0.277584,
+      "latitude": 51.447855,
+      "postcodeUnitCount": 338
     },
     "DE1": {
       "longitude": -1.477229,
@@ -2143,6 +2517,16 @@
       "latitude": 53.012675,
       "postcodeUnitCount": 345
     },
+    "DE99": {
+      "longitude": -1.465616,
+      "latitude": 52.914939,
+      "postcodeUnitCount": 1
+    },
+    "DG16": {
+      "longitude": -3.04307,
+      "latitude": 54.997211,
+      "postcodeUnitCount": 5
+    },
     "DH1": {
       "longitude": -1.565491,
       "latitude": 54.782016,
@@ -2187,6 +2571,21 @@
       "longitude": -1.711052,
       "latitude": 54.86858,
       "postcodeUnitCount": 1209
+    },
+    "DH97": {
+      "longitude": -1.535031,
+      "latitude": 54.792726,
+      "postcodeUnitCount": 1
+    },
+    "DH98": {
+      "longitude": -1.535031,
+      "latitude": 54.792726,
+      "postcodeUnitCount": 1
+    },
+    "DH99": {
+      "longitude": -1.549375,
+      "latitude": 54.78824,
+      "postcodeUnitCount": 3
     },
     "DL1": {
       "longitude": -1.538825,
@@ -2253,6 +2652,11 @@
       "latitude": 54.617745,
       "postcodeUnitCount": 801
     },
+    "DL6": {
+      "longitude": -1.392458,
+      "latitude": 54.370614,
+      "postcodeUnitCount": 683
+    },
     "DL7": {
       "longitude": -1.486938,
       "latitude": 54.337683,
@@ -2267,6 +2671,11 @@
       "longitude": -1.706771,
       "latitude": 54.375588,
       "postcodeUnitCount": 397
+    },
+    "DL98": {
+      "longitude": -1.559709,
+      "latitude": 54.527522,
+      "postcodeUnitCount": 7
     },
     "DN1": {
       "longitude": -1.130572,
@@ -2312,6 +2721,16 @@
       "longitude": -0.447583,
       "latitude": 53.681322,
       "postcodeUnitCount": 368
+    },
+    "DN19": {
+      "longitude": -0.359721,
+      "latitude": 53.684065,
+      "postcodeUnitCount": 239
+    },
+    "DN2": {
+      "longitude": -1.102647,
+      "latitude": 53.533956,
+      "postcodeUnitCount": 575
     },
     "DN20": {
       "longitude": -0.506531,
@@ -2363,10 +2782,20 @@
       "latitude": 53.511399,
       "postcodeUnitCount": 661
     },
+    "DN37": {
+      "longitude": -0.137789,
+      "latitude": 53.539131,
+      "postcodeUnitCount": 673
+    },
     "DN38": {
       "longitude": -0.390995,
       "latitude": 53.560354,
       "postcodeUnitCount": 105
+    },
+    "DN39": {
+      "longitude": -0.335838,
+      "latitude": 53.616606,
+      "postcodeUnitCount": 114
     },
     "DN4": {
       "longitude": -1.121378,
@@ -2428,6 +2857,11 @@
       "latitude": 50.749533,
       "postcodeUnitCount": 1140
     },
+    "DT3": {
+      "longitude": -2.468657,
+      "latitude": 50.642149,
+      "postcodeUnitCount": 703
+    },
     "DT4": {
       "longitude": -2.465568,
       "latitude": 50.609553,
@@ -2447,6 +2881,11 @@
       "longitude": -2.94744,
       "latitude": 50.729436,
       "postcodeUnitCount": 284
+    },
+    "DT8": {
+      "longitude": -2.759074,
+      "latitude": 50.819868,
+      "postcodeUnitCount": 234
     },
     "DT9": {
       "longitude": -2.51592,
@@ -2507,6 +2946,11 @@
       "longitude": -2.164111,
       "latitude": 52.498645,
       "postcodeUnitCount": 751
+    },
+    "DY7": {
+      "longitude": -2.231402,
+      "latitude": 52.46636,
+      "postcodeUnitCount": 343
     },
     "DY8": {
       "longitude": -2.155877,
@@ -2583,6 +3027,11 @@
       "latitude": 51.546305,
       "postcodeUnitCount": 228
     },
+    "E22": {
+      "longitude": -0.014987,
+      "latitude": 51.501632,
+      "postcodeUnitCount": 18
+    },
     "E3": {
       "longitude": -0.024817,
       "latitude": 51.528096,
@@ -2618,10 +3067,30 @@
       "latitude": 51.543992,
       "postcodeUnitCount": 685
     },
+    "E98": {
+      "longitude": -0.06442,
+      "latitude": 51.508028,
+      "postcodeUnitCount": 56
+    },
     "EC1A": {
       "longitude": -0.10413,
       "latitude": 51.520526,
       "postcodeUnitCount": 166
+    },
+    "EC1M": {
+      "longitude": -0.102302,
+      "latitude": 51.521287,
+      "postcodeUnitCount": 169
+    },
+    "EC1N": {
+      "longitude": -0.1088,
+      "latitude": 51.5199,
+      "postcodeUnitCount": 155
+    },
+    "EC1P": {
+      "longitude": -0.112017,
+      "latitude": 51.524567,
+      "postcodeUnitCount": 256
     },
     "EC1R": {
       "longitude": -0.108344,
@@ -2632,6 +3101,111 @@
       "longitude": -0.097773,
       "latitude": 51.526796,
       "postcodeUnitCount": 484
+    },
+    "EC1Y": {
+      "longitude": -0.092384,
+      "latitude": 51.523085,
+      "postcodeUnitCount": 177
+    },
+    "EC2A": {
+      "longitude": -0.085427,
+      "latitude": 51.523672,
+      "postcodeUnitCount": 341
+    },
+    "EC2M": {
+      "longitude": -0.08616,
+      "latitude": 51.51857,
+      "postcodeUnitCount": 161
+    },
+    "EC2N": {
+      "longitude": -0.085814,
+      "latitude": 51.515791,
+      "postcodeUnitCount": 46
+    },
+    "EC2P": {
+      "longitude": -0.111705,
+      "latitude": 51.524436,
+      "postcodeUnitCount": 66
+    },
+    "EC2R": {
+      "longitude": -0.091085,
+      "latitude": 51.516287,
+      "postcodeUnitCount": 72
+    },
+    "EC2V": {
+      "longitude": -0.093657,
+      "latitude": 51.515455,
+      "postcodeUnitCount": 102
+    },
+    "EC2Y": {
+      "longitude": -0.093549,
+      "latitude": 51.519466,
+      "postcodeUnitCount": 90
+    },
+    "EC3A": {
+      "longitude": -0.080247,
+      "latitude": 51.514786,
+      "postcodeUnitCount": 66
+    },
+    "EC3M": {
+      "longitude": -0.082101,
+      "latitude": 51.511851,
+      "postcodeUnitCount": 80
+    },
+    "EC3N": {
+      "longitude": -0.076611,
+      "latitude": 51.511752,
+      "postcodeUnitCount": 82
+    },
+    "EC3P": {
+      "longitude": -0.110799,
+      "latitude": 51.524154,
+      "postcodeUnitCount": 25
+    },
+    "EC3R": {
+      "longitude": -0.083441,
+      "latitude": 51.510514,
+      "postcodeUnitCount": 79
+    },
+    "EC3V": {
+      "longitude": -0.085776,
+      "latitude": 51.513011,
+      "postcodeUnitCount": 78
+    },
+    "EC4A": {
+      "longitude": -0.108173,
+      "latitude": 51.515794,
+      "postcodeUnitCount": 111
+    },
+    "EC4M": {
+      "longitude": -0.099509,
+      "latitude": 51.514322,
+      "postcodeUnitCount": 93
+    },
+    "EC4N": {
+      "longitude": -0.091287,
+      "latitude": 51.512796,
+      "postcodeUnitCount": 69
+    },
+    "EC4P": {
+      "longitude": -0.112017,
+      "latitude": 51.524567,
+      "postcodeUnitCount": 43
+    },
+    "EC4R": {
+      "longitude": -0.090405,
+      "latitude": 51.510871,
+      "postcodeUnitCount": 56
+    },
+    "EC4V": {
+      "longitude": -0.100011,
+      "latitude": 51.512491,
+      "postcodeUnitCount": 110
+    },
+    "EC4Y": {
+      "longitude": -0.108891,
+      "latitude": 51.512906,
+      "postcodeUnitCount": 125
     },
     "EN1": {
       "longitude": -0.067867,
@@ -2738,6 +3312,11 @@
       "latitude": 50.901959,
       "postcodeUnitCount": 197
     },
+    "EX19": {
+      "longitude": -4.003768,
+      "latitude": 50.87718,
+      "postcodeUnitCount": 220
+    },
     "EX2": {
       "longitude": -3.514601,
       "latitude": 50.708617,
@@ -2748,6 +3327,11 @@
       "latitude": 50.752037,
       "postcodeUnitCount": 1060
     },
+    "EX21": {
+      "longitude": -4.208078,
+      "latitude": 50.805308,
+      "postcodeUnitCount": 285
+    },
     "EX22": {
       "longitude": -4.368078,
       "latitude": 50.82803,
@@ -2757,6 +3341,11 @@
       "longitude": -4.53231,
       "latitude": 50.82423,
       "postcodeUnitCount": 700
+    },
+    "EX24": {
+      "longitude": -3.089186,
+      "latitude": 50.740436,
+      "postcodeUnitCount": 213
     },
     "EX3": {
       "longitude": -3.460188,
@@ -2783,10 +3372,20 @@
       "latitude": 51.198065,
       "postcodeUnitCount": 666
     },
+    "EX35": {
+      "longitude": -3.827165,
+      "latitude": 51.223879,
+      "postcodeUnitCount": 119
+    },
     "EX36": {
       "longitude": -3.797636,
       "latitude": 51.016768,
       "postcodeUnitCount": 416
+    },
+    "EX37": {
+      "longitude": -3.95429,
+      "latitude": 50.978613,
+      "postcodeUnitCount": 202
     },
     "EX38": {
       "longitude": -4.152484,
@@ -2888,6 +3487,11 @@
       "latitude": 51.623509,
       "postcodeUnitCount": 469
     },
+    "GL13": {
+      "longitude": -2.460867,
+      "latitude": 51.692261,
+      "postcodeUnitCount": 243
+    },
     "GL14": {
       "longitude": -2.481708,
       "latitude": 51.817839,
@@ -2897,6 +3501,11 @@
       "longitude": -2.55015,
       "latitude": 51.736805,
       "postcodeUnitCount": 811
+    },
+    "GL16": {
+      "longitude": -2.612751,
+      "latitude": 51.795819,
+      "postcodeUnitCount": 497
     },
     "GL17": {
       "longitude": -2.511782,
@@ -2983,6 +3592,16 @@
       "latitude": 51.71099,
       "postcodeUnitCount": 1688
     },
+    "GL8": {
+      "longitude": -2.170966,
+      "latitude": 51.642782,
+      "postcodeUnitCount": 338
+    },
+    "GL9": {
+      "longitude": -2.303456,
+      "latitude": 51.5558,
+      "postcodeUnitCount": 112
+    },
     "GU1": {
       "longitude": -0.56477,
       "latitude": 51.243097,
@@ -3038,6 +3657,11 @@
       "latitude": 51.245656,
       "postcodeUnitCount": 677
     },
+    "GU20": {
+      "longitude": -0.64943,
+      "latitude": 51.364526,
+      "postcodeUnitCount": 159
+    },
     "GU21": {
       "longitude": -0.579782,
       "latitude": 51.321163,
@@ -3088,6 +3712,11 @@
       "latitude": 51.246946,
       "postcodeUnitCount": 411
     },
+    "GU30": {
+      "longitude": -0.804411,
+      "latitude": 51.075645,
+      "postcodeUnitCount": 302
+    },
     "GU31": {
       "longitude": -0.903398,
       "latitude": 50.997033,
@@ -3097,6 +3726,11 @@
       "longitude": -0.968998,
       "latitude": 51.009066,
       "postcodeUnitCount": 557
+    },
+    "GU33": {
+      "longitude": -0.890406,
+      "latitude": 51.051556,
+      "postcodeUnitCount": 347
     },
     "GU34": {
       "longitude": -0.987177,
@@ -3112,6 +3746,16 @@
       "longitude": -0.540038,
       "latitude": 51.243344,
       "postcodeUnitCount": 493
+    },
+    "GU46": {
+      "longitude": -0.831985,
+      "latitude": 51.338579,
+      "postcodeUnitCount": 343
+    },
+    "GU47": {
+      "longitude": -0.791828,
+      "latitude": 51.349474,
+      "postcodeUnitCount": 412
     },
     "GU5": {
       "longitude": -0.509931,
@@ -3378,6 +4022,11 @@
       "latitude": 51.664414,
       "postcodeUnitCount": 359
     },
+    "HP8": {
+      "longitude": -0.569596,
+      "latitude": 51.638108,
+      "postcodeUnitCount": 220
+    },
     "HP9": {
       "longitude": -0.640239,
       "latitude": 51.610156,
@@ -3392,6 +4041,16 @@
       "longitude": -2.785624,
       "latitude": 52.009335,
       "postcodeUnitCount": 1312
+    },
+    "HR3": {
+      "longitude": -3.026953,
+      "latitude": 52.11665,
+      "postcodeUnitCount": 226
+    },
+    "HR4": {
+      "longitude": -2.771384,
+      "latitude": 52.090531,
+      "postcodeUnitCount": 946
     },
     "HR5": {
       "longitude": -3.01638,
@@ -3433,6 +4092,11 @@
       "latitude": 53.828167,
       "postcodeUnitCount": 419
     },
+    "HU12": {
+      "longitude": -0.128154,
+      "latitude": 53.724793,
+      "postcodeUnitCount": 779
+    },
     "HU13": {
       "longitude": -0.439423,
       "latitude": 53.725727,
@@ -3448,6 +4112,11 @@
       "latitude": 53.747624,
       "postcodeUnitCount": 691
     },
+    "HU16": {
+      "longitude": -0.422823,
+      "latitude": 53.781682,
+      "postcodeUnitCount": 492
+    },
     "HU17": {
       "longitude": -0.427095,
       "latitude": 53.846243,
@@ -3457,6 +4126,21 @@
       "longitude": -0.169232,
       "latitude": 53.909872,
       "postcodeUnitCount": 271
+    },
+    "HU19": {
+      "longitude": 0.03445,
+      "latitude": 53.723349,
+      "postcodeUnitCount": 199
+    },
+    "HU2": {
+      "longitude": -0.340723,
+      "latitude": 53.750763,
+      "postcodeUnitCount": 193
+    },
+    "HU20": {
+      "longitude": -0.511555,
+      "latitude": 53.78784,
+      "postcodeUnitCount": 34
     },
     "HU3": {
       "longitude": -0.367726,
@@ -3482,6 +4166,11 @@
       "longitude": -0.329739,
       "latitude": 53.79152,
       "postcodeUnitCount": 762
+    },
+    "HU8": {
+      "longitude": -0.299611,
+      "latitude": 53.769471,
+      "postcodeUnitCount": 749
     },
     "HU9": {
       "longitude": -0.288837,
@@ -3548,6 +4237,11 @@
       "latitude": 51.563169,
       "postcodeUnitCount": 488
     },
+    "IG4": {
+      "longitude": 0.051202,
+      "latitude": 51.58006,
+      "postcodeUnitCount": 139
+    },
     "IG5": {
       "longitude": 0.063459,
       "latitude": 51.591304,
@@ -3578,6 +4272,11 @@
       "latitude": 52.067542,
       "postcodeUnitCount": 1111
     },
+    "IP10": {
+      "longitude": 1.270052,
+      "latitude": 52.01892,
+      "postcodeUnitCount": 191
+    },
     "IP11": {
       "longitude": 1.340955,
       "latitude": 51.968065,
@@ -3598,6 +4297,11 @@
       "latitude": 52.206401,
       "postcodeUnitCount": 1622
     },
+    "IP15": {
+      "longitude": 1.595429,
+      "latitude": 52.156351,
+      "postcodeUnitCount": 165
+    },
     "IP16": {
       "longitude": 1.583532,
       "latitude": 52.204493,
@@ -3607,6 +4311,11 @@
       "longitude": 1.50232,
       "latitude": 52.231176,
       "postcodeUnitCount": 732
+    },
+    "IP18": {
+      "longitude": 1.670362,
+      "latitude": 52.330499,
+      "postcodeUnitCount": 295
     },
     "IP19": {
       "longitude": 1.494507,
@@ -3663,6 +4372,11 @@
       "latitude": 52.330566,
       "postcodeUnitCount": 887
     },
+    "IP29": {
+      "longitude": 0.659016,
+      "latitude": 52.190847,
+      "postcodeUnitCount": 408
+    },
     "IP3": {
       "longitude": 1.188107,
       "latitude": 52.041319,
@@ -3708,10 +4422,20 @@
       "latitude": 52.068282,
       "postcodeUnitCount": 716
     },
+    "IP8": {
+      "longitude": 1.079719,
+      "latitude": 52.063048,
+      "postcodeUnitCount": 482
+    },
     "IP9": {
       "longitude": 1.146799,
       "latitude": 51.988512,
       "postcodeUnitCount": 497
+    },
+    "IP98": {
+      "longitude": 1.109242,
+      "latitude": 52.376684,
+      "postcodeUnitCount": 7
     },
     "KT1": {
       "longitude": -0.29828,
@@ -3838,6 +4562,11 @@
       "latitude": 53.402026,
       "postcodeUnitCount": 460
     },
+    "L10": {
+      "longitude": -2.926993,
+      "latitude": 53.474297,
+      "postcodeUnitCount": 293
+    },
     "L11": {
       "longitude": -2.915396,
       "latitude": 53.447923,
@@ -3863,6 +4592,11 @@
       "latitude": 53.397593,
       "postcodeUnitCount": 472
     },
+    "L16": {
+      "longitude": -2.886964,
+      "latitude": 53.398789,
+      "postcodeUnitCount": 245
+    },
     "L17": {
       "longitude": -2.940539,
       "latitude": 53.377642,
@@ -3877,6 +4611,11 @@
       "longitude": -2.903304,
       "latitude": 53.359001,
       "postcodeUnitCount": 491
+    },
+    "L2": {
+      "longitude": -2.989882,
+      "latitude": 53.406732,
+      "postcodeUnitCount": 174
     },
     "L20": {
       "longitude": -2.989168,
@@ -3913,10 +4652,20 @@
       "latitude": 53.364364,
       "postcodeUnitCount": 362
     },
+    "L27": {
+      "longitude": -2.838816,
+      "latitude": 53.387868,
+      "postcodeUnitCount": 156
+    },
     "L28": {
       "longitude": -2.865685,
       "latitude": 53.435349,
       "postcodeUnitCount": 116
+    },
+    "L29": {
+      "longitude": -2.985488,
+      "latitude": 53.507567,
+      "postcodeUnitCount": 22
     },
     "L3": {
       "longitude": -2.984581,
@@ -3963,6 +4712,11 @@
       "latitude": 53.556809,
       "postcodeUnitCount": 687
     },
+    "L38": {
+      "longitude": -3.050893,
+      "latitude": 53.523982,
+      "postcodeUnitCount": 99
+    },
     "L39": {
       "longitude": -2.89681,
       "latitude": 53.561677,
@@ -3988,6 +4742,16 @@
       "latitude": 53.418965,
       "postcodeUnitCount": 504
     },
+    "L67": {
+      "longitude": -2.943225,
+      "latitude": 53.450486,
+      "postcodeUnitCount": 1
+    },
+    "L68": {
+      "longitude": -2.96069,
+      "latitude": 53.473071,
+      "postcodeUnitCount": 1
+    },
     "L69": {
       "longitude": -2.974853,
       "latitude": 53.386589,
@@ -3997,6 +4761,31 @@
       "longitude": -2.949708,
       "latitude": 53.405865,
       "postcodeUnitCount": 460
+    },
+    "L70": {
+      "longitude": -2.95677,
+      "latitude": 53.404085,
+      "postcodeUnitCount": 15
+    },
+    "L71": {
+      "longitude": -2.974742,
+      "latitude": 53.433876,
+      "postcodeUnitCount": 12
+    },
+    "L72": {
+      "longitude": -2.967381,
+      "latitude": 53.47469,
+      "postcodeUnitCount": 33
+    },
+    "L74": {
+      "longitude": -2.988286,
+      "latitude": 53.393016,
+      "postcodeUnitCount": 25
+    },
+    "L75": {
+      "longitude": -2.977857,
+      "latitude": 53.434266,
+      "postcodeUnitCount": 12
     },
     "L8": {
       "longitude": -2.963772,
@@ -4012,6 +4801,11 @@
       "longitude": -2.799519,
       "latitude": 54.04658,
       "postcodeUnitCount": 1370
+    },
+    "LA10": {
+      "longitude": -2.493713,
+      "latitude": 54.313738,
+      "postcodeUnitCount": 221
     },
     "LA11": {
       "longitude": -2.925985,
@@ -4038,6 +4832,11 @@
       "latitude": 54.155786,
       "postcodeUnitCount": 267
     },
+    "LA16": {
+      "longitude": -3.203305,
+      "latitude": 54.186872,
+      "postcodeUnitCount": 112
+    },
     "LA17": {
       "longitude": -3.175979,
       "latitude": 54.239388,
@@ -4047,6 +4846,26 @@
       "longitude": -3.276055,
       "latitude": 54.215496,
       "postcodeUnitCount": 300
+    },
+    "LA19": {
+      "longitude": -3.380152,
+      "latitude": 54.296506,
+      "postcodeUnitCount": 71
+    },
+    "LA2": {
+      "longitude": -2.670791,
+      "latitude": 54.065998,
+      "postcodeUnitCount": 987
+    },
+    "LA20": {
+      "longitude": -3.206522,
+      "latitude": 54.29382,
+      "postcodeUnitCount": 88
+    },
+    "LA21": {
+      "longitude": -3.078274,
+      "latitude": 54.363195,
+      "postcodeUnitCount": 93
     },
     "LA22": {
       "longitude": -2.991565,
@@ -4063,6 +4882,11 @@
       "latitude": 54.04977,
       "postcodeUnitCount": 751
     },
+    "LA4": {
+      "longitude": -2.852456,
+      "latitude": 54.070249,
+      "postcodeUnitCount": 745
+    },
     "LA5": {
       "longitude": -2.79154,
       "latitude": 54.143768,
@@ -4078,10 +4902,25 @@
       "latitude": 54.225775,
       "postcodeUnitCount": 210
     },
+    "LA8": {
+      "longitude": -2.761478,
+      "latitude": 54.323423,
+      "postcodeUnitCount": 500
+    },
     "LA9": {
       "longitude": -2.743478,
       "latitude": 54.325228,
       "postcodeUnitCount": 942
+    },
+    "LD7": {
+      "longitude": -3.110146,
+      "latitude": 52.386024,
+      "postcodeUnitCount": 22
+    },
+    "LD8": {
+      "longitude": -2.977532,
+      "latitude": 52.275362,
+      "postcodeUnitCount": 26
     },
     "LE1": {
       "longitude": -1.132905,
@@ -4143,6 +4982,11 @@
       "latitude": 52.607234,
       "postcodeUnitCount": 2064
     },
+    "LE21": {
+      "longitude": -1.142467,
+      "latitude": 52.627325,
+      "postcodeUnitCount": 12
+    },
     "LE3": {
       "longitude": -1.176817,
       "latitude": 52.631734,
@@ -4152,6 +4996,11 @@
       "longitude": -1.125047,
       "latitude": 52.66477,
       "postcodeUnitCount": 1863
+    },
+    "LE41": {
+      "longitude": -1.194904,
+      "latitude": 52.61293,
+      "postcodeUnitCount": 22
     },
     "LE5": {
       "longitude": -1.085471,
@@ -4183,10 +5032,30 @@
       "latitude": 52.554699,
       "postcodeUnitCount": 886
     },
+    "LE87": {
+      "longitude": -1.132426,
+      "latitude": 52.629468,
+      "postcodeUnitCount": 40
+    },
     "LE9": {
       "longitude": -1.281472,
       "latitude": 52.573428,
       "postcodeUnitCount": 1278
+    },
+    "LE94": {
+      "longitude": -0.905511,
+      "latitude": 52.483703,
+      "postcodeUnitCount": 4
+    },
+    "LE95": {
+      "longitude": -1.190553,
+      "latitude": 52.606194,
+      "postcodeUnitCount": 3
+    },
+    "LL14": {
+      "longitude": -3.055003,
+      "latitude": 52.924919,
+      "postcodeUnitCount": 28
     },
     "LN1": {
       "longitude": -0.594136,
@@ -4218,6 +5087,11 @@
       "latitude": 53.257928,
       "postcodeUnitCount": 1162
     },
+    "LN3": {
+      "longitude": -0.417058,
+      "latitude": 53.242227,
+      "postcodeUnitCount": 296
+    },
     "LN4": {
       "longitude": -0.380895,
       "latitude": 53.148803,
@@ -4232,6 +5106,11 @@
       "longitude": -0.601423,
       "latitude": 53.199611,
       "postcodeUnitCount": 1482
+    },
+    "LN7": {
+      "longitude": -0.345222,
+      "latitude": 53.493171,
+      "postcodeUnitCount": 271
     },
     "LN8": {
       "longitude": -0.326065,
@@ -4288,10 +5167,20 @@
       "latitude": 53.860172,
       "postcodeUnitCount": 1263
     },
+    "LS18": {
+      "longitude": -1.639872,
+      "latitude": 53.838517,
+      "postcodeUnitCount": 531
+    },
     "LS19": {
       "longitude": -1.683873,
       "latitude": 53.859732,
       "postcodeUnitCount": 566
+    },
+    "LS2": {
+      "longitude": -1.545649,
+      "latitude": 53.802567,
+      "postcodeUnitCount": 374
     },
     "LS20": {
       "longitude": -1.715866,
@@ -4343,6 +5232,11 @@
       "latitude": 53.918409,
       "postcodeUnitCount": 1242
     },
+    "LS3": {
+      "longitude": -1.563381,
+      "latitude": 53.802292,
+      "postcodeUnitCount": 120
+    },
     "LS4": {
       "longitude": -1.584718,
       "latitude": 53.810471,
@@ -4368,10 +5262,25 @@
       "latitude": 53.824784,
       "postcodeUnitCount": 936
     },
+    "LS88": {
+      "longitude": -1.501434,
+      "latitude": 53.765334,
+      "postcodeUnitCount": 32
+    },
     "LS9": {
       "longitude": -1.509239,
       "latitude": 53.798923,
       "postcodeUnitCount": 902
+    },
+    "LS98": {
+      "longitude": -1.517539,
+      "latitude": 53.773744,
+      "postcodeUnitCount": 1
+    },
+    "LS99": {
+      "longitude": -1.500833,
+      "latitude": 53.765617,
+      "postcodeUnitCount": 3
     },
     "LU1": {
       "longitude": -0.427277,
@@ -4443,6 +5352,11 @@
       "latitude": 53.455169,
       "postcodeUnitCount": 868
     },
+    "M17": {
+      "longitude": -2.319636,
+      "latitude": 53.467981,
+      "postcodeUnitCount": 162
+    },
     "M18": {
       "longitude": -2.170777,
       "latitude": 53.461134,
@@ -4452,6 +5366,11 @@
       "longitude": -2.196231,
       "latitude": 53.436413,
       "postcodeUnitCount": 807
+    },
+    "M2": {
+      "longitude": -2.24451,
+      "latitude": 53.480444,
+      "postcodeUnitCount": 213
     },
     "M20": {
       "longitude": -2.232699,
@@ -4583,10 +5502,25 @@
       "latitude": 53.478912,
       "postcodeUnitCount": 640
     },
+    "M50": {
+      "longitude": -2.294422,
+      "latitude": 53.474885,
+      "postcodeUnitCount": 203
+    },
     "M6": {
       "longitude": -2.298437,
       "latitude": 53.492819,
       "postcodeUnitCount": 834
+    },
+    "M60": {
+      "longitude": -2.235182,
+      "latitude": 53.484348,
+      "postcodeUnitCount": 134
+    },
+    "M61": {
+      "longitude": -2.22918,
+      "latitude": 53.486459,
+      "postcodeUnitCount": 88
     },
     "M7": {
       "longitude": -2.262828,
@@ -4603,6 +5537,16 @@
       "latitude": 53.521997,
       "postcodeUnitCount": 1085
     },
+    "M90": {
+      "longitude": -2.278158,
+      "latitude": 53.363533,
+      "postcodeUnitCount": 82
+    },
+    "M99": {
+      "longitude": -2.231343,
+      "latitude": 53.484588,
+      "postcodeUnitCount": 11
+    },
     "ME1": {
       "longitude": 0.496436,
       "latitude": 51.370624,
@@ -4612,6 +5556,11 @@
       "longitude": 0.735853,
       "latitude": 51.343633,
       "postcodeUnitCount": 1184
+    },
+    "ME11": {
+      "longitude": 0.746743,
+      "latitude": 51.412939,
+      "postcodeUnitCount": 104
     },
     "ME12": {
       "longitude": 0.804321,
@@ -4693,6 +5642,16 @@
       "latitude": 51.361574,
       "postcodeUnitCount": 1151
     },
+    "ME9": {
+      "longitude": 0.721741,
+      "latitude": 51.336291,
+      "postcodeUnitCount": 877
+    },
+    "MK1": {
+      "longitude": -0.724363,
+      "latitude": 52.005444,
+      "postcodeUnitCount": 107
+    },
     "MK10": {
       "longitude": -0.697798,
       "latitude": 52.041588,
@@ -4738,10 +5697,20 @@
       "latitude": 51.977863,
       "postcodeUnitCount": 1266
     },
+    "MK19": {
+      "longitude": -0.855037,
+      "latitude": 52.076205,
+      "postcodeUnitCount": 349
+    },
     "MK2": {
       "longitude": -0.725229,
       "latitude": 51.990405,
       "postcodeUnitCount": 384
+    },
+    "MK20": {
+      "longitude": -0.719842,
+      "latitude": 52.073753,
+      "postcodeUnitCount": 6
     },
     "MK3": {
       "longitude": -0.751949,
@@ -4788,6 +5757,11 @@
       "latitude": 52.156463,
       "postcodeUnitCount": 305
     },
+    "MK5": {
+      "longitude": -0.785,
+      "latitude": 52.020791,
+      "postcodeUnitCount": 422
+    },
     "MK6": {
       "longitude": -0.742932,
       "latitude": 52.029583,
@@ -4797,6 +5771,21 @@
       "longitude": -0.691292,
       "latitude": 52.019293,
       "postcodeUnitCount": 393
+    },
+    "MK77": {
+      "longitude": -0.817278,
+      "latitude": 52.04152,
+      "postcodeUnitCount": 64
+    },
+    "MK8": {
+      "longitude": -0.807672,
+      "latitude": 52.033154,
+      "postcodeUnitCount": 501
+    },
+    "MK9": {
+      "longitude": -0.755728,
+      "latitude": 52.040654,
+      "postcodeUnitCount": 262
     },
     "N1": {
       "longitude": -0.096983,
@@ -4853,6 +5842,16 @@
       "latitude": 51.565256,
       "postcodeUnitCount": 639
     },
+    "N1C": {
+      "longitude": -0.125904,
+      "latitude": 51.536929,
+      "postcodeUnitCount": 82
+    },
+    "N1P": {
+      "longitude": -0.103396,
+      "latitude": 51.539015,
+      "postcodeUnitCount": 655
+    },
     "N2": {
       "longitude": -0.169278,
       "latitude": 51.590086,
@@ -4903,6 +5902,11 @@
       "latitude": 51.583126,
       "postcodeUnitCount": 698
     },
+    "N81": {
+      "longitude": -0.076709,
+      "latitude": 51.566317,
+      "postcodeUnitCount": 3
+    },
     "N9": {
       "longitude": -0.058066,
       "latitude": 51.628505,
@@ -4947,6 +5951,16 @@
       "longitude": -1.817448,
       "latitude": 54.912799,
       "postcodeUnitCount": 168
+    },
+    "NE18": {
+      "longitude": -1.864742,
+      "latitude": 55.038147,
+      "postcodeUnitCount": 70
+    },
+    "NE19": {
+      "longitude": -2.098317,
+      "latitude": 55.178704,
+      "postcodeUnitCount": 216
     },
     "NE2": {
       "longitude": -1.605962,
@@ -5008,6 +6022,11 @@
       "latitude": 55.01044,
       "postcodeUnitCount": 1189
     },
+    "NE30": {
+      "longitude": -1.438609,
+      "latitude": 55.021346,
+      "postcodeUnitCount": 636
+    },
     "NE31": {
       "longitude": -1.513324,
       "latitude": 54.970749,
@@ -5033,6 +6052,11 @@
       "latitude": 54.950979,
       "postcodeUnitCount": 132
     },
+    "NE36": {
+      "longitude": -1.440789,
+      "latitude": 54.944722,
+      "postcodeUnitCount": 211
+    },
     "NE37": {
       "longitude": -1.527828,
       "latitude": 54.912836,
@@ -5042,6 +6066,11 @@
       "longitude": -1.52481,
       "latitude": 54.893337,
       "postcodeUnitCount": 652
+    },
+    "NE39": {
+      "longitude": -1.761364,
+      "latitude": 54.923597,
+      "postcodeUnitCount": 315
     },
     "NE4": {
       "longitude": -1.644423,
@@ -5053,6 +6082,11 @@
       "latitude": 54.965954,
       "postcodeUnitCount": 513
     },
+    "NE41": {
+      "longitude": -1.820169,
+      "latitude": 54.97609,
+      "postcodeUnitCount": 96
+    },
     "NE42": {
       "longitude": -1.854465,
       "latitude": 54.961808,
@@ -5062,6 +6096,11 @@
       "longitude": -1.90614,
       "latitude": 54.948039,
       "postcodeUnitCount": 221
+    },
+    "NE44": {
+      "longitude": -1.978108,
+      "latitude": 54.943026,
+      "postcodeUnitCount": 87
     },
     "NE45": {
       "longitude": -2.01475,
@@ -5077,6 +6116,11 @@
       "longitude": -2.255007,
       "latitude": 54.928589,
       "postcodeUnitCount": 598
+    },
+    "NE48": {
+      "longitude": -2.258185,
+      "latitude": 55.131459,
+      "postcodeUnitCount": 433
     },
     "NE49": {
       "longitude": -2.46084,
@@ -5108,6 +6152,11 @@
       "latitude": 55.178348,
       "postcodeUnitCount": 776
     },
+    "NE64": {
+      "longitude": -1.515416,
+      "latitude": 55.184653,
+      "postcodeUnitCount": 184
+    },
     "NE65": {
       "longitude": -1.743327,
       "latitude": 55.314893,
@@ -5117,6 +6166,21 @@
       "longitude": -1.729988,
       "latitude": 55.428536,
       "postcodeUnitCount": 1013
+    },
+    "NE67": {
+      "longitude": -1.690184,
+      "latitude": 55.53689,
+      "postcodeUnitCount": 114
+    },
+    "NE68": {
+      "longitude": -1.659472,
+      "latitude": 55.579205,
+      "postcodeUnitCount": 111
+    },
+    "NE69": {
+      "longitude": -1.718593,
+      "latitude": 55.60488,
+      "postcodeUnitCount": 39
     },
     "NE7": {
       "longitude": -1.579749,
@@ -5128,15 +6192,45 @@
       "latitude": 55.593703,
       "postcodeUnitCount": 131
     },
+    "NE71": {
+      "longitude": -2.04419,
+      "latitude": 55.555419,
+      "postcodeUnitCount": 190
+    },
     "NE8": {
       "longitude": -1.60621,
       "latitude": 54.955056,
       "postcodeUnitCount": 736
     },
+    "NE85": {
+      "longitude": -1.584755,
+      "latitude": 54.931956,
+      "postcodeUnitCount": 4
+    },
+    "NE88": {
+      "longitude": -1.610209,
+      "latitude": 54.950511,
+      "postcodeUnitCount": 7
+    },
     "NE9": {
       "longitude": -1.585182,
       "latitude": 54.931307,
       "postcodeUnitCount": 833
+    },
+    "NE92": {
+      "longitude": -1.614984,
+      "latitude": 54.941787,
+      "postcodeUnitCount": 40
+    },
+    "NE98": {
+      "longitude": -1.598362,
+      "latitude": 54.972302,
+      "postcodeUnitCount": 10
+    },
+    "NE99": {
+      "longitude": -1.613605,
+      "latitude": 54.97117,
+      "postcodeUnitCount": 91
     },
     "NG1": {
       "longitude": -1.148446,
@@ -5278,10 +6372,20 @@
       "latitude": 52.965071,
       "postcodeUnitCount": 1192
     },
+    "NG80": {
+      "longitude": -1.193509,
+      "latitude": 52.927996,
+      "postcodeUnitCount": 20
+    },
     "NG9": {
       "longitude": -1.238027,
       "latitude": 52.92599,
       "postcodeUnitCount": 1649
+    },
+    "NG90": {
+      "longitude": -1.190692,
+      "latitude": 52.925918,
+      "postcodeUnitCount": 19
     },
     "NN1": {
       "longitude": -0.888204,
@@ -5378,6 +6482,21 @@
       "latitude": 52.334824,
       "postcodeUnitCount": 675
     },
+    "NP16": {
+      "longitude": -2.658498,
+      "latitude": 51.653093,
+      "postcodeUnitCount": 193
+    },
+    "NP25": {
+      "longitude": -2.697445,
+      "latitude": 51.823212,
+      "postcodeUnitCount": 36
+    },
+    "NP7": {
+      "longitude": -2.934873,
+      "latitude": 51.915438,
+      "postcodeUnitCount": 2
+    },
     "NR1": {
       "longitude": 1.30682,
       "latitude": 52.626556,
@@ -5447,6 +6566,21 @@
       "longitude": 0.852213,
       "latitude": 52.841621,
       "postcodeUnitCount": 810
+    },
+    "NR22": {
+      "longitude": 0.864194,
+      "latitude": 52.894366,
+      "postcodeUnitCount": 68
+    },
+    "NR23": {
+      "longitude": 0.858028,
+      "latitude": 52.948846,
+      "postcodeUnitCount": 232
+    },
+    "NR24": {
+      "longitude": 1.050105,
+      "latitude": 52.858762,
+      "postcodeUnitCount": 210
     },
     "NR25": {
       "longitude": 1.08329,
@@ -5538,6 +6672,11 @@
       "latitude": 52.633177,
       "postcodeUnitCount": 727
     },
+    "NR99": {
+      "longitude": 1.309289,
+      "latitude": 52.626676,
+      "postcodeUnitCount": 7
+    },
     "NW1": {
       "longitude": -0.143853,
       "latitude": 51.533409,
@@ -5553,10 +6692,20 @@
       "latitude": 51.578369,
       "postcodeUnitCount": 833
     },
+    "NW1W": {
+      "longitude": -0.13541,
+      "latitude": 51.530793,
+      "postcodeUnitCount": 1035
+    },
     "NW2": {
       "longitude": -0.220145,
       "latitude": 51.558315,
       "postcodeUnitCount": 1332
+    },
+    "NW26": {
+      "longitude": -0.248126,
+      "latitude": 51.534061,
+      "postcodeUnitCount": 39
     },
     "NW3": {
       "longitude": -0.172545,
@@ -5693,6 +6842,11 @@
       "latitude": 51.597265,
       "postcodeUnitCount": 1027
     },
+    "OX13": {
+      "longitude": -1.357347,
+      "latitude": 51.674541,
+      "postcodeUnitCount": 476
+    },
     "OX14": {
       "longitude": -1.276444,
       "latitude": 51.668481,
@@ -5728,10 +6882,20 @@
       "latitude": 51.85534,
       "postcodeUnitCount": 275
     },
+    "OX25": {
+      "longitude": -1.214412,
+      "latitude": 51.900796,
+      "postcodeUnitCount": 524
+    },
     "OX26": {
       "longitude": -1.155334,
       "latitude": 51.901039,
       "postcodeUnitCount": 937
+    },
+    "OX27": {
+      "longitude": -1.149574,
+      "latitude": 51.935694,
+      "postcodeUnitCount": 370
     },
     "OX28": {
       "longitude": -1.486068,
@@ -5753,10 +6917,20 @@
       "latitude": 51.758652,
       "postcodeUnitCount": 280
     },
+    "OX39": {
+      "longitude": -0.915765,
+      "latitude": 51.701628,
+      "postcodeUnitCount": 260
+    },
     "OX4": {
       "longitude": -1.217422,
       "latitude": 51.731114,
       "postcodeUnitCount": 1365
+    },
+    "OX44": {
+      "longitude": -1.120563,
+      "latitude": 51.696198,
+      "postcodeUnitCount": 346
     },
     "OX49": {
       "longitude": -1.001953,
@@ -5848,6 +7022,11 @@
       "latitude": 53.172766,
       "postcodeUnitCount": 389
     },
+    "PE24": {
+      "longitude": 0.26453,
+      "latitude": 53.164622,
+      "postcodeUnitCount": 539
+    },
     "PE25": {
       "longitude": 0.334026,
       "latitude": 53.154043,
@@ -5903,6 +7082,16 @@
       "latitude": 52.725791,
       "postcodeUnitCount": 442
     },
+    "PE35": {
+      "longitude": 0.509058,
+      "latitude": 52.827249,
+      "postcodeUnitCount": 13
+    },
+    "PE36": {
+      "longitude": 0.508885,
+      "latitude": 52.939501,
+      "postcodeUnitCount": 330
+    },
     "PE37": {
       "longitude": 0.700278,
       "latitude": 52.641038,
@@ -5912,6 +7101,16 @@
       "longitude": 0.375637,
       "latitude": 52.588716,
       "postcodeUnitCount": 487
+    },
+    "PE4": {
+      "longitude": -0.262272,
+      "latitude": 52.611905,
+      "postcodeUnitCount": 492
+    },
+    "PE5": {
+      "longitude": -0.350488,
+      "latitude": 52.575007,
+      "postcodeUnitCount": 52
     },
     "PE6": {
       "longitude": -0.25033,
@@ -5938,6 +7137,11 @@
       "latitude": 50.370567,
       "postcodeUnitCount": 868
     },
+    "PL10": {
+      "longitude": -4.211337,
+      "latitude": 50.345206,
+      "postcodeUnitCount": 177
+    },
     "PL11": {
       "longitude": -4.25551,
       "latitude": 50.372946,
@@ -5963,10 +7167,20 @@
       "latitude": 50.632882,
       "postcodeUnitCount": 813
     },
+    "PL16": {
+      "longitude": -4.265936,
+      "latitude": 50.64626,
+      "postcodeUnitCount": 115
+    },
     "PL17": {
       "longitude": -4.310194,
       "latitude": 50.51493,
       "postcodeUnitCount": 425
+    },
+    "PL18": {
+      "longitude": -4.22167,
+      "latitude": 50.515395,
+      "postcodeUnitCount": 228
     },
     "PL19": {
       "longitude": -4.154957,
@@ -6018,6 +7232,11 @@
       "latitude": 50.523313,
       "postcodeUnitCount": 590
     },
+    "PL28": {
+      "longitude": -4.967687,
+      "latitude": 50.532516,
+      "postcodeUnitCount": 249
+    },
     "PL29": {
       "longitude": -4.8299,
       "latitude": 50.586399,
@@ -6028,6 +7247,11 @@
       "latitude": 50.388283,
       "postcodeUnitCount": 694
     },
+    "PL30": {
+      "longitude": -4.728862,
+      "latitude": 50.502348,
+      "postcodeUnitCount": 544
+    },
     "PL31": {
       "longitude": -4.722766,
       "latitude": 50.469055,
@@ -6037,6 +7261,16 @@
       "longitude": -4.6621,
       "latitude": 50.633158,
       "postcodeUnitCount": 172
+    },
+    "PL33": {
+      "longitude": -4.731626,
+      "latitude": 50.621864,
+      "postcodeUnitCount": 78
+    },
+    "PL34": {
+      "longitude": -4.744531,
+      "latitude": 50.659758,
+      "postcodeUnitCount": 79
     },
     "PL35": {
       "longitude": -4.685294,
@@ -6072,6 +7306,11 @@
       "longitude": -4.084188,
       "latitude": 50.355704,
       "postcodeUnitCount": 1014
+    },
+    "PL95": {
+      "longitude": -4.10447,
+      "latitude": 50.364392,
+      "postcodeUnitCount": 30
     },
     "PO1": {
       "longitude": -1.089657,
@@ -6117,6 +7356,11 @@
       "longitude": -1.173609,
       "latitude": 50.889904,
       "postcodeUnitCount": 334
+    },
+    "PO18": {
+      "longitude": -0.816155,
+      "latitude": 50.864711,
+      "postcodeUnitCount": 696
     },
     "PO19": {
       "longitude": -0.778585,
@@ -6168,15 +7412,50 @@
       "latitude": 50.721617,
       "postcodeUnitCount": 1006
     },
+    "PO34": {
+      "longitude": -1.113482,
+      "latitude": 50.715898,
+      "postcodeUnitCount": 122
+    },
+    "PO35": {
+      "longitude": -1.085231,
+      "latitude": 50.686624,
+      "postcodeUnitCount": 164
+    },
     "PO36": {
       "longitude": -1.163836,
       "latitude": 50.658548,
       "postcodeUnitCount": 552
     },
+    "PO37": {
+      "longitude": -1.179673,
+      "latitude": 50.631345,
+      "postcodeUnitCount": 330
+    },
+    "PO38": {
+      "longitude": -1.244061,
+      "latitude": 50.606258,
+      "postcodeUnitCount": 598
+    },
+    "PO39": {
+      "longitude": -1.54012,
+      "latitude": 50.680296,
+      "postcodeUnitCount": 117
+    },
+    "PO4": {
+      "longitude": -1.062085,
+      "latitude": 50.790172,
+      "postcodeUnitCount": 738
+    },
     "PO40": {
       "longitude": -1.521887,
       "latitude": 50.682581,
       "postcodeUnitCount": 293
+    },
+    "PO41": {
+      "longitude": -1.475118,
+      "latitude": 50.700948,
+      "postcodeUnitCount": 151
     },
     "PO5": {
       "longitude": -1.086083,
@@ -6203,10 +7482,20 @@
       "latitude": 50.863418,
       "postcodeUnitCount": 1222
     },
+    "PR0": {
+      "longitude": -2.683904,
+      "latitude": 53.758821,
+      "postcodeUnitCount": 17
+    },
     "PR1": {
       "longitude": -2.701587,
       "latitude": 53.757321,
       "postcodeUnitCount": 1689
+    },
+    "PR11": {
+      "longitude": -2.684986,
+      "latitude": 53.794575,
+      "postcodeUnitCount": 53
     },
     "PR2": {
       "longitude": -2.706798,
@@ -6313,10 +7602,20 @@
       "latitude": 51.248018,
       "postcodeUnitCount": 776
     },
+    "RG23": {
+      "longitude": -1.150323,
+      "latitude": 51.252581,
+      "postcodeUnitCount": 421
+    },
     "RG24": {
       "longitude": -1.079105,
       "latitude": 51.281083,
       "postcodeUnitCount": 897
+    },
+    "RG25": {
+      "longitude": -1.163223,
+      "latitude": 51.227249,
+      "postcodeUnitCount": 395
     },
     "RG26": {
       "longitude": -1.129348,
@@ -6488,6 +7787,11 @@
       "latitude": 51.174886,
       "postcodeUnitCount": 236
     },
+    "RH77": {
+      "longitude": -0.169752,
+      "latitude": 51.138771,
+      "postcodeUnitCount": 16
+    },
     "RH8": {
       "longitude": 0.002304,
       "latitude": 51.251116,
@@ -6557,6 +7861,11 @@
       "longitude": 0.203405,
       "latitude": 51.5843,
       "postcodeUnitCount": 268
+    },
+    "RM20": {
+      "longitude": 0.284527,
+      "latitude": 51.478547,
+      "postcodeUnitCount": 160
     },
     "RM3": {
       "longitude": 0.224512,
@@ -6718,6 +8027,11 @@
       "latitude": 53.165921,
       "postcodeUnitCount": 516
     },
+    "S49": {
+      "longitude": -1.434318,
+      "latitude": 53.23532,
+      "postcodeUnitCount": 8
+    },
     "S5": {
       "longitude": -1.463318,
       "latitude": 53.422266,
@@ -6818,6 +8132,31 @@
       "latitude": 53.398238,
       "postcodeUnitCount": 706
     },
+    "S95": {
+      "longitude": -1.40074,
+      "latitude": 53.419959,
+      "postcodeUnitCount": 28
+    },
+    "S96": {
+      "longitude": -1.424635,
+      "latitude": 53.402216,
+      "postcodeUnitCount": 14
+    },
+    "S97": {
+      "longitude": -1.337966,
+      "latitude": 53.503264,
+      "postcodeUnitCount": 39
+    },
+    "S98": {
+      "longitude": -1.431003,
+      "latitude": 53.404142,
+      "postcodeUnitCount": 195
+    },
+    "S99": {
+      "longitude": -1.431036,
+      "latitude": 53.404257,
+      "postcodeUnitCount": 35
+    },
     "SE1": {
       "longitude": -0.091452,
       "latitude": 51.499163,
@@ -6872,6 +8211,11 @@
       "longitude": -0.086109,
       "latitude": 51.417958,
       "postcodeUnitCount": 600
+    },
+    "SE1P": {
+      "longitude": -0.080127,
+      "latitude": 51.492774,
+      "postcodeUnitCount": 930
     },
     "SE2": {
       "longitude": 0.116249,
@@ -6978,10 +8322,20 @@
       "latitude": 51.814249,
       "postcodeUnitCount": 941
     },
+    "SG13": {
+      "longitude": -0.071353,
+      "latitude": 51.787596,
+      "postcodeUnitCount": 531
+    },
     "SG14": {
       "longitude": -0.094281,
       "latitude": 51.808175,
       "postcodeUnitCount": 624
+    },
+    "SG15": {
+      "longitude": -0.263837,
+      "latitude": 52.013507,
+      "postcodeUnitCount": 120
     },
     "SG16": {
       "longitude": -0.299042,
@@ -7038,6 +8392,11 @@
       "latitude": 52.064464,
       "postcodeUnitCount": 1298
     },
+    "SG9": {
+      "longitude": -0.009279,
+      "latitude": 51.950546,
+      "postcodeUnitCount": 515
+    },
     "SK1": {
       "longitude": -2.151626,
       "latitude": 53.407625,
@@ -7052,6 +8411,11 @@
       "longitude": -2.146063,
       "latitude": 53.245013,
       "postcodeUnitCount": 1111
+    },
+    "SK12": {
+      "longitude": -2.093841,
+      "latitude": 53.351258,
+      "postcodeUnitCount": 492
     },
     "SK13": {
       "longitude": -1.964346,
@@ -7163,15 +8527,30 @@
       "latitude": 51.52399,
       "postcodeUnitCount": 2315
     },
+    "SL60": {
+      "longitude": -0.714776,
+      "latitude": 51.518548,
+      "postcodeUnitCount": 33
+    },
     "SL7": {
       "longitude": -0.778138,
       "latitude": 51.575504,
       "postcodeUnitCount": 694
     },
+    "SL8": {
+      "longitude": -0.708684,
+      "latitude": 51.578771,
+      "postcodeUnitCount": 265
+    },
     "SL9": {
       "longitude": -0.555722,
       "latitude": 51.598082,
       "postcodeUnitCount": 878
+    },
+    "SL95": {
+      "longitude": -0.537054,
+      "latitude": 51.498772,
+      "postcodeUnitCount": 23
     },
     "SM1": {
       "longitude": -0.192809,
@@ -7258,10 +8637,20 @@
       "latitude": 51.598328,
       "postcodeUnitCount": 821
     },
+    "SN26": {
+      "longitude": -1.787672,
+      "latitude": 51.613965,
+      "postcodeUnitCount": 74
+    },
     "SN3": {
       "longitude": -1.744906,
       "latitude": 51.561464,
       "postcodeUnitCount": 1304
+    },
+    "SN38": {
+      "longitude": -1.809926,
+      "latitude": 51.56314,
+      "postcodeUnitCount": 124
     },
     "SN4": {
       "longitude": -1.833706,
@@ -7292,6 +8681,11 @@
       "longitude": -1.788359,
       "latitude": 51.32379,
       "postcodeUnitCount": 323
+    },
+    "SN99": {
+      "longitude": -1.722535,
+      "latitude": 51.551996,
+      "postcodeUnitCount": 18
     },
     "SO14": {
       "longitude": -1.397361,
@@ -7348,6 +8742,16 @@
       "latitude": 51.084356,
       "postcodeUnitCount": 449
     },
+    "SO25": {
+      "longitude": -1.297333,
+      "latitude": 51.067557,
+      "postcodeUnitCount": 1
+    },
+    "SO30": {
+      "longitude": -1.302271,
+      "latitude": 50.918537,
+      "postcodeUnitCount": 826
+    },
     "SO31": {
       "longitude": -1.300459,
       "latitude": 50.870075,
@@ -7403,6 +8807,11 @@
       "latitude": 50.986083,
       "postcodeUnitCount": 860
     },
+    "SO97": {
+      "longitude": -1.361951,
+      "latitude": 50.948479,
+      "postcodeUnitCount": 15
+    },
     "SP1": {
       "longitude": -1.788672,
       "latitude": 51.075247,
@@ -7442,6 +8851,11 @@
       "longitude": -1.802638,
       "latitude": 50.936522,
       "postcodeUnitCount": 603
+    },
+    "SP7": {
+      "longitude": -2.184344,
+      "latitude": 51.005076,
+      "postcodeUnitCount": 637
     },
     "SP8": {
       "longitude": -2.290925,
@@ -7503,6 +8917,11 @@
       "latitude": 51.537435,
       "postcodeUnitCount": 690
     },
+    "SS11": {
+      "longitude": 0.537916,
+      "latitude": 51.617524,
+      "postcodeUnitCount": 478
+    },
     "SS12": {
       "longitude": 0.520658,
       "latitude": 51.60519,
@@ -7537,6 +8956,11 @@
       "longitude": 0.716673,
       "latitude": 51.550837,
       "postcodeUnitCount": 709
+    },
+    "SS22": {
+      "longitude": 0.706852,
+      "latitude": 51.556985,
+      "postcodeUnitCount": 3
     },
     "SS3": {
       "longitude": 0.789489,
@@ -7573,6 +8997,11 @@
       "latitude": 51.554851,
       "postcodeUnitCount": 1052
     },
+    "SS99": {
+      "longitude": 0.713483,
+      "latitude": 51.548348,
+      "postcodeUnitCount": 85
+    },
     "ST1": {
       "longitude": -2.172925,
       "latitude": 53.027394,
@@ -7587,6 +9016,11 @@
       "longitude": -2.063685,
       "latitude": 52.96549,
       "postcodeUnitCount": 242
+    },
+    "ST12": {
+      "longitude": -2.172581,
+      "latitude": 52.946996,
+      "postcodeUnitCount": 122
     },
     "ST13": {
       "longitude": -2.01937,
@@ -7652,6 +9086,11 @@
       "longitude": -2.239815,
       "latitude": 53.015334,
       "postcodeUnitCount": 2036
+    },
+    "ST55": {
+      "longitude": -2.238035,
+      "latitude": 53.014172,
+      "postcodeUnitCount": 44
     },
     "ST6": {
       "longitude": -2.189724,
@@ -7723,6 +9162,21 @@
       "latitude": 51.42417,
       "postcodeUnitCount": 1657
     },
+    "SW1A": {
+      "longitude": -0.132138,
+      "latitude": 51.504525,
+      "postcodeUnitCount": 145
+    },
+    "SW1E": {
+      "longitude": -0.139821,
+      "latitude": 51.498084,
+      "postcodeUnitCount": 88
+    },
+    "SW1H": {
+      "longitude": -0.133512,
+      "latitude": 51.498647,
+      "postcodeUnitCount": 91
+    },
     "SW1P": {
       "longitude": -0.132739,
       "latitude": 51.489827,
@@ -7742,6 +9196,11 @@
       "longitude": -0.156753,
       "latitude": 51.498246,
       "postcodeUnitCount": 403
+    },
+    "SW1Y": {
+      "longitude": -0.134534,
+      "latitude": 51.507638,
+      "postcodeUnitCount": 183
     },
     "SW2": {
       "longitude": -0.119794,
@@ -7788,6 +9247,11 @@
       "latitude": 51.46936,
       "postcodeUnitCount": 970
     },
+    "SW95": {
+      "longitude": -0.136249,
+      "latitude": 51.480399,
+      "postcodeUnitCount": 44
+    },
     "SY1": {
       "longitude": -2.740397,
       "latitude": 52.722748,
@@ -7808,15 +9272,35 @@
       "latitude": 52.903112,
       "postcodeUnitCount": 382
     },
+    "SY13": {
+      "longitude": -2.673844,
+      "latitude": 52.951923,
+      "postcodeUnitCount": 755
+    },
     "SY14": {
       "longitude": -2.76369,
       "latitude": 53.035352,
       "postcodeUnitCount": 318
     },
+    "SY15": {
+      "longitude": -3.074071,
+      "latitude": 52.564509,
+      "postcodeUnitCount": 45
+    },
     "SY2": {
       "longitude": -2.729149,
       "latitude": 52.705033,
       "postcodeUnitCount": 579
+    },
+    "SY21": {
+      "longitude": -3.041701,
+      "latitude": 52.646858,
+      "postcodeUnitCount": 17
+    },
+    "SY22": {
+      "longitude": -3.085619,
+      "latitude": 52.785425,
+      "postcodeUnitCount": 18
     },
     "SY3": {
       "longitude": -2.773672,
@@ -7853,6 +9337,11 @@
       "latitude": 52.499063,
       "postcodeUnitCount": 136
     },
+    "SY99": {
+      "longitude": -2.749608,
+      "latitude": 52.712841,
+      "postcodeUnitCount": 8
+    },
     "TA1": {
       "longitude": -3.102934,
       "latitude": 51.013188,
@@ -7873,10 +9362,30 @@
       "latitude": 50.974852,
       "postcodeUnitCount": 170
     },
+    "TA13": {
+      "longitude": -2.810639,
+      "latitude": 50.946879,
+      "postcodeUnitCount": 145
+    },
     "TA14": {
       "longitude": -2.751707,
       "latitude": 50.946773,
       "postcodeUnitCount": 89
+    },
+    "TA15": {
+      "longitude": -2.716928,
+      "latitude": 50.951144,
+      "postcodeUnitCount": 25
+    },
+    "TA16": {
+      "longitude": -2.793843,
+      "latitude": 50.909414,
+      "postcodeUnitCount": 56
+    },
+    "TA17": {
+      "longitude": -2.836324,
+      "latitude": 50.908176,
+      "postcodeUnitCount": 35
     },
     "TA18": {
       "longitude": -2.787054,
@@ -7902,6 +9411,16 @@
       "longitude": -3.243543,
       "latitude": 50.977635,
       "postcodeUnitCount": 671
+    },
+    "TA22": {
+      "longitude": -3.545559,
+      "latitude": 51.045711,
+      "postcodeUnitCount": 172
+    },
+    "TA23": {
+      "longitude": -3.35216,
+      "latitude": 51.162672,
+      "postcodeUnitCount": 254
     },
     "TA24": {
       "longitude": -3.510319,
@@ -7943,10 +9462,25 @@
       "latitude": 51.22526,
       "postcodeUnitCount": 468
     },
+    "TD12": {
+      "longitude": -2.193951,
+      "latitude": 55.638094,
+      "postcodeUnitCount": 97
+    },
     "TD15": {
       "longitude": -2.008277,
       "latitude": 55.74577,
       "postcodeUnitCount": 530
+    },
+    "TD5": {
+      "longitude": -2.286043,
+      "latitude": 55.603167,
+      "postcodeUnitCount": 1
+    },
+    "TD9": {
+      "longitude": -2.772152,
+      "latitude": 55.117267,
+      "postcodeUnitCount": 6
     },
     "TF1": {
       "longitude": -2.503269,
@@ -7962,6 +9496,11 @@
       "longitude": -2.358304,
       "latitude": 52.665168,
       "postcodeUnitCount": 457
+    },
+    "TF12": {
+      "longitude": -2.481768,
+      "latitude": 52.612176,
+      "postcodeUnitCount": 238
     },
     "TF13": {
       "longitude": -2.583626,
@@ -7988,6 +9527,11 @@
       "latitude": 52.717182,
       "postcodeUnitCount": 119
     },
+    "TF6": {
+      "longitude": -2.557078,
+      "latitude": 52.736229,
+      "postcodeUnitCount": 306
+    },
     "TF7": {
       "longitude": -2.450435,
       "latitude": 52.63921,
@@ -8007,6 +9551,11 @@
       "longitude": 0.266541,
       "latitude": 51.134678,
       "postcodeUnitCount": 399
+    },
+    "TN10": {
+      "longitude": 0.284118,
+      "latitude": 51.212006,
+      "postcodeUnitCount": 396
     },
     "TN11": {
       "longitude": 0.265157,
@@ -8062,6 +9611,11 @@
       "longitude": 0.250326,
       "latitude": 51.016776,
       "postcodeUnitCount": 176
+    },
+    "TN21": {
+      "longitude": 0.263077,
+      "latitude": 50.958035,
+      "postcodeUnitCount": 711
     },
     "TN22": {
       "longitude": 0.100951,
@@ -8138,6 +9692,11 @@
       "latitude": 50.883477,
       "postcodeUnitCount": 401
     },
+    "TN36": {
+      "longitude": 0.699281,
+      "latitude": 50.920377,
+      "postcodeUnitCount": 104
+    },
     "TN37": {
       "longitude": 0.557301,
       "latitude": 50.872977,
@@ -8158,6 +9717,11 @@
       "latitude": 51.145478,
       "postcodeUnitCount": 779
     },
+    "TN40": {
+      "longitude": 0.483082,
+      "latitude": 50.845928,
+      "postcodeUnitCount": 575
+    },
     "TN5": {
       "longitude": 0.365548,
       "latitude": 51.058686,
@@ -8167,6 +9731,11 @@
       "longitude": 0.175711,
       "latitude": 51.05201,
       "postcodeUnitCount": 858
+    },
+    "TN7": {
+      "longitude": 0.10202,
+      "latitude": 51.096398,
+      "postcodeUnitCount": 98
     },
     "TN8": {
       "longitude": 0.077918,
@@ -8298,10 +9867,45 @@
       "latitude": 50.117443,
       "postcodeUnitCount": 859
     },
+    "TR19": {
+      "longitude": -5.631787,
+      "latitude": 50.100004,
+      "postcodeUnitCount": 517
+    },
     "TR2": {
       "longitude": -4.950309,
       "latitude": 50.254743,
       "postcodeUnitCount": 535
+    },
+    "TR20": {
+      "longitude": -5.488243,
+      "latitude": 50.131831,
+      "postcodeUnitCount": 518
+    },
+    "TR21": {
+      "longitude": -6.298616,
+      "latitude": 49.919091,
+      "postcodeUnitCount": 73
+    },
+    "TR22": {
+      "longitude": -6.340938,
+      "latitude": 49.895165,
+      "postcodeUnitCount": 1
+    },
+    "TR23": {
+      "longitude": -6.352711,
+      "latitude": 49.953599,
+      "postcodeUnitCount": 1
+    },
+    "TR24": {
+      "longitude": -6.335583,
+      "latitude": 49.955096,
+      "postcodeUnitCount": 17
+    },
+    "TR25": {
+      "longitude": -6.293436,
+      "latitude": 49.964262,
+      "postcodeUnitCount": 3
     },
     "TR26": {
       "longitude": -5.478935,
@@ -8337,6 +9941,11 @@
       "longitude": -5.074287,
       "latitude": 50.413856,
       "postcodeUnitCount": 679
+    },
+    "TR8": {
+      "longitude": -5.040632,
+      "latitude": 50.401407,
+      "postcodeUnitCount": 599
     },
     "TR9": {
       "longitude": -4.93526,
@@ -8393,6 +10002,16 @@
       "latitude": 54.561015,
       "postcodeUnitCount": 889
     },
+    "TS19": {
+      "longitude": -1.343259,
+      "latitude": 54.577245,
+      "postcodeUnitCount": 1079
+    },
+    "TS2": {
+      "longitude": -1.237597,
+      "latitude": 54.585225,
+      "postcodeUnitCount": 123
+    },
     "TS20": {
       "longitude": -1.313848,
       "latitude": 54.58677,
@@ -8402,6 +10021,11 @@
       "longitude": -1.426266,
       "latitude": 54.625602,
       "postcodeUnitCount": 545
+    },
+    "TS22": {
+      "longitude": -1.325315,
+      "latitude": 54.627374,
+      "postcodeUnitCount": 339
     },
     "TS23": {
       "longitude": -1.285023,
@@ -8433,6 +10057,11 @@
       "latitude": 54.725948,
       "postcodeUnitCount": 165
     },
+    "TS29": {
+      "longitude": -1.420316,
+      "latitude": 54.710708,
+      "postcodeUnitCount": 195
+    },
     "TS3": {
       "longitude": -1.196864,
       "latitude": 54.560497,
@@ -8452,6 +10081,11 @@
       "longitude": -1.153713,
       "latitude": 54.565504,
       "postcodeUnitCount": 916
+    },
+    "TS7": {
+      "longitude": -1.182974,
+      "latitude": 54.533785,
+      "postcodeUnitCount": 605
     },
     "TS8": {
       "longitude": -1.232607,
@@ -8543,6 +10177,11 @@
       "latitude": 51.482476,
       "postcodeUnitCount": 400
     },
+    "TW6": {
+      "longitude": -0.448738,
+      "latitude": 51.470793,
+      "postcodeUnitCount": 124
+    },
     "TW7": {
       "longitude": -0.336011,
       "latitude": 51.472877,
@@ -8567,6 +10206,16 @@
       "longitude": -0.452064,
       "latitude": 51.54932,
       "postcodeUnitCount": 711
+    },
+    "UB11": {
+      "longitude": -0.447354,
+      "latitude": 51.511554,
+      "postcodeUnitCount": 19
+    },
+    "UB18": {
+      "longitude": -0.402664,
+      "latitude": 51.50072,
+      "postcodeUnitCount": 59
     },
     "UB2": {
       "longitude": -0.378881,
@@ -8633,20 +10282,70 @@
       "latitude": 51.494691,
       "postcodeUnitCount": 641
     },
+    "W1A": {
+      "longitude": -0.112861,
+      "latitude": 51.524356,
+      "postcodeUnitCount": 144
+    },
+    "W1B": {
+      "longitude": -0.140945,
+      "latitude": 51.514371,
+      "postcodeUnitCount": 298
+    },
+    "W1C": {
+      "longitude": -0.149074,
+      "latitude": 51.514433,
+      "postcodeUnitCount": 139
+    },
+    "W1D": {
+      "longitude": -0.132689,
+      "latitude": 51.513316,
+      "postcodeUnitCount": 695
+    },
+    "W1F": {
+      "longitude": -0.136438,
+      "latitude": 51.513486,
+      "postcodeUnitCount": 756
+    },
+    "W1G": {
+      "longitude": -0.148255,
+      "latitude": 51.51933,
+      "postcodeUnitCount": 704
+    },
     "W1H": {
       "longitude": -0.161213,
       "latitude": 51.517697,
       "postcodeUnitCount": 691
+    },
+    "W1J": {
+      "longitude": -0.145082,
+      "latitude": 51.50787,
+      "postcodeUnitCount": 667
     },
     "W1K": {
       "longitude": -0.151029,
       "latitude": 51.511122,
       "postcodeUnitCount": 878
     },
+    "W1S": {
+      "longitude": -0.142386,
+      "latitude": 51.511201,
+      "postcodeUnitCount": 558
+    },
     "W1T": {
       "longitude": -0.136727,
       "latitude": 51.52029,
       "postcodeUnitCount": 923
+    },
+    "W1U": {
+      "longitude": -0.153475,
+      "latitude": 51.518701,
+      "postcodeUnitCount": 1070
+    },
+    "W1W": {
+      "longitude": -0.140877,
+      "latitude": 51.519212,
+      "postcodeUnitCount": 623
     },
     "W2": {
       "longitude": -0.185192,
@@ -8748,6 +10447,11 @@
       "latitude": 53.399371,
       "postcodeUnitCount": 1320
     },
+    "WA55": {
+      "longitude": -2.610275,
+      "latitude": 53.392598,
+      "postcodeUnitCount": 8
+    },
     "WA6": {
       "longitude": -2.724847,
       "latitude": 53.272527,
@@ -8763,10 +10467,20 @@
       "latitude": 53.373152,
       "postcodeUnitCount": 1587
     },
+    "WA88": {
+      "longitude": -2.768674,
+      "latitude": 53.367989,
+      "postcodeUnitCount": 13
+    },
     "WA9": {
       "longitude": -2.719308,
       "latitude": 53.436094,
       "postcodeUnitCount": 1306
+    },
+    "WC1A": {
+      "longitude": -0.119994,
+      "latitude": 51.52034,
+      "postcodeUnitCount": 150
     },
     "WC1B": {
       "longitude": -0.1261,
@@ -8778,20 +10492,60 @@
       "latitude": 51.521721,
       "postcodeUnitCount": 108
     },
+    "WC1H": {
+      "longitude": -0.125683,
+      "latitude": 51.52686,
+      "postcodeUnitCount": 306
+    },
     "WC1N": {
       "longitude": -0.119732,
       "latitude": 51.522923,
       "postcodeUnitCount": 272
+    },
+    "WC1R": {
+      "longitude": -0.115782,
+      "latitude": 51.519626,
+      "postcodeUnitCount": 80
+    },
+    "WC1V": {
+      "longitude": -0.11655,
+      "latitude": 51.51802,
+      "postcodeUnitCount": 96
     },
     "WC1X": {
       "longitude": -0.114963,
       "latitude": 51.526636,
       "postcodeUnitCount": 327
     },
+    "WC2A": {
+      "longitude": -0.11415,
+      "latitude": 51.516186,
+      "postcodeUnitCount": 113
+    },
+    "WC2B": {
+      "longitude": -0.120473,
+      "latitude": 51.514937,
+      "postcodeUnitCount": 175
+    },
+    "WC2E": {
+      "longitude": -0.123331,
+      "latitude": 51.511894,
+      "postcodeUnitCount": 167
+    },
     "WC2H": {
       "longitude": -0.127352,
       "latitude": 51.513321,
       "postcodeUnitCount": 347
+    },
+    "WC2N": {
+      "longitude": -0.124891,
+      "latitude": 51.509128,
+      "postcodeUnitCount": 143
+    },
+    "WC2R": {
+      "longitude": -0.118152,
+      "latitude": 51.511765,
+      "postcodeUnitCount": 103
     },
     "WD17": {
       "longitude": -0.405581,
@@ -8812,6 +10566,11 @@
       "longitude": -0.358014,
       "latitude": 51.645317,
       "postcodeUnitCount": 774
+    },
+    "WD24": {
+      "longitude": -0.398096,
+      "latitude": 51.673707,
+      "postcodeUnitCount": 533
     },
     "WD25": {
       "longitude": -0.38767,
@@ -8842,6 +10601,11 @@
       "longitude": -0.309779,
       "latitude": 51.687268,
       "postcodeUnitCount": 430
+    },
+    "WD99": {
+      "longitude": -0.422065,
+      "latitude": 51.648781,
+      "postcodeUnitCount": 21
     },
     "WF1": {
       "longitude": -1.493392,
@@ -8927,6 +10691,11 @@
       "longitude": -1.321277,
       "latitude": 53.606354,
       "postcodeUnitCount": 1152
+    },
+    "WF90": {
+      "longitude": -1.490894,
+      "latitude": 53.67445,
+      "postcodeUnitCount": 3
     },
     "WN1": {
       "longitude": -2.627954,
@@ -9043,6 +10812,11 @@
       "latitude": 52.266638,
       "postcodeUnitCount": 893
     },
+    "WR99": {
+      "longitude": -2.203097,
+      "latitude": 52.194876,
+      "postcodeUnitCount": 5
+    },
     "WS1": {
       "longitude": -1.978413,
       "latitude": 52.579324,
@@ -9068,6 +10842,11 @@
       "latitude": 52.693648,
       "postcodeUnitCount": 895
     },
+    "WS14": {
+      "longitude": -1.816889,
+      "latitude": 52.664465,
+      "postcodeUnitCount": 583
+    },
     "WS15": {
       "longitude": -1.917066,
       "latitude": 52.758649,
@@ -9087,6 +10866,11 @@
       "longitude": -1.958712,
       "latitude": 52.60688,
       "postcodeUnitCount": 337
+    },
+    "WS5": {
+      "longitude": -1.958262,
+      "latitude": 52.566019,
+      "postcodeUnitCount": 377
     },
     "WS6": {
       "longitude": -2.023224,
@@ -9138,6 +10922,11 @@
       "latitude": 52.55735,
       "postcodeUnitCount": 1038
     },
+    "WV15": {
+      "longitude": -2.374071,
+      "latitude": 52.514798,
+      "postcodeUnitCount": 295
+    },
     "WV16": {
       "longitude": -2.441552,
       "latitude": 52.50904,
@@ -9178,6 +10967,21 @@
       "latitude": 52.62589,
       "postcodeUnitCount": 432
     },
+    "WV9": {
+      "longitude": -2.143649,
+      "latitude": 52.637723,
+      "postcodeUnitCount": 188
+    },
+    "WV98": {
+      "longitude": -2.220204,
+      "latitude": 52.404886,
+      "postcodeUnitCount": 396
+    },
+    "WV99": {
+      "longitude": -2.420289,
+      "latitude": 52.671361,
+      "postcodeUnitCount": 520
+    },
     "YO1": {
       "longitude": -1.082616,
       "latitude": 53.958622,
@@ -9207,6 +11011,11 @@
       "longitude": -0.298585,
       "latitude": 54.197734,
       "postcodeUnitCount": 405
+    },
+    "YO15": {
+      "longitude": -0.177886,
+      "latitude": 54.094395,
+      "postcodeUnitCount": 493
     },
     "YO16": {
       "longitude": -0.202451,
@@ -9258,6 +11067,16 @@
       "latitude": 53.976146,
       "postcodeUnitCount": 885
     },
+    "YO30": {
+      "longitude": -1.117055,
+      "latitude": 53.987063,
+      "postcodeUnitCount": 680
+    },
+    "YO31": {
+      "longitude": -1.06449,
+      "latitude": 53.969814,
+      "postcodeUnitCount": 810
+    },
     "YO32": {
       "longitude": -1.059396,
       "latitude": 54.012419,
@@ -9283,6 +11102,11 @@
       "latitude": 54.089626,
       "postcodeUnitCount": 263
     },
+    "YO60": {
+      "longitude": -0.939114,
+      "latitude": 54.086197,
+      "postcodeUnitCount": 257
+    },
     "YO61": {
       "longitude": -1.196066,
       "latitude": 54.117259,
@@ -9302,6 +11126,11 @@
       "longitude": -1.060437,
       "latitude": 53.781097,
       "postcodeUnitCount": 1334
+    },
+    "YO90": {
+      "longitude": -1.090241,
+      "latitude": 53.959722,
+      "postcodeUnitCount": 10
     }
   }
 }
